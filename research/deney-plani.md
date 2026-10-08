@@ -6,6 +6,8 @@ Güncelleme: 8 Ekim 2026. Kullanıcı 1–4 numaralı ayrıntıları asistana b�
 
 Bu belge ürün kararlarının ve modelin görev metinlerinin kaynağıdır. Emir, maliyet, jobs, API, veri modeli, kurulum sırası ve çalışabilirlik sınırlarının tek teknik kaynağı [MVP-TEKNIK-PLAN.md](../MVP-TEKNIK-PLAN.md)'dir. Önceki sürümün tamamı [arşivde korunur](archive-2026-10-08/deney-plani.md); eski sayısal P1 deneyi güncel MVP'ye uygulanmaz.
 
+8 Ekim teknik ayrıntılandırması: aynı teknik belgenin 12. bölümü kod modülleri, veritabanı/transaction, kuyruk, CLI/auth sınırları, veri kapasitesi, API, yedek ve release tasarımını içerir. Mevcut abonelik türü, sunucunun ortak kullanımı ve SSH erişim bilgisi beklenir; ilk prototiplerin fiili kabulü henüz yapılmadı.
+
 ## 1. Ürün ve kapsam
 
 Canlı ileriye dönük pilot A, ortak piyasa olgularını kullanan sekiz bağımsız karakterin kendi hesaplarında karar alıp sanal emir gerçekleştirmesidir. Model katkısı/kârlılık kanıtlanmış kabul edilmez. Geçmişe dönük B ayrı sonraki üründür; mevcut kodlama teslimatı içinde değildir.

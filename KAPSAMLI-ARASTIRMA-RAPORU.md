@@ -6,6 +6,8 @@ Güncelleme: 8 Ekim 2026. Güncel ürün, sekiz ayrı karakterin kendi nakdiyle 
 
 ## Güncel kapsam revizyonu ve ayrılıklar — 8 Ekim 2026
 
+Teknik uygulama tasarımı [MVP planının](MVP-TEKNIK-PLAN.md) 12. bölümünde ayrıntılandırıldı: tek Go kod tabanında API/worker/runner süreçleri, typed SQL/PG queue, atomik muhasebe, özel CLI session/auth sınırları, kaynak kapasite testi ve deploy/restore düzeni. Ürün tercihleri korundu. Abonelik türü ve sunucu/SSH bilgisi beklenir; oturum/auth ve ücretsiz canlı veri erişimi tasarım metniyle kanıtlanmış değildir.
+
 Kullanıcının son yetkisiyle emir/simülatör, ücretsiz fiyat kaynağı havuzu, kontrol sıklıkları ve model talimatları somutlaştırıldı. Backend Go/chi, PostgreSQL, model bağlantıları ve işler Hetzner'de; gözlem için yerel web uygulaması Mac'tedir. Eski Python sayısal pilot ve anahtarlı piyasa API başlangıcı uygulanmaz. Model özel hafızaları ayrılır; iki paralel worker başlangıcı seçildi. Gemini, tarihsel B ve gerçek broker daha sonraya bırakıldı.
 
 | Konu | Önceki görüş / varsayım | Güncel seçim ve gerekçe |

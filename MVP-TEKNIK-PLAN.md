@@ -1,6 +1,6 @@
 # Canlı Trading MVP — Uygulama ve Teknik Plan
 
-Güncelleme: 8 Ekim 2026. Durum: son genel belge revizyonu tamamlandı; ürün kodu, kurulum, giriş ve sunucu bağlantısı henüz yapılmadı. Plan kararları tamamlanmıştır; gerçek abonelik erişimi ve üç güncel fiyat kaynağının Hetzner'de çalışması kurulum kabul koşuludur. Bu koşullar geçmeden çalışan trading pilotu ilan edilmez.
+Güncelleme: 8 Ekim 2026. Durum: ürün/mimari sözleşmesi ve ayrıntılı uygulama tasarımı yazıldı; ürün kodu, kurulum, giriş ve sunucu bağlantısı henüz yapılmadı. Uygulama ayrıntıları 12. bölümdedir. Abonelik türü, sunucunun ortak kullanım durumu ve SSH erişim bilgisi kullanıcıdan bekleniyor. Gerçek abonelik erişimi, kimlik/oturum izolasyonu ve üç güncel fiyat kaynağının Hetzner'de çalışması kurulum kabul koşuludur. Bu koşullar geçmeden çalışan trading pilotu ilan edilmez.
 
 Bu belge güncel teknik uygulama sözleşmesidir. Ürün kararları ve kaynak kapsamı [deney-plani.md](research/deney-plani.md) içindedir. Önceki beş belgenin değiştirilmeden korunmuş kopyaları [arşivdedir](research/archive-2026-10-08/MVP-TEKNIK-PLAN.md). Arşivdeki sayısal ETF/Python/API pilotu güncel MVP'nin gereksinimi değildir.
 
@@ -310,3 +310,236 @@ Plan aşamasında yapılmış işler: resmi belgelerin okunması, ücretsiz sayf
 - Fiyat/likidite testi veri çekme prototipi aşamasına yerleştirildi; bütün yapı tamamlanana kadar beklenmez. Hafıza ayrılığı kendi modülü içinde kısa işlev/yetki kontrolüyle doğrulanır. Ücretsiz kaynaklara erişimin başarılı olacağı vaat edilmedi.
 
 Bu revizyon kod yazmaya veya sunucuya kurulum yapmaya başlamadı. Sonraki uygulama işi, yukarıdaki sıranın ilk maddesidir.
+
+## 12. Ayrıntılı uygulama tasarımı — 8 Ekim 2026
+
+Bu bölüm 1–11'deki ürün ve yürütme kurallarını uygulanabilir modüllere indirger. Yeni stratejik risk sınırı, yeni kategori, ücretli veri servisi veya değerlendirme ürünü eklemez. Sayısal kaynak/timeout/emir kuralları önceki bölümlerdeki değerlerdir. Buradaki mühendislik seçimleri önerilen uygulama varsayılanlarıdır; erişim ve kapasiteye bağlı olanlar açıkça belirtilmiştir.
+
+### 12.1. Kod tabanı ve süreç sınırları
+
+Tek Go modülü ve ortak domain paketleri kullanılır. Üç ana executable vardır: `trading-api`, `trading-worker`, `trading-runner`. Veri okuma, emir gerçekleşmesi ve zamanlama worker'da; HTTP sınırı API'de; abonelik kimliği ve CLI süreçleri runner'dadır. İş kuralları HTTP handler'a veya prompt metnine gömülmez. API ve worker aynı transaction servislerini kullanır; runner muhasebe yazamaz.
+
+İlk dağıtım tek Hetzner üzerinde Docker Compose projesi `trading` olarak yapılır. PostgreSQL, API, worker ve runner ayrı servislerdir. Render gerekirse aynı worker imajından kısıtlı browser görevi çalışır. Sekiz cüzdan çalışma alanı ayrı erişim sınırları ve kalıcı oturum depolarıyla hazırlanır; eşzamanlı en çok iki cüzdan çalışır. Ayrı model veya sekiz sürekli açık tarayıcı gerekmez.
+
+Seçilen yardımcılar: `chi/v5` HTTP; `pgx/v5` ve `pgxpool` PG erişimi; `sqlc` SQL'den Go tipleri; `goose` SQL migrations; Go `slog` JSON logları; `net/http` ve HTML parser kaynak okuma; gerekli durumda `chromedp` ile görünen DOM okuma. Redis, Kafka, vektör veritabanı veya ayrı trading framework'ü ilk sürüm bağımlılığı değildir. Sürümler kurulumda desteklenen sürümler arasından seçilip `go.mod`, lock dosyaları ve imaj digest'lerinde sabitlenir.
+
+Önerilen kaynak ağacı:
+
+```text
+cmd/api/                   HTTP başlangıcı
+cmd/worker/                scheduler, veri ve execution jobs
+cmd/runner/                Codex süreç ve oturum yönetimi
+internal/config/           doğrulanmış çalışma ayarları
+internal/domain/           money, asset, wallet, order kuralları
+internal/assets/           kalıcı kimlik, alias, evren
+internal/evidence/         belge, olgu, menşe ve paketler
+internal/marketdata/       site okuyucuları ve price validator
+internal/orders/           kabul, rezerv, state machine
+internal/accounting/       journal, FIFO, fee, settlement
+internal/corporateactions/ olay ve hak sahipliği
+internal/jobs/             kalıcı kuyruk, lease, fencing
+internal/modelrunner/      CLI adapter, girdi ve çıktı
+internal/memory/           özel not, özet ve session bağı
+internal/httpapi/          agent/operator handler ve middleware
+internal/storage/          SQL repository ve transaction sınırı
+db/migrations/             sürümlü şema
+db/queries/                sqlc sorguları
+contracts/                 JSON Schema ve OpenAPI
+config/                    sır içermeyen profil/persona/evren
+web/                       Mac HTML/CSS/TypeScript
+deploy/                    Compose ve sunucu runbook
+```
+
+Kaynaklar: [pgx](https://github.com/jackc/pgx), [sqlc PostgreSQL](https://docs.sqlc.dev/en/latest/tutorials/getting-started-postgresql.html), [goose](https://github.com/pressly/goose), [chromedp](https://github.com/chromedp/chromedp). Bunlar genel yazılım yardımcılarıdır; trading backend kuralları bizim kodumuzdur.
+
+### 12.2. Hetzner çalışma ve geliştirme düzeni
+
+Hedef `167.235.158.118`. İlk iş salt okunur envanterdir: SSH kimliği, OS/CPU/RAM/disk, mevcut servisler/portlar, Docker durumu, saat senkronu ve yedekler. Başka projelerin konteyner, veritabanı ve firewall ayarları topluca değiştirilmez. Trading ayrı deploy kullanıcısı, proje adı, ağ ve volume adlarıyla kurulur. Agent süreçleri root olmaz; Docker socket'i, SSH özel anahtarı ve GitHub kimliği agent ortamına verilmez.
+
+Sunucuda `/opt/trading` kaynak/release; `/var/lib/trading` kalıcı veriler; `/etc/trading` sır ve deploy ayarları için hedef dizinlerdir. Gerçek sahiplik ve izinler mevcut OS'ye göre uygulanır. Runtime verileri Git'e girmez. Private repo kod kaynağıdır; release commit'i deploy kaydında saklanır. GitHub okuma yolu mevcut yetkili erişimle belirlenir, yeni geniş yetkili token üretilmez.
+
+Geliştirme/staging ile çalışan pilot farklı Compose proje adı, PG veritabanı ve volume kullanır. Başlangıçta yalnız staging vardır; kabulden sonra pilot açılır. Staging denemeleri pilot ledger'ına veya model oturumuna yazamaz. Her ortam bir defa seed edilir; tekrar deploy 100.000 USD eklemez.
+
+İki CLI ve en çok iki Chromium işi için başlangıç kapasite hedefi yaklaşık 4 vCPU / 8 GiB RAM'dir; bu ölçülmüş gereksinim veya satın alma kararı değildir. Gerçek sunucunun boş kapasitesine göre browser concurrency ve servis CPU/RAM limitleri ayarlanır. Kapasite yetersizliği ücretsiz kaynak/borsa kurallarını gevşetmez. Mevcut servisler için pay bırakılır; OOM veya disk baskısı görünür hata olur.
+
+### 12.3. Baştan sona günlük veri ve karar akışı
+
+1. Scheduler borsa takviminden oturum kimliği üretir; örneğin `2026-10-08:OPEN_PLUS_30`. Aynı kimlik ikinci kez yaratılmaz.
+2. Ortak araştırma işi yürürlükteki 50+20 evren, fon kapsamı ve olay takvimini alır. Kaynaklı olgular doğrulanıp değiştirilemez `research_bundle_id` ile yayımlanır.
+3. Sekiz iş aynı ortak pakete bağlanır. Sıranın ilk oturumda hep aynı karakteri kayırmaması için başlangıç sırası oturumlar arasında deterministik olarak döndürülür; fiili başlama/karar/gerçekleşme zamanları kaydedilir.
+4. Runner çağrıdan hemen önce yalnız ilgili cüzdanın güncel hesap snapshot'ını, açık emirlerini, kendi makbuzlarını ve özel hafızasını hazırlar. Hesap snapshot'ının zamanı ve sürümü saklanır.
+5. Codex kendi açık session ID'sinde çalışır. Ortak persona sürümü sabittir; hesabın durumu özetten değil backendden gelir. Arama sonucu yeni olay zamanı yerine geçmez.
+6. Yapılandırılmış karar tam olarak kaydedilir, JSON ve domain kurallarından geçer. Cüzdan kimliği runner yetkisinden türetilir. Süre veya şema koşulu geçmezse eylem üretilmez.
+7. Runner eylemleri API'ye sırayla verir. API güncel nakit/pay/evren durumuyla rezerve eder; model çalışırken koşullu bir emir gerçekleşmişse eski bakiye doğru kabul edilmez.
+8. Execution işi yeni ve uygun üçlü fiyat + BBO kanıtıyla gerçekleşmeyi dener. API kabul makbuzu ile gerçekleşme makbuzu ayrıdır.
+9. Makbuz aynı session'a yalnız sonuç bilgisi olarak döner. Yeni stratejik emir turu açılmaz. Acknowledgement gecikirse `receipt_pending` olur; bir sonraki rutin bağlama eklenir, kabul edilmiş eylem yeniden gönderilmez.
+10. Geçerli özel not güncellemesi yeni sürüm olur. Kullanıcı ekranı bu kayıtların read model'ini okur. Diğer cüzdanın kararı/öğrenmesi bağlama katılmaz.
+
+İki günlük karar oturumu yaklaşık 16 ilk cüzdan çağrısı demektir; ortak araştırma, haftalık seçim, makbuz devamı ve izinli biçim onarımı ayrıca abonelik kullanır. Toplam yük 16 çağrı diye sunulmaz. Fiyat polling'i model çağrısı değildir. Karakterin çalışma süresi planlanan borsa saatiyle aynı anda gerçekleşmiş sayılmaz.
+
+### 12.4. Veri okuyucuları, kimlik ve provenance
+
+Her site okuyucusu ortak bir Go arayüzünden normalize edilmiş kayıt veya yapılandırılmış hata döndürür. Alanlar: `asset_id`, `source_id`, `source_url`, `alias`, `price_type`, `currency`, `session`, `event_time`, `observed_at`, `price`, `bid`, `ask`, `bid_size`, `ask_size`, `size_unit`, `venue_scope`, `parser_version`. Bilinmeyen alan null'dır; `event_time` yerine `observed_at` doldurulmaz.
+
+Kaynağa özgü HTML/DOM seçicileri ayrı paketlerde tutulur. JSON-LD gibi açık sayfa alanları aynı provenance kurallarına tabidir. Arama özeti ve kaynak sayfası ayrı observation türüdür. Parse bozulması HTTP 200 alındı diye başarı sayılmaz. Kaynak zamanı hangi saat dilimiyle çözüldüğüyle kaydedilir; belirsiz zaman ret gerekçesidir.
+
+`source_aliases` gerçek varlık sayfasından kurulur; sembol değişimi ve hisse sınıfı kalıcı asset ID'yi değiştirmez. Haberler `document -> claim -> supporting_sources` ilişkisiyle tutulur. Aynı ajans bültenini kopyalayan siteler aynı menşe grubu sayılır. Modelin yorumu ayrı alan olur. Beklenti snapshot'ı açıklama öncesinde gerçekten elde edilmişse surprise üretilebilir; eksik beklenti sıfır değildir.
+
+Araştırma paketinde kapsam/eksikler ve `published_at` bulunur. Aynı oturumun ortak paketi sonradan düzenlenmez; düzeltme yeni sürüm ve supersedes bağı yaratır. Cüzdanın ek kişisel araştırması o cüzdanın decision evidence bağına kaydedilir; özel tez/not diğer modellere ortak paket diye dağıtılmaz.
+
+Reader yalnız izinli public URL'leri okur. Yönlendirmeler dahil private/loopback/link-local hedefler reddedilir; cloud metadata ve internal API'ye web okuma yoluyla erişilemez. HTML güvenilmeyen içeriktir; script/prompt talimatı olarak işlenmez. HTTP gövdesi varsayılan en fazla 5 MiB, redirect sayısı en fazla 5 olur. Bu kaynaklar için mühendislik sınırıdır; gerektiğinde sürümlü değişir.
+
+### 12.5. Fiyat worker kapasitesi ve kabul çıktısı
+
+Başlangıçta global HTTP concurrency 8, render concurrency 2; her kaynak domain'inde en çok bir aktif okuma vardır. İstekler arasında başlangıç aralığı en az bir saniyedir; kaynağın ilan edilen daha sıkı kuralı ve Retry-After önceliklidir. Bu değerler erişim hakkı/kapasite kanıtı değildir; prototip sonucu düşürülebilir. Bağımsız sitelerin okumaları paralel yapılır. HTTP yeterliyse Chromium açılmaz.
+
+Bir asset'in aynı döngüdeki okuması bütün cüzdanlar/işler için bir kez yapılır. Aynı kaydı tekrar kullanmak tazelik şartını kaldırmaz. Öncelik sırası: kısa ömürlü MARKET, aktif koşullu emir, eldeki varlık değerlemesi, genel keşif. Süresi geçen görev yeni döngüye taşınırken eski gerçekleşme üretmez; backlog ve atlanan döngü sayısı görünür.
+
+Üç site × 73 tekil varlık = bir tam döngüde 219 fiyat okuması; 60 saniyelik tam izleme halinde dakikada yaklaşık 219 okuma eder. Dinamik listeden çıkmış ama elde tutulan hisseler veya ayrı BBO sayfası ek yük yaratabilir. Mevcut kural tüm 73'ün sürekli izlenmesini zorunlu kılmaz, ancak hepsi aktif emirli olursa bu yük oluşabilir. Sayfa render ihtiyacı, domain limitleri veya erişim kısıtı bunu imkânsız yapabilir; 60 saniye hizmet düzeyi kanıtlanmadan vaat edilmez. Bu operasyon sınırı modeli kaç hisse tutacağına zorlayan stratejik limit değildir.
+
+Erken prototip raporu her kaynak/asset için erişim yöntemi, alan kapsamı, event time ispatı, fiyat farkı, BBO/size birimi, kaynak kapsamı, okuma gecikmesi, 429/hata ve uygun döngü oranı tutar. Önce 7 örnek sembol, sonra 10/25 ve erişim sınırları uygunsa gerçek aktif evrene yakın yük denenir. Yük denemesi site sınırını aşmak için kullanılmaz. Alanlar veya kapasite yetersizse kaynak/reader bu aşamada değiştirilir; başarısız sonuçlar da korunur. Üç sitenin aynı anda kabulü ve gerçek likidite alanı geçmeden fill açılmaz.
+
+### 12.6. Veritabanı tipleri ve hesap tutarlılığı
+
+UUID kalıcı varlık/cüzdan/emir/karar kimlikleri; UTC `timestamptz` olay zamanları için kullanılır. USD değer ve fiyatlar `numeric(28,8)`, miktar/lot dönüşümleri `numeric(28,8)` olarak saklanır; yeni emir miktarı pozitif tam sayıdır. Kurumsal olaydan fractional pay doğabilir; emir yetkisi buna göre otomatik genişlemez. Go tarafında decimal/fixed-point kullanılır; API sayıları decimal string olarak taşır. JSON float veya `float64` para hesabına girmez. Cent/fiyat-adımı yuvarlaması yalnız ilgili maliyet veya gerçekleşme sınırında yapılır.
+
+`wallets` değişen hesap version'ını tutar. Journal transaction ve debit/credit satırları çift taraflı kayıt sağlar; `cash_ledger_entries` bu journal'ın hesap hareketi görünümüdür, ikinci bağımsız muhasebe motoru değildir. Reserve işlemi available settled cash'ten reserved settled cash'e taşır; toplam cash değişmez. Fill harcaması reserved cash'i azaltır, iptal kalanını available'a döndürür. Satış net geliri unsettled receivable olur; T+1'de settled cash'e taşınır. FIFO lot maliyeti alış masrafını içerir. Muhasebe ve pozisyon görünümü aynı fill transaction'ında güncellenir.
+
+Başlangıç sermayesi tek journal olayıdır ve `(wallet_id, event_type, external_event_id)` benzersizliğiyle korunur. Tüm journal transaction'ları dengeli, rezervler ve available cash negatif olmayan, satılabilir miktar sahip olunan miktarı aşmayan durumda commit edilir. Derived pozisyon/bakiye yeniden journal+lot kayıtlarından hesaplanarak doğrulanabilir. Hesap view tabloları kaynak journal'ın yerini almaz.
+
+Wallet'a bağlı yabancı anahtarlar `(wallet_id, parent_id)` ile aynı wallet zincirini korur. `orders`, `fills`, `position_lots`, `decision_actions`, `receipts`, `memory_versions` başka cüzdan parent'ına bağlanamaz. Parasal kayıtlarda cascade delete kullanılmaz. Kaynak düzeltmesi veya olay ters kaydı tarihçeyi silmez.
+
+İlk migration'ların temel kayıt alanları:
+
+| Kayıt | Gerekli alanlar / bağlar |
+|---|---|
+| `wallets` | id, code, category, currency, persona_version, account_version, created_at |
+| `journal_transactions/lines` | wallet, event_type/id, account_code, debit/credit, currency, occurred_at; dengeli kayıt ve olay benzersizliği |
+| `orders` | wallet, decision/action, asset, type, side, quantity/remaining, limit/stop, cash_budget, tif, expires_at, state, reason, oco_id |
+| `fills` | wallet/order, quantity, price, occurred_at, validation/quote ID, fee_profile, execution_model_version |
+| `reservations/position_lots` | wallet/order veya OCO, reserved cash/shares; lot acquisition/fill, remaining quantity, cost_basis |
+| `price_observations/validations` | asset/source, fiyat türü/seans/zaman/değer, parser; üç observation bağı, hesaplanan açıklık ve ret nedeni |
+| `execution_quotes/consumptions` | asset/source/venue, zaman/bid/ask/size/birim/kimlik; wallet+quote için tüketilmiş miktar |
+| `decision_runs/actions` | wallet/session/job, input bundle/snapshot/version, model/config, deadline, state, input/output hash, action key/body hash |
+| `wallet_sessions/memory_versions` | wallet, provider/session ID, rollout_ref; persona, summary/not sürümü ve previous_version bağı |
+| `jobs/outbox` | job type/key, available_at/deadline, lease/fencing/attempts; kalıcı receipt payload ve delivery state |
+| `corporate_events/receivables` | asset/event ve sürüm, resmi tarihler/şartlar; wallet entitlement, gross/tax/net, payment/settlement state |
+
+Tam DDL bu alanlardan oluşturulup migration ve contracts ile birlikte kodlama aşamasında yazılır. JSONB yalnız kaynak/çıktı payload'ları ve metadata içindir; sorgulanan nakit, miktar, state ve zaman alanları tipli kolonlardır.
+
+### 12.7. Transaction ve emir state machine
+
+Net state zinciri: `accepted -> waiting -> partially_filled -> filled`; uygun dallar `rejected`, `cancelled`, `expired` olur. Stop trigger ayrı order event'tir; gerçekleşmiş para hareketi değildir. `accepted` yalnız emir/rezerv kabulüdür. `price_unverified`, `liquidity_unverified`, `insufficient_cash`, `corporate_action_unresolved` gibi nedenler state ile ayrı tutulur; sırf veri yok diye gerçekleşmiş emir gösterilmez.
+
+Her mutation transaction'ında kilit sırası: wallet, ilgili asset/pozisyon satırları, OCO grup, emirler (ID sırasıyla), rezervler/lotlar. Aynı cüzdanı değiştiren order/corporate-action/settlement yolları bu sıraya uyar. Dış web/CLI çağrısı sırasında transaction veya satır kilidi açık tutulmaz. [PG kilit ve deadlock davranışı](https://www.postgresql.org/docs/current/explicit-locking.html).
+
+Quote/fiyat kanıtı dışarıda toplanır; transaction içinde tekrar tazelik, seans, deadline, hesap ve kalan emir miktarı kontrol edilir. Kabulde her eylem bütçesi/miktarı güncel hesapla sınanır. Eski model snapshot'ı nakit veya pay yaratmaz. Batch tümden atomic değildir; önceki kabul korunur, bağımlı sonraki ret kendi receipt'ini üretir.
+
+Tek transaction: fill + order event + günlük komisyon farkı + FIFO lot değişimi + journal + rezerv değişimi + quote kapasite tüketimi + receipt outbox. Kaynağın aynı quote kimliği/timestamp/fiyat/miktar kaydı sırf tekrar fetch edildi diye yeni likiditeye dönüşmez. Kimlik ayırt edilemiyorsa tekrar kapasite varsayılmaz. OCO kolu/miktarı aynı transaction'da değiştirilir. Aynı wallet/quote tüketimi ve fill olay kimliği unique constraint ile korunur.
+
+Idempotency key wallet/decision/action ile oluşturulur; gövdenin canonical hash'i saklanır. Aynı key/aynı gövde önceki sonucu verir, aynı key/farklı gövde conflict olur. Deadlock/serialization retry bounded ve aynı key ile yapılır. API timeout sonrası önce aynı key sonucu sorgulanır; yeni key ile kopya emir üretilmez.
+
+### 12.8. PG rolleri, sorgular ve indeksler
+
+Roller: migration sahibi, scoped agent servis erişimi, trusted worker/runner, operator read-only. Agent doğrudan PG bağlantısı alamaz. Özel tablo sorgularında zorunlu wallet filtresi vardır; agent erişim repository'sinde RLS ikinci katmandır. Scoped DB rolü tablo sahibi/superuser/BYPASSRLS olmaz; gerekli tablolar `FORCE ROW LEVEL SECURITY` kullanır. Pool bağlantısında wallet bağlamı `SET LOCAL` ile transaction'a bağlıdır; başka isteğe sızan session-global setting kullanılmaz. Worker'ın çoklu hesap yetkisi agent token'ına taşınmaz. [PG row security sınırları](https://www.postgresql.org/docs/current/ddl-rowsecurity.html).
+
+Başlangıç pgx pool üst sınırları API 5, worker 5, runner 2 bağlantı; migration/backup için ayrı pay bırakılır. Bunlar sunucu kapasitesine göre ayarlanır. LLM veya web isteği DB bağlantısını uzun süre işgal etmez. Harici PgBouncer ilk sekiz-cüzdan yükünde zorunlu değildir.
+
+Önemli indeksler: açık emirlerde `(wallet_id, asset_id)` partial; event/ledger'da `(wallet_id, created_at, id)`; observations'da `(asset_id, event_time desc)`; due jobs'da `(priority, available_at, id)` partial; memory'de `(wallet_id, version)` unique; action idempotency ve corporate event uygulamasında unique. FK kolonları uygun bileşik indekslerle kapsanır. Liste API'leri cursor pagination kullanır; ilk sayfa 50, üst sınır 200. Yük ölçülmeden yüksek frekanslı tabloları karmaşık partition yapısına bölme kararı alınmaz.
+
+### 12.9. Kalıcı jobs, lease ve zamanlama
+
+Job türleri: research, dynamic_universe, wallet_decision, price_refresh, execution_attempt, event_check, settlement, corporate_action, close_accounting, backup, retention. Aynı türün kimliği seans/asset/order/olay ile unique tutulur. Worker `FOR UPDATE SKIP LOCKED` ile kısa transaction'da iş alır; `lease_owner`, `lease_until`, artan `fencing_token`, attempts, deadline ve last_error saklanır.
+
+Varsayılan lease 60 saniye ve heartbeat 15 saniyedir; uzun CLI işi lease'i kalıcı job coordinator üzerinden uzatır. Heartbeat lease'i veya fencing'i kaybettiğinde süreç durdurulur ve sonucu kabul edilmez. Wallet decision slot'u `(wallet_id, active)` benzersizliğiyle korunur; aynı wallet iki eşzamanlı yazar alamaz. Bir CLI hâlâ çalışıyorsa yeni writer başlatmadan termination doğrulanır.
+
+Dış çağrıdan önce durable intent yazılır; sonunda çıktı hash'i/session ID/result state kaydedilir. DB commit sonrası receipt delivery outbox üzerinden sürdürülür. Crash sonrası iş tamamlanmışsa yeniden strateji çağrısı yapılmaz. Eksik dış çağrıda exactly-once model çalışması iddia edilmez; belirsiz sonuç reconciliation'a girer. API emir yan etkisi idempotency ile korunur.
+
+Scheduler UTC'de kalıcı `due_at` üretir; seans hesapları America/New_York takviminden gelir. NYSE/Nasdaq tatil/erken kapanış ve settlement takvimi farklı sürümlerdir. OS saat senkronu ve market/settlement tarih kapsamı readiness'te kontrol edilir. Onaylı takvim kapsamı yoksa yeni ilgili iş/settlement serbest bırakılmaz. Restart yalnız halen geçerli işlere yeni deneme verir; geçmiş oturum veya fiyatı tamamlamaz.
+
+### 12.10. Abonelik adapter'i ve kimlik izolasyonu
+
+ChatGPT aboneliği browser sohbeti otomasyonu ile bağlanmaz; mevcut resmi Codex CLI adapter'i kullanılır. Device login kullanıcı tarayıcısında tamamlanır. Model ID ve reasoning ayarı erişim denemesinde ortak seçilip config sürümüyle sabitlenir. Yerel Mac'te gözlenen `0.162.0-alpha.2` CLI, Hetzner'e kurulacak sürüm veya hesap erişim kanıtı değildir. Hetzner kurulumu resmi dağıtımın test edilen sürümünü sabitler. [Resmi auth](https://learn.chatgpt.com/docs/auth), [exec/JSONL/resume](https://learn.chatgpt.com/docs/non-interactive-mode).
+
+Go `exec.CommandContext` CLI'yi sabit binary ve argümanlarla başlatır; model metni shell komutuna interpolate edilmez. Prompt stdin'dedir. Stdout JSONL parser ve stderr ayrı, boyut sınırlı log akışı olarak okunur. Process group timeout'ta sonlandırılır; alt süreçlerin kaldığı doğrulanır. Aynı session ID'ye concurrent resume yapılmaz. Resume ile schema/config ayarlarının kullanılan sürümde nasıl uygulandığı adapter kabulünde doğrulanır; desteklenmeyen flag varsayılmaz. [Go subprocess API](https://pkg.go.dev/os/exec).
+
+Modelin görev ortamında shell/general file access ve keyfî HTTP aracı bulunmaz. İzinli araç yüzeyi canlı web araması ve gerekirse kendi backendimiz için dar, read-only account/orders/memory/evidence araçlarıdır. Read-only araç köprüsü bizim Go adapter'imizdir; hazır trading servisi değildir. Emir yazımı modelin genel shell çağrısıyla yapılmaz: final yapılandırılmış eylemi trusted runner API'ye gönderir. Doğrudan CLI tool execution ile ayrıca aynı emri yazan ikinci yol açılmaz.
+
+Resmi config'de `features.shell_tool = false` ve `web_search = "live"` seçimi vardır; yalnız bu ayar credential izolasyonunu kanıtlamaz. Temiz proje config'i, kişisel plugin/MCP/hook aktarılmaması, gerçek araç listesinin denetlenmesi ve dosya/ortam okuma yetkisinin bulunmaması gerekir. Auth'ı okuyabilen bir genel dosya/shell aracı kalırsa ilk kabul geçmez. [Resmi config referansı](https://learn.chatgpt.com/docs/config-file/config-reference).
+
+Abonelik credential'ını CLI'nin kendisi kullanır; aynı OS kimliği altında serbest shell'e izin verip credential gizli kaldı demek mümkün değildir. Trusted auth coordinator ve özel session depolarının CLI sürümüyle uyumu ilk küçük prototipin parçasıdır. Ortak auth dosyasını sekiz yazılabilir agent dizinine körlemesine kopyalama tasarım değildir. Refresh/login işleri koordineli yürür; paralel refresh sırasında bozulma olursa auth job'u durur ve yeniden giriş gereği görünür. İki paralel CLI + oturum izolasyonu + refresh davranışı geçmeden bu entegrasyon çözülmüş sayılmaz; gerektiğinde resmi farklı runner yöntemi ayrıca belgelenir. Auth hatası ücretli API, başka hesap veya kontrolsüz credential çoğaltmaya otomatik dönüşmez.
+
+### 12.11. Model girdi/çıktı ve özel hafıza
+
+Girdi manifesti: wallet ve persona/common sürümleri, session ID, account snapshot ID/version/time, universe version, shared research bundle, son kendi receipt cursor'u, memory version, güncel saat/oturum deadline. Manifest ve çıktı hash'leri decision run'la ilişkilidir. Operatörün toplam sermaye, diğer hesap ve paper metadatası modele verilmez. Web sayfasının yönergeleri sistem/görev metnine yükseltilmez.
+
+JSON Schema `decision-v1` ayrı contracts dosyasında tanımlanır: action type enum, valid asset ID, pozitif tam quantity, decimal-string bütçe/limit/stop, DAY/GTC, kendi order ID'si, bağımlılık/OCO ilişkisi, gerçekten var olan evidence ID'leri ve gerekçe. Unknown field ve mükerrer action ID reddedilir. Schema başarıyla geçmesi nakit, kaynak veya fiyatın doğru olduğunu kanıtlamaz; Go domain validation ayrıca uygulanır. Koruma için bir final yanıt üst sınırı 256 KiB ve batch başına 100 action'dır; stratejik sermaye/pozisyon sınırı değildir, aşım açık ret olur.
+
+Biçim onarımı bir kez ve mevcut 60 saniye bütçede yapılır. Eksik fiyat, miktar, asset, işlem türü veya belirsiz strateji onarım bahanesiyle icat edilmez. HOLD olağan başarılı sonuçtur. Modelin gerekçesi ve kullanıcıya yönelik özet kaydedilir; erişilemeyen iç düşünce kaydedilmiş iddia edilmez.
+
+Özel bellek PG'de immutable note/summary sürümleri, CLI tarafında kendi rollout volume'udur. 12.000 karakter özet sınırı korunur. Hesap ledger'ı/makbuzları bu özetten ayrı otoritedir. Uzun geçmiş ihtiyaç halinde wallet-scope cursor ile okunur; vektör arama ilk sürüme gerekmez. Session kaybı yeni session bağı yaratır; kendi son persona/özet/işlem geçmişiyle yeniden kurulur. Agent'a tarihsel belgelerdeki simülasyon açıklaması veya tüm repo mount edilmez.
+
+### 12.12. API sözleşmesi ve hata dili
+
+İç HTTP API JSON'dur; yollar 8. bölümdeki agent/operator sınırlarıdır, contracts/OpenAPI ile sürümlenir. Runner token'ı kısa ömürlü, wallet/job/decision kapsamlıdır; wallet gövdeden seçilemez. Operator kimliği ayrı read-only token'dır. Auth sırları URL/query string'e yazılmaz; log redaction uygulanır. Yerel Mac proxy token'ı browser JavaScript'e vermez.
+
+Her response `request_id`, `as_of` ve gereken yerde `account_version` taşır. Domain hata kodları sabittir: `insufficient_cash`, `insufficient_shares`, `asset_not_allowed`, `price_unverified`, `liquidity_unverified`, `idempotency_conflict`, `session_deadline`, `calendar_unverified`, `auth_required`, `source_unavailable`. Teknik HTTP hata durumu işlem başarı makbuzuna dönüştürülmez. Valid emir kabulü 202/accepted olabilir; bu fill garantisi değildir. `/healthz` process'i, `/readyz` servis bağımlılıklarını; ayrı system status ise araştırma/trading kaynak uygunluğunu gösterir. Bir kaynak bozukken bütün gözlem API'si kullanılamaz hale getirilmez.
+
+### 12.13. Kurumsal olaylar ve maliyet sürümleri
+
+Fee/tax/calendar/corporate-action profilleri `effective_from/effective_to`, kaynak ve doğrulama durumuyla tutulur. Fill hangi sürümün kullanıldığına bağlıdır; yeni oran eski fill'i sessizce değiştirmez. Açıklama/revizyon için ayrı event kimliği ve önceki olaya bağ gerekir. Halka açık resmi doğrulama eksikse yalnız ilgili varlığın execution'u durur; öteki hesap/varlık işleri yürür.
+
+Split uygulaması lot quantity/cost-per-unit ve ilgili açık emir/OCO miktar/fiyatını aynı atomik olayda dönüştürür; toplam maliyet korunur. Temettü entitlement olayında hak sahibi adedi, kaynak ex/pay tarihlerinin ayrı kayıtları ve stopaj sınıflandırması vardır. Olağandışı due-bill/dağıtımın standart olay yolu olmadığı açık hata olur. Resmi belirlenemeyen cash-in-lieu değeri uydurulmaz. Temettü alacağı/ödeme ve settlement tekrar job çalıştırılarak iki kez yazılamaz.
+
+### 12.14. Mac ekranı ve ölçümlerin anlamı
+
+Vanilla TypeScript + Vite, sade HTML/CSS, üç görünüm: 8 hesap özeti, wallet detail, sistem/veri durumu. Hesaplar sabit kimlik sırasıyla gösterilir; getiriye göre yarış sıralaması yoktur. Önce özkaynak/available cash, sonra reserved/unsettled/pozisyon değeri; detail'de miktar, maliyet, market value, gerçekleşmiş/gerçekleşmemiş parasal değişim, açık emir ve kaynaklı karar görünür.
+
+Özkaynak artışı yıllıklandırılmış performans iddiası değildir. Değerlemede eksik/stale bileşen varsa kartın değeri kısmi/son bilinen olarak işaretlenir; tek bir güncel toplam gibi sunulmaz. `as_of`, fiyat yaşı ve hata nedeni görünürdür. Backend fiyat hesabı otoritedir; frontend formatlar, bağımsız cash/FIFO hesaplamaz. Tamamı sanal hesap olarak etiketlenir.
+
+Local proxy `127.0.0.1`'e bağlıdır ve SSH tüneli Hetzner localhost API portuna ulaşır. Port envanterde seçilir; sabit bir mevcut hizmet portu işgal edilmez. Tünel koparsa last-known veriler bağlantı zamanı ile gösterilir; örnek/mock veriye sessiz geçiş yoktur. Ekran 15 saniyede bir backendi okur, üst üste fetch yapmaz. Operator yazma/emir/para reset ekranı mevcut MVP kapsamında yoktur. Bildirimler ilk sürümde sistem panelinde tutulur; dış mail/mesaj servisi kurulmaz.
+
+### 12.15. Log, sağlık, depolama ve yedek
+
+JSON log alanları: environment, release commit, request/job/decision/order/wallet ID, source/parser/model/config version, duration ve error code. Ham auth başlığı, token, device login kodu ve credential içeriği loglanmaz. Stdout JSONL'nin credential içermediği kabul kontrolünde incelenir. Her servis kontrollü log rotation kullanır; yüksek frekanslı HTML tam dump'ları varsayılan saklanmaz.
+
+Sistem paneli source failure/429, quote freshness ve uygun döngü oranı, job backlog/lease, kaçırılan karar, CLI latency/auth, DB pool, clock drift, disk ve son restore/yedek bilgisini gösterir. Bu metrikler operasyon doğruluğudur; yatırım başarısı değerlendirmesi değildir. Kaynak/parser değişimi incident ve sürüm kaydı yaratır.
+
+Yedek, tutarlı checkpoint'te DB+private rollout+persona/config manifestidir. Yeni karar yazarları kısa süre alınmaz; aktif CLI yazıları bitince private dosyalar dondurulur, DB dump ve dosyalar eşleşen manifestle tamamlanır. Yedek tutarsızsa başarısız sayılır. Restore öncesi yedek bütünlüğü ve release/schema uyumu kontrol edilir. Auth credential restore'u eski refresh token ile çalışır varsayılmaz; gerekirse resmi yeniden giriş yapılır.
+
+Gecelik şifreli yedek ve 7 günlük/4 haftalık saklama korunur. Hedef günlük DB yedek kaybı aralığı en fazla yaklaşık 24 saattir; host kaybında gerçek kurtarma noktası Mac'e ulaşan son off-host kopyadır. Mac kapalıysa bu süre uzayabilir. Şifreleme private key'i Mac'te, sunucuda yalnız gerekli public recipient tutulması önerilir; anahtarın ayrı güvenli kopyası kullanıcı kontrolündedir. Yeni ücretli depolama satın alınmaz. Disk kritik seviyeye düşerse yeni write/karar işi alınmaz, mevcut kayıt korunur; housekeeping karara bağlı kanıtları silmez.
+
+### 12.16. Test ve kabul kapsamı
+
+Domain unit/property testleri: para yuvarlama ve jurnal dengesi, negatif cash/pay yokluğu, FIFO/fee farkları, seed idempotency, %1/60 saniye sınırları, LIMIT/STOP/OCO/partial, quote tekrar tüketimi ve T+1. Clock test doubles ile DST/tatil/erken kapanış/market TTL sınanır. Takvim testleri doğrulanmış fixture'dır; model hafızasından üretilmez.
+
+PG entegrasyon testleri gerçek test DB'de eşzamanlı iki alımın aynı nakdi harcamaması, cancel/fill yarışı, OCO kol yarışı, fencing kaybı, idempotency conflict, cross-wallet FK/RLS ve rollback'i sınar. Şema migration'ları boş DB ve bir önceki sürümden geçişte doğrulanır. Registry/fixture private veri içermez.
+
+Kaynak reader fixture testleri izinli küçük örnek alanlarda parser/timestamp/alias sınar; geçmiş fixture canlı erişim kabulü sayılmaz. İlk prototipte gerçek normal seans Hetzner denemesi yapılır. Model adapter'i için gerçek login, explicit resume, yapılandırılmış çıktı, receipt devamı, iki concurrency ve auth/araç sınırları denenir. Modül içinde iki cüzdan izolasyonu kısa işlev kontrolüdür; geniş model yarışı/test projesi değildir.
+
+Crash/recovery kontrol noktaları: eylem kabulünden hemen önce/sonra, fill commit sonrası receipt öncesi, CLI sonucu kaydedilmeden önce, lease kaybında, backup/restore'da. Beklenti tamamlanan emrin tekrar uygulanmaması ve belirsiz işin görünür olmasıdır. UI smoke testi sekiz başlangıç bakiyesi, stale değer, partial fill ve hata verisinin backendle uyuşmasını kontrol eder. Kod testleri kârlılık/başarı deneyi değildir.
+
+### 12.17. Release ve geri dönüş
+
+Build/test ve migration kontrolü Hetzner staging'de yapılır. Release commit/tag ve bağımlılık/imaj sürümleri sabittir; deploy çalışan ortamda otomatik `latest` pull yapmaz. Sır içermeyen config sürümlenir, deployment secret dosyaları ayrı tutulur. GitHub Actions ilk kurulum için zorunlu değildir; GitHub repo değişiklikleri kendi başına sunucu deploy tetiklemez.
+
+Deploy sırası: çalışan writer'ları drain et, şema uyumunu doğrula, gerekirse checkpoint yedeği al, tek migration job'unu çalıştır, yeni servisleri başlat, readiness/account reconciliation kontrolünden sonra jobs aç. Pilot ledger'ı normal yeniden deploy'da silinmez/yeniden seed edilmez. Uyumlu eski binary'ye rollback mümkündür; parasal kayıtları geri silen migration down otomatik uygulanmaz. Restore ayrı operasyondur ve eski yedeğe dönüşte kayıp aralığı açıkça kayıtlanır.
+
+Execution başlangıçta kapalıdır; kaynak ve muhasebe kabulü sonrası trusted deploy config'iyle açılır. Restart'ta mevcut onaylı konfigürasyon korunur; restore'da gerçekleşme yeniden reconciliation sonrası açılır. Sıfırlanmış/staging hesap ve test fixture'ları pilot görüntüsüne karışmaz. Kaynak yeterliliği kaybolursa emir saklanır, uygun fill yapılmaz; auth kesilince yeni model kararı durur, sağlıklı veriyle mevcut koşullu emirlerin Go yürütmesi devam edebilir.
+
+### 12.18. Teslimat sırası ve açık bilgiler
+
+| Sıra | Uygulama teslimatı | Çıkış koşulu |
+|---|---|---|
+| 1 | Salt okunur Hetzner envanteri + küçük abonelik/oturum adapter'i | SSH/OS/kaynaklar bilinir; gerçek login, araç sınırı, resume ve auth davranışı gösterilir |
+| 2 | Public reader/price/BBO prototipi | Normal seansta veri alanları ve istek kapasitesi ölçülür; kaynak revizyonu burada yapılır |
+| 3 | Go iskeleti, contracts, migrations, wallet/journal seed | Sekiz hesap ve 800.000 USD toplam; tekrar seed/negatif nakit yok |
+| 4 | Order/reserve/fill/fee/FIFO/settlement/action | Parasal ve eşzamanlılık testleri geçer; veri eksikse fill yok |
+| 5 | PG jobs + takvim + ortak araştırma/evren | İki günlük tur, haftalık liste, conditional/event işleri restart sonrası tutarlı |
+| 6 | Sekiz persona/private memory + receipt | Kendi session devamı ve kısa iki-wallet erişim/yönlendirme kontrolü geçer |
+| 7 | Mac gözlem ve SSH proxy | Backendle aynı sayılar, güncellik/bağlantı/ops durumları görünür |
+| 8 | Staging bütünleşik normal seans + recovery/restore | Double fill yok, eski tetik geriye yazılmaz, checkpoint geri açılır; ardından pilot etkinleştirilebilir |
+
+Kullanıcıdan beklenen bilgiler: mevcut ChatGPT planı; Hetzner'in başka canlı projelerle paylaşılıp paylaşılmadığı; mevcut SSH kullanıcı/port veya bağlantı alias'ı. Öneri mevcut abonelikle başlangıç, paylaşılan sunucuda izole trading deployment ve mevcut Mac SSH anahtarıdır. Parola/token/özel anahtar içeriği konuşmaya istenmez. Bu bilgiler gelmeden sunucu kurulumu veya hesap girişi yapılmış sayılmaz; planın bağımsız modül tasarımı tamamlanabilir.
+
+Henüz kanıtlanmamış teknik koşullar: ücretsiz üç güncel fiyat + kullanılabilir BBO/size; aynı koşullarda istek kapasitesi; resmi runner'ın özel session/auth/refresh izolasyonu ve iki paralel çağrıyı hesapta desteklemesi; sunucunun boş kaynakları. Bunlar masa başında kesinleşen ürün tercihi değildir. Küçük ilk prototiplerde ölçülür ve sonuç gerektirdiğinde ilgili teknik bölüm revize edilir.
