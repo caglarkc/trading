@@ -1,6 +1,6 @@
 # Canlı Trading MVP — Uygulama ve Teknik Plan
 
-Güncelleme: 9 Ekim 2026. Durum: ürün/mimari sözleşmesi ve ayrıntılı uygulama tasarımı yazıldı. Kullanıcı ChatGPT Pro aboneliğini, paylaşılan Hetzner sunucusunu ve root SSH erişimini doğruladı; model seçimini sonraya bıraktı. Salt okunur SSH/kapasite incelemesi yapıldı; ürün kodu, trading kurulumu ve Codex hesap girişi henüz yapılmadı. Uygulama ayrıntıları 12. bölümdedir. Gerçek abonelik bağlantısı, kimlik/oturum izolasyonu ve üç güncel fiyat kaynağının Hetzner'de çalışması kurulum kabul koşuludur. Bu koşullar geçmeden çalışan trading pilotu ilan edilmez.
+Güncelleme: 9 Ekim 2026. Durum: ürün/mimari sözleşmesi ve ayrıntılı uygulama tasarımı yazıldı. Kullanıcı ChatGPT Pro aboneliğini, paylaşılan Hetzner sunucusunu ve root SSH erişimini doğruladı; model seçimini sonraya bıraktı. Salt okunur SSH/kapasite incelemesi yapıldı. Mac’te mevcut ChatGPT girişini kullanan iki paralel Codex oturumu, açık session ID ile devam ve üç kaynak okuma yöntemi gerçek çağrılarla sınandı (13. bölüm). Ürün kodu, trading kurulumu ve Hetzner Codex girişi yapılmadı. Uygulama ayrıntıları 12. bölümdedir. Gerçek abonelik bağlantısı, kimlik/oturum izolasyonu ve üç güncel fiyat kaynağının Hetzner'de çalışması kurulum kabul koşuludur. Bu koşullar geçmeden çalışan trading pilotu ilan edilmez.
 
 Bu belge güncel teknik uygulama sözleşmesidir. Ürün kararları ve kaynak kapsamı [deney-plani.md](research/deney-plani.md) içindedir. Önceki beş belgenin değiştirilmeden korunmuş kopyaları [arşivdedir](research/archive-2026-10-08/MVP-TEKNIK-PLAN.md). Arşivdeki sayısal ETF/Python/API pilotu güncel MVP'nin gereksinimi değildir.
 
@@ -26,7 +26,7 @@ Bu belge güncel teknik uygulama sözleşmesidir. Ürün kararları ve kaynak ka
 
 ## 2. Hetzner ve Mac yerleşimi
 
-**Geliştirme ve çalışma ortamı: Hetzner, hedef IP: `167.235.158.118`.** Backend, model bağlantıları, veri toplama ve sunucu testleri bu uzaktaki ortamda geliştirilip çalıştırılır. Mac yalnız yerel web gözlem uygulaması, kaynak dosyalarının düzenlenmesi ve uzak ortama erişim için kullanılır.
+**Geliştirme ve çalışma ortamı: Hetzner, hedef IP: `167.235.158.118`.** Backend, model bağlantıları, veri toplama ve sunucu testleri bu uzaktaki ortamda geliştirilip çalıştırılır. Mac yerel web gözlem uygulaması, kaynak dosyalarının düzenlenmesi ve uzak ortama erişim için kullanılır. Kullanıcının 9 Ekim açıklamasıyla ilk GPT abonelik/oturum denemesi Mac’teki mevcut giriş üzerinden yapıldı; bu geçici test üretim yerleşimini değiştirmez. Mevcut Hetzner sunucusuna kurulur; ancak kullanımda sorun çıkarsa başka sunucuya taşıma değerlendirilir.
 
 **Hedef sunucu: `root@167.235.158.118`, SSH portu `22`.** 8 Ekim'de IP yerel kayıt/deploy ayarlarında bulundu. Kullanıcının 9 Ekim yetkisiyle mevcut Mac SSH kimliği kullanılarak BatchMode ve StrictHostKeyChecking açık halde salt okunur bağlantı başarılı oldu. Mevcut servislerde değişiklik yapılmadı. Root erişimi başlangıç envanteri/kurulum içindir; trading servisleri ve agent süreçleri ayrı yetkilerle çalışır.
 
@@ -87,6 +87,8 @@ Sıra: **Stock Analysis → Yahoo Finance → Webull**. **Nasdaq** teknik erişi
 Hisse site URL'leri sabit sembol dönüştürme varsayımıyla üretilmez; varlık–kaynak alias haritası gerçek ürün sayfasıyla kurulur. BRK.B gibi hisse sınıfları tek kalıcı asset ID altında korunur.
 
 8 Ekim 2026, yaklaşık 03:06 UTC kontrolünde ABD normal seansı kapalıydı. Stock Analysis QQQ fiyat/seans zamanı gösterdi. Webull QQQ, TQQQ, EWC ve AAPL sayfaları okunabildi; düzenli fiyatın ayrı güncel zaman damgası sayfa metninde tam kanıtlanmadı. Yahoo QQQ isteği 429 verdi. Nasdaq QQQ fiyatı kullanılamıyordu. Bunlar Hetzner erişim veya canlı üçlü kabul testi değildir. Webull'un ücretsiz Nasdaq Basic paketi hesabındaki kullanıcı erişimine ilişkin belgesidir; public sayfanın login olmadan aynı alanları sunduğunu garanti etmez.
+
+9 Ekim 07:49–07:57 UTC Mac denemesinde Stock Analysis/Webull modelin canlı web aracıyla okunabildi. Yahoo doğrudan açma ve siteye özel aramada hata verdi; normal Mac tarayıcısı → görünen metin → aynı model oturumu yöntemiyle okunabildi. Dört sembolün üç sitedeki kapanış değerleri aynıydı; Webull düzenli fiyat zaman damgası ve güncel BBO/miktar kanıtı eksik kaldı. Normal seans kapalı olduğundan canlı 60 saniye koşulu sınanmadı. Ayrıntılar 13. bölümde ve [test verisinde](research/gpt-abonelik-kaynak-test-2026-10-09.json).
 
 Kaynaklar: [Stock Analysis güncelleme bilgisi](https://stockanalysis.com/help/faq/stock-price-data/), [QQQ sayfası ve feed açıklaması](https://stockanalysis.com/etf/qqq/), [Webull market data belgesi](https://www.webull.com/help/faq/126-What-market-data-is-available-on-Webull), [Webull QQQ](https://www.webull.com/quote/nasdaq-qqq), [Nasdaq QQQ](https://www.nasdaq.com/market-activity/etf/qqq).
 
@@ -202,6 +204,8 @@ Kaçırılmış karar işi sonraki normal oturumda yeni veriyle devam eder; geç
 
 Hetzner'de resmi Codex CLI, mevcut ChatGPT Pro abonelik kimliğiyle çalışır. Kullanıcı 9 Ekim'de mevcut aboneliğin kullanılmasını ve model seçiminin sonraya bırakılmasını istedi; abonelik yükseltmesi/kota tercihi yeniden sorulmaz. İlk kurulum headless device-code girişiyle planlanır: link/kod sunucuda üretilir, kullanıcı Mac tarayıcısında giriş adımını tamamlar. Bunun gerçek hesapta kullanılabilirliği kurulumda doğrulanır; otomatik giriş olmuş kabul edilmez. Kaynak: [resmi kimlik doğrulama / headless login](https://learn.chatgpt.com/docs/auth).
 
+9 Ekim Mac prototipinde mevcut ChatGPT girişi API anahtarı olmadan gerçek model çağrılarıyla çalıştı. İki ayrı `CODEX_HOME` ve workspace, iki paralel başlangıç ve açık session ID ile devam sınandı. Bu sonuç Hetzner girişini veya bütün OS/API izolasyonunu kanıtlamaz; gerçek deneme 13. bölümdedir.
+
 Go runner CLI'yi doğrudan süreç olarak çalıştırır; prompt stdin ile verilir, JSONL olaylar okunur. İlk thread.started kimliği wallet_id ile eşlenir; sonraki çalışmalarda açık session ID ile resume yapılır. Ortak --last kullanılmaz. Geçerli JSON kararına kendi Go API'miz üzerinden emir gönderilir, backend makbuzu aynı oturuma geri verilir. İş/sonuç/sessiyon bağlantısı transaction ile kaydedilir. Yetkilendirme modelin metinde yazdığı wallet_id'ye güvenmez. [CLI otomasyon, JSONL ve resume](https://learn.chatgpt.com/docs/non-interactive-mode).
 
 Başlangıçta **2 paralel cüzdan worker'ı** seçildi; sayı config ile değişebilir. Aynı cüzdanda tek aktif writer vardır. Sekiz oturum tek hesabın kullanım hakkını paylaşır; gerçek eşzamanlı kapasite kurulumda ölçülür. Aynı temel model, CLI/config sürümü ve reasoning ayarı sekiz cüzdanda ortak kaydedilir. Model ID kullanıcıyla daha sonra seçilip pilot başlamadan sabitlenir; ilk bağlantı prototipindeki geçici model bunun nihai seçimi değildir ve kaydedilir. Sessiz otomatik başka modele geçiş yok. Gemini/OpenRouter/Claude ile retry yapılmaz.
@@ -299,7 +303,7 @@ Gecelik encrypted DB+özel rollout/konfigürasyon yedeği sunucuda 7 günlük ve
 
 Maliyet/takas/parasal transaction değişiklikleri için anlamlı otomatik testler gerekir; plan metni veya basit statik ekran değişikliği için sahte test yazılmaz. Bu tabloda kabul, yazılım doğruluğudur; yatırım başarısı değerlendirmesi değildir.
 
-Plan aşamasında yapılmış işler: resmi belgelerin okunması, ücretsiz sayfa erişim kontrolü, kararların seçilmesi ve belgelerin revizyonu. 9 Ekim'de salt okunur sunucu erişim ve kapasite envanteri de yapıldı. Yapılmamış işler: trading kurulumu, CLI login/installation, product code, DB seed, canlı normal seans üçlü/BBO testi veya sanal trade.
+Plan aşamasında yapılmış işler: resmi belgelerin okunması, ücretsiz sayfa erişim kontrolü, kararların seçilmesi ve belgelerin revizyonu. 9 Ekim'de salt okunur sunucu erişim ve kapasite envanteri de yapıldı. Mac’te mevcut ChatGPT kimliğiyle iki paralel CLI oturumu, devam çağrıları ve üç kaynak okuma yöntemi de sınandı (13. bölüm). Yapılmamış işler: Hetzner trading/CLI kurulumu ve hesap girişi, product code, DB seed, canlı normal seans üçlü/BBO testi veya sanal trade.
 
 ## 11. Son genel revizyon sonucu
 
@@ -311,7 +315,7 @@ Plan aşamasında yapılmış işler: resmi belgelerin okunması, ücretsiz sayf
 - Yıllık hedef, kıyaslar ve başarı değerlendirmesi kullanıcı kararıyla sonraya bırakıldı; bakiye/işlem gözlemi korundu.
 - Fiyat/likidite testi veri çekme prototipi aşamasına yerleştirildi; bütün yapı tamamlanana kadar beklenmez. Hafıza ayrılığı kendi modülü içinde kısa işlev/yetki kontrolüyle doğrulanır. Ücretsiz kaynaklara erişimin başarılı olacağı vaat edilmedi.
 
-Belge revizyonu ürün kodu veya trading kurulumu başlatmadı; 9 Ekim'de ayrıca salt okunur SSH envanteri yapıldı. Sonraki uygulama işi, yukarıdaki sıranın ilk maddesidir.
+Belge revizyonu ürün kodu veya trading kurulumu başlatmadı; 9 Ekim'de ayrıca salt okunur SSH envanteri yapıldı. Mac abonelik/oturum ön denemesi 13. bölümde tamamlandı. Hetzner runner kurulumu ve normal seans veri kabulü uygulama sırasında ayrıca yapılır.
 
 ## 12. Ayrıntılı uygulama tasarımı — 8 Ekim 2026
 
@@ -461,7 +465,7 @@ Scheduler UTC'de kalıcı `due_at` üretir; seans hesapları America/New_York ta
 
 ### 12.10. Abonelik adapter'i ve kimlik izolasyonu
 
-ChatGPT aboneliği browser sohbeti otomasyonu ile bağlanmaz; mevcut resmi Codex CLI adapter'i kullanılır. Device login kullanıcı tarayıcısında tamamlanır. Mevcut abonelik ChatGPT Pro'dur. Nihai model ID ve reasoning ayarı kullanıcıyla daha sonra ortak seçilip pilot öncesi config sürümüyle sabitlenir; erişim denemesinde kullanılan geçici seçim ayrı kaydedilir. Yerel Mac'te gözlenen `0.162.0-alpha.2` CLI, Hetzner'e kurulacak sürüm veya hesap erişim kanıtı değildir. Hetzner kurulumu resmi dağıtımın test edilen sürümünü sabitler. [Resmi auth](https://learn.chatgpt.com/docs/auth), [exec/JSONL/resume](https://learn.chatgpt.com/docs/non-interactive-mode).
+ChatGPT aboneliği browser sohbeti otomasyonu ile bağlanmaz; mevcut resmi Codex CLI adapter'i kullanılır. Device login kullanıcı tarayıcısında tamamlanır. Mevcut abonelik ChatGPT Pro'dur. Nihai model ID ve reasoning ayarı kullanıcıyla daha sonra ortak seçilip pilot öncesi config sürümüyle sabitlenir; erişim denemesinde kullanılan geçici seçim ayrı kaydedilir. Yerel Mac’te `0.162.0-alpha.2` CLI ile mevcut ChatGPT kimliği gerçek çağrılarda doğrulandı (13. bölüm); bu sürüm Hetzner’de kurulmuş sayılmaz. Hetzner kurulumu resmi dağıtımın test edilen sürümünü sabitler. [Resmi auth](https://learn.chatgpt.com/docs/auth), [exec/JSONL/resume](https://learn.chatgpt.com/docs/non-interactive-mode).
 
 Go `exec.CommandContext` CLI'yi sabit binary ve argümanlarla başlatır; model metni shell komutuna interpolate edilmez. Prompt stdin'dedir. Stdout JSONL parser ve stderr ayrı, boyut sınırlı log akışı olarak okunur. Process group timeout'ta sonlandırılır; alt süreçlerin kaldığı doğrulanır. Aynı session ID'ye concurrent resume yapılmaz. Resume ile schema/config ayarlarının kullanılan sürümde nasıl uygulandığı adapter kabulünde doğrulanır; desteklenmeyen flag varsayılmaz. [Go subprocess API](https://pkg.go.dev/os/exec).
 
@@ -544,4 +548,53 @@ Execution başlangıçta kapalıdır; kaynak ve muhasebe kabulü sonrası truste
 
 9 Ekim kullanıcı cevapları kesinleşti: mevcut ChatGPT Pro aboneliği kullanılır; model seçimi sonraya bırakılır. Hetzner başka projelerle paylaşılır; trading izole deployment ve kaynak sınırlarıyla kurulur. `root@167.235.158.118:22` erişimi mevcut Mac SSH kimliğiyle salt okunur doğrulandı. Parola/token/özel anahtar içeriği istenmez. Kullanıcıdan bu aşamada ek planlama kararı beklenmez; gerçek Codex login adımı ve nihai model seçimi kendi uygulama aşamasında yapılır.
 
-Henüz kanıtlanmamış teknik koşullar: ücretsiz üç güncel fiyat + kullanılabilir BBO/size; aynı koşullarda istek kapasitesi; resmi runner'ın özel session/auth/refresh izolasyonu ve iki paralel çağrıyı hesapta desteklemesi; sunucuda trading için ayrılabilecek sürdürülebilir kapasite (9 Ekim anlık envanteri aşağıdaki yükün kabulü değildir). Bunlar masa başında kesinleşen ürün tercihi değildir. Küçük ilk prototiplerde ölçülür ve sonuç gerektirdiğinde ilgili teknik bölüm revize edilir.
+Henüz kanıtlanmamış teknik koşullar: ücretsiz üç güncel fiyat + kullanılabilir BBO/size; aynı koşullarda istek kapasitesi; runner'ın tam OS/API yetki ayrılığı ve uzun süreli auth/refresh davranışı; sekiz cüzdanda sürdürülebilir çağrı kapasitesi (Mac’te iki paralel çağrı ve ayrı session devamı 13. bölümde doğrulandı); sunucuda trading için ayrılabilecek sürdürülebilir kapasite (9 Ekim anlık envanteri aşağıdaki yükün kabulü değildir). Bunlar masa başında kesinleşen ürün tercihi değildir. Küçük ilk prototiplerde ölçülür ve sonuç gerektirdiğinde ilgili teknik bölüm revize edilir.
+
+## 13. GPT aboneliği ve kaynak okuma gerçek denemesi — 9 Ekim 2026
+
+**Sonuç: GPT aboneliği, iki paralel oturum ve kendi oturumuna devam çalıştı. Üç site kapanış fiyatı okuma tarayıcı alternatifiyle çalıştı; canlı emir fiyatı/likidite kabulü tamamlanmadı.** Kullanıcının açıklaması doğrultusunda test Mac’te yapıldı. Hetzner’e yazılım veya kimlik bilgisi kurulmadı. Plan mevcut sunucuyla başlar; ileride sorun görülürse taşıma değerlendirilir.
+
+### 13.1. Abonelik ve oturum kanıtı
+
+Test 07:48:28–07:56:54 UTC (10:48–10:56 GMT+3) arasında mevcut resmi Codex CLI `0.162.0-alpha.2` ile yapıldı. `login status` ChatGPT girişini gösterdi; API anahtarı kullanılmadı. Geçici model mevcut Mac ayarındaki `gpt-6.1-sol`, reasoning `low` idi; nihai ürün modeli seçilmedi. İki özel `CODEX_HOME`/workspace kullanıldı; kişisel ayarlar ve geçmiş taşınmadı. Test için oluşturulan yerel kimlik dosyası kopyaları sonunda silindi; kullanıcının asıl girişi değiştirilmedi.
+
+| Kontrol | Ölçülen sonuç |
+|---|---|
+| İki paralel başlangıç | Başarılı; A 12,63 sn, B 11,96 sn; farklı session ID |
+| Açık session ID ile devam | Başarılı; A 8,23 sn, B 8,40 sn; önceki kendi işaretini yeniden verilmeden doğru hatırladı |
+| Diğer oturumun bilgisi | Her iki yanıt diğer işareti boş bıraktı; bu tek başına genel erişim güvenliği kanıtı değildir |
+| B’nin session deposundan A ID’sini açma | Reddedildi: `no rollout found`, exit 1; model çağrısı başlamadı |
+| JSONL ve yapılandırılmış web çıktısı | 10 gerçek model çağrısı exit 0; altı kaynak çağrısında şemalı JSON çıkarıldı |
+
+İki farklı session deposu doğru yönlendirmeyi gösterir. Üretim mount/OS/API yetki ayrılığı, sekiz cüzdanın uzun süreli çalışması, kimlik yenileme ve Hetzner koşulları bu yerel prototiple sınanmadı. Her oturum kendi açık ID’siyle devam etti; ortak `--last` kullanılmadı.
+
+### 13.2. Kaynak adımında üç yöntem
+
+A oturumu QQQ/TQQQ, B oturumu EWC/AAPL okudu. Her yöntem aynı iki oturumda çalıştırıldı. Üç deneme üç edinim yöntemidir; her yöntem birden fazla site isteği içerir.
+
+| Deneme | Yöntem | Sonuç |
+|---|---|---|
+| 1 | Modelin canlı web aracıyla doğrudan ürün URL’leri | Stock Analysis ve Webull okunabildi. Yahoo bazı isteklerde 429, bazılarında Internal Error verdi. Tam üçlü oluşmadı. |
+| 2 | Siteye özel arama, bulunan ürün sayfasını açma | Yahoo yine okunamadı; arama özeti veri kabul edilmedi. Webull EWC ilgili sayfası bu aramada bulunamadı. Tam üçlü oluşmadı. |
+| 3 | Yahoo’yu normal Mac tarayıcısında açma, görünen metni modele verme; diğer siteleri aynı oturumlarda yeniden açma | Dört sembolün üç sitedeki düzenli kapanış fiyatı okunabildi. Kaynak zamanı ve BBO/miktar eksikleri sürdü. |
+
+Üçüncü yöntemde Yahoo metnini tarayıcı collector okudu ve mevcut GPT oturumlarına verdi; GPT’nin kendi web aracının Yahoo’ya eriştiği iddia edilmez. Engel/CAPTCHA aşılmadı, login veya gizli quote API kullanılmadı. Bu sonuç Hetzner headless tarayıcısının da çalıştığını kanıtlamaz. Dördüncü yöntem denenmedi; Nasdaq bu denemeye dahil edilmedi.
+
+| Sembol | Üç sitede görünen düzenli kapanış | Sayısal fark |
+|---|---|---|
+| QQQ | 747,58 | %0 |
+| TQQQ | 80,23 | %0 |
+| EWC | 58,32 | %0 |
+| AAPL | 340,42 | %0 |
+
+Stock Analysis USD ve 8 Ekim 2026 16:00 EDT kapanış zamanını gösterdi. Yahoo USD ve 8 Ekim 16:00 EDT gösterdi; görünen zaman metninde yıl yoktu. Webull düzenli fiyatın kendi olay zamanı ve fiyat alanına bağlı para birimi bu içerikte kanıtlanmadı. Yakındaki after-hours zamanı düzenli fiyata atanmadı. Aynı kapanış sayısı üç bağımsız feed veya güncel gerçekleşebilir fiyat kanıtı değildir.
+
+Yahoo’da QQQ, TQQQ ve AAPL için bid/ask ile miktar metni göründü; kendi güncelleme zamanı ve miktar birimi görünmedi. EWC bid/ask boştu. Stock Analysis/Webull okunan içerikleri kullanılabilir BBO/miktar kanıtı vermedi. Bu nedenle görünen miktarlar gerçekleşme limiti olarak kullanılmadı.
+
+### 13.3. Kabul durumu ve kayıt
+
+ABD normal seansı test boyunca kapalıydı. Canlı düzenli fiyatın 60 saniye güncelliği **sınanmadı**; kapalı piyasa nedeniyle canlı fiyat testinin başarısız olduğu ileri sürülmez. Erişilen içerikle emir fiyatı/likidite sözleşmesi **sağlanmadı**: eksik metadata ve zaman/miktar kanıtı tamamlanmadan sanal fill etkinleşmez. Bakiye oluşturulmadı, emir veya trade yapılmadı.
+
+Mac abonelik bağlantısı ve ayrı oturumlara devam için yeni bir başarısızlık yoktur; bu adımlar geçmiştir. Kalan veri işi normal seansta küçük kaynak okuyucularında kaynak zamanı ve BBO/miktarı ölçmektir. Otomatik sonraki kontrol veya yeni sunucu oluşturulmadı.
+
+Sırlar ve tam sayfa gövdeleri içermeyen [yapılandırılmış test kaydı](research/gpt-abonelik-kaynak-test-2026-10-09.json), çağrı sürelerini, session ID’lerini, üç yöntem çıktısını ve yerel JSONL kanıtlarının SHA-256 değerlerini içerir. Ham oturum/sayfa kayıtları gitignore kapsamındaki `runtime/` altında yereldir; repo’ya gönderilmez.
