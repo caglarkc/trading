@@ -1,6 +1,6 @@
 # Canlı Trading MVP — Uygulama ve Teknik Plan
 
-Güncelleme: 9 Ekim 2026. Durum: ürün/mimari sözleşmesi ve ayrıntılı uygulama tasarımı yazıldı. Kullanıcı ChatGPT Pro aboneliğini, paylaşılan Hetzner sunucusunu ve root SSH erişimini doğruladı; model seçimini sonraya bıraktı. Salt okunur SSH/kapasite incelemesi yapıldı. Mac’te mevcut ChatGPT girişini kullanan iki paralel Codex oturumu, açık session ID ile devam ve üç kaynak okuma yöntemi gerçek çağrılarla sınandı (13. bölüm). Ürün kodu, trading kurulumu ve Hetzner Codex girişi yapılmadı. Uygulama ayrıntıları 12. bölümdedir. Gerçek abonelik bağlantısı, kimlik/oturum izolasyonu ve üç güncel fiyat kaynağının Hetzner'de çalışması kurulum kabul koşuludur. Bu koşullar geçmeden çalışan trading pilotu ilan edilmez.
+Güncelleme: 9 Ekim 2026. Durum: ürün/mimari sözleşmesi ve ayrıntılı uygulama tasarımı yazıldı. Kullanıcı ChatGPT Pro aboneliğini, paylaşılan Hetzner sunucusunu ve root SSH erişimini doğruladı; model seçimini sonraya bıraktı. Salt okunur SSH/kapasite incelemesi yapıldı. Mac’te mevcut ChatGPT girişini kullanan iki paralel Codex oturumu, açık session ID ile devam ve üç kaynak okuma yöntemi gerçek çağrılarla sınandı (13. bölüm). Ardından sekiz ayrı oturumda, iki eşzamanlı worker ile 24 çağrılık tekrar denemesi tamamlandı (14. bölüm). Ürün kodu, trading kurulumu ve Hetzner Codex girişi yapılmadı. Uygulama ayrıntıları 12. bölümdedir. Gerçek abonelik bağlantısı, kimlik/oturum izolasyonu ve üç güncel fiyat kaynağının Hetzner'de çalışması kurulum kabul koşuludur. Bu koşullar geçmeden çalışan trading pilotu ilan edilmez.
 
 Bu belge güncel teknik uygulama sözleşmesidir. Ürün kararları ve kaynak kapsamı [deney-plani.md](research/deney-plani.md) içindedir. Önceki beş belgenin değiştirilmeden korunmuş kopyaları [arşivdedir](research/archive-2026-10-08/MVP-TEKNIK-PLAN.md). Arşivdeki sayısal ETF/Python/API pilotu güncel MVP'nin gereksinimi değildir.
 
@@ -548,7 +548,7 @@ Execution başlangıçta kapalıdır; kaynak ve muhasebe kabulü sonrası truste
 
 9 Ekim kullanıcı cevapları kesinleşti: mevcut ChatGPT Pro aboneliği kullanılır; model seçimi sonraya bırakılır. Hetzner başka projelerle paylaşılır; trading izole deployment ve kaynak sınırlarıyla kurulur. `root@167.235.158.118:22` erişimi mevcut Mac SSH kimliğiyle salt okunur doğrulandı. Parola/token/özel anahtar içeriği istenmez. Kullanıcıdan bu aşamada ek planlama kararı beklenmez; gerçek Codex login adımı ve nihai model seçimi kendi uygulama aşamasında yapılır.
 
-Henüz kanıtlanmamış teknik koşullar: ücretsiz üç güncel fiyat + kullanılabilir BBO/size; aynı koşullarda istek kapasitesi; runner'ın tam OS/API yetki ayrılığı ve uzun süreli auth/refresh davranışı; sekiz cüzdanda sürdürülebilir çağrı kapasitesi (Mac’te iki paralel çağrı ve ayrı session devamı 13. bölümde doğrulandı); sunucuda trading için ayrılabilecek sürdürülebilir kapasite (9 Ekim anlık envanteri aşağıdaki yükün kabulü değildir). Bunlar masa başında kesinleşen ürün tercihi değildir. Küçük ilk prototiplerde ölçülür ve sonuç gerektirdiğinde ilgili teknik bölüm revize edilir.
+Henüz kanıtlanmamış teknik koşullar: ücretsiz üç güncel fiyat + kullanılabilir BBO/size; aynı koşullarda istek kapasitesi; runner'ın tam OS/API yetki ayrılığı ve uzun süreli auth/refresh davranışı; sekiz cüzdanda uzun süreli çağrı kapasitesi (Mac’te sekiz ayrı session, iki paralel worker ve 24 kısa çağrı 14. bölümde doğrulandı); sunucuda trading için ayrılabilecek sürdürülebilir kapasite (9 Ekim anlık envanteri aşağıdaki yükün kabulü değildir). Bunlar masa başında kesinleşen ürün tercihi değildir. Küçük ilk prototiplerde ölçülür ve sonuç gerektirdiğinde ilgili teknik bölüm revize edilir.
 
 ## 13. GPT aboneliği ve kaynak okuma gerçek denemesi — 9 Ekim 2026
 
@@ -598,3 +598,43 @@ ABD normal seansı test boyunca kapalıydı. Canlı düzenli fiyatın 60 saniye 
 Mac abonelik bağlantısı ve ayrı oturumlara devam için yeni bir başarısızlık yoktur; bu adımlar geçmiştir. Kalan veri işi normal seansta küçük kaynak okuyucularında kaynak zamanı ve BBO/miktarı ölçmektir. Otomatik sonraki kontrol veya yeni sunucu oluşturulmadı.
 
 Sırlar ve tam sayfa gövdeleri içermeyen [yapılandırılmış test kaydı](research/gpt-abonelik-kaynak-test-2026-10-09.json), çağrı sürelerini, session ID’lerini, üç yöntem çıktısını ve yerel JSONL kanıtlarının SHA-256 değerlerini içerir. Ham oturum/sayfa kayıtları gitignore kapsamındaki `runtime/` altında yereldir; repo’ya gönderilmez.
+
+## 14. Sekiz oturumla abonelik ve tekrar veri çekme denemesi — 9 Ekim 2026
+
+**Sonuç: sekiz ayrı test oturumu, iki eşzamanlı worker ve toplam 24 gerçek abonelik çağrısı ilk teknik denemelerinde tamamlandı. GPT kota hatası, çağrı zaman aşımı veya yanlış session’a devam görülmedi.** Bu kısa ölçüm uzun dönem kapasite veya kimlik yenileme kabulü değildir. Test Mac’te yapıldı; Hetzner değişikliği yoktur.
+
+### 14.1. Test kapsamı ve süreler
+
+Mevcut ChatGPT Pro girişi, resmi CLI `0.162.0-alpha.2`, geçici `gpt-6.1-sol`/`low` ayarı kullanıldı; API anahtarı kullanılmadı. Sekiz oturum ayrı `CODEX_HOME`/workspace ve farklı özel işaretle başlatıldı. Her veri turunda açık ID ile aynı oturuma devam edildi; özel işaret tekrar verilmeden doğru hatırlandı. İlk ve ikinci veri turundaki 16 devam çağrısı aynı session ID’lerini korudu. Aynı anda sekiz model çalıştırılmadı; ölçülen en yüksek eşzamanlılık iki idi.
+
+Oturumlar US_FAST, US_EVENT, US_PATIENT, QQQ_FAST, QQQ_PATIENT, TQQQ_FAST, TQQQ_PATIENT ve EWC_BALANCED olarak adlandırıldı. Bunlar üretim karakter davranışı, muhasebe veya backend hafızası sınavı değildir. Üç hisse oturumunda AAPL temsilci kullanıldı; ETF oturumlarında kendi QQQ/TQQQ/EWC sembolleri okundu. 50+20 hisse evreni taranmadı.
+
+| Aşama | Çağrı | Başarılı CLI/JSON/özel işaret | Süre aralığı | Medyan | İki worker ile tur süresi |
+|---|---:|---:|---|---|---|
+| Oturum başlangıcı | 8 | 8 | 8,90–18,06 sn | 13,32 sn | 59,25 sn |
+| Doğrudan canlı web okuması | 8 | 8 | 23,29–31,11 sn | 26,25 sn | 111,44 sn |
+| Yahoo tarayıcı metni + diğer siteleri yeniden açma | 8 | 8 | 22,98–28,64 sn | 26,61 sn | 111,13 sn |
+
+Test aralığı 09:37:07–09:44:44 UTC (12:37–12:44 GMT+3); süreler site yanıtı, model işlem süresi ve yerel süreç başlatmayı birlikte içerir. Teknik retry gerekmedi. Her çağrı için en fazla üç teknik deneme sınırı vardı; model kota hatası görünürse yeni denemeler durdurulacaktı. Siteyi açamama, başarılı model çağrısının içinde ayrı kaynak sonucu olarak saklandı; bu sonuç “veri başarılı” diye sayılmadı.
+
+### 14.2. Kaynak sonuçları ve ayrışma
+
+| Kaynak | İlk turda fiyat okunabilen oturum | İkinci turda fiyat okunabilen oturum |
+|---|---:|---:|
+| Stock Analysis | 8/8 | 8/8 |
+| Yahoo Finance | 0/8 — web aracında HTTP 429 | 8/8 — görünür tarayıcı metni collector’dan modele verildi |
+| Webull | 8/8 | 7/8 — EWC normal seans fiyat atfı belirsiz |
+
+İkinci turda yedi oturumun üç sayısal kapanış değeri aynı çıktı. EWC oturumunda Webull sayfası açıldı ancak model `58.32` ile birlikte görünen `Closed 19:30 10/08 EDT` metninden düzenli kapanış atfını kanıtlayamadı; fiyatı null bıraktı. Bu erişim/kota kesintisi değil, veri anlamlandırma eksikliğidir. Başka turların aynı sayı vermesi eksik seans kanıtını tamamlamaz. Bu oturum için üç kaynak kabulü ilan edilmedi; sonucun olumlu çıkması için değer elle doldurulmadı veya aynı kaynağa tekrar tekrar sorulmadı.
+
+Yahoo’nun görünür metni dört sembol için yeni Mac tarayıcı okumalarından toplandı ve ilgili oturumlara verildi. Bu, sekiz oturumun her birinin kendi browser aracını kullandığı veya native web aramasının Yahoo hatasını çözdüğü anlamına gelmez. Kaynak metni ortak, özel konuşma/session deposu ayrı kaldı. Site 429 hataları GPT abonelik kota hatalarıyla karıştırılmadı.
+
+BBO/miktar zamanı ve birimi, Webull düzenli fiyat olay zamanı ve bazı para birimi alanları önceki denemedeki gibi eksik kaldı. Normal seans kapalı olduğu için 60 saniyelik canlı fiyat kabulü sınanmadı. Hiçbir sanal veya gerçek trade yapılmadı.
+
+### 14.3. Kota gözlemi, kayıt ve sonraki uygulama
+
+Hesabın haftalık kullanım göstergesi test öncesi %8, test sonrası %8 idi; hesap kullanımına izin veriliyordu ve limit durumu görünmüyordu. Bu gösterge bütün hesabı kapsar; küçük tüketimi veya gecikmeli güncellemeyi bu iki okumayla ayıramayız. Başka app çağrıları da aynı hakkı kullanır. Bu nedenle “test sıfır kota tüketti” veya “günde sınırsız çalışır” sonucu çıkarılmaz. Ölçülen sonuç, bu 24 çağrıda abonelik nedeniyle engel görülmemesidir.
+
+Test için oluşturulan sekiz yerel auth kopyası kaldırıldı; asıl ChatGPT girişi değiştirilmedi. Tam sayfa gövdeleri ve kimlik dosyaları repo’ya gönderilmedi. [Yapılandırılmış yük testi kaydı](research/gpt-abonelik-yuk-test-2026-10-09.json) çağrı süreleri, session eşleşmeleri, şemalı kaynak alanları, CLI token usage olayları, ham yerel kanıt SHA-256 değerleri ve sınırlı kota göstergelerini içerir. Token usage olayları otomatik ücret/faturalama hesabı değildir.
+
+Başlangıç runner tercihi iki eşzamanlı worker olarak korunur. Abonelik bağlantısında bu testin gerektirdiği bir değişiklik yoktur. Kaynak okuyucusunda Yahoo için tarayıcı collector alternatifi gerekir; seans/fiyat atfı ve olay zamanı kaynağa özel alanlarla doğrulanır. Oturum etiketleri üretim karakterleri olarak etkinleştirilmedi; sekiz cüzdan backend/hafıza entegrasyonu kendi modülünde uygulanacaktır.

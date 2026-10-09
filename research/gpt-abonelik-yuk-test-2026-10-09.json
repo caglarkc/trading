@@ -1,0 +1,1838 @@
+{
+  "schema_version": 1,
+  "test_date": "2026-10-09",
+  "scope": "Mac ChatGPT subscription, eight isolated CLI session stores, two concurrent workers, repeated previous regular closing quotes",
+  "temporary_model": "gpt-6.1-sol",
+  "cli_version": "0.162.0-alpha.2",
+  "auth_method": "ChatGPT subscription",
+  "api_key_used": false,
+  "configured_concurrency": 2,
+  "measured_max_concurrency": 2,
+  "session_count": 8,
+  "model_call_count": 24,
+  "started_at_utc": "2026-10-09T09:37:07.749674+00:00",
+  "ended_at_utc": "2026-10-09T09:44:44.711800+00:00",
+  "normal_us_market_open": false,
+  "technical_retries": 0,
+  "subscription_quota_errors_observed": 0,
+  "timeout_count": 0,
+  "website_429_count": 8,
+  "usage_before": {
+    "used_percent": 8,
+    "window_duration_mins": 10080,
+    "plan": "pro"
+  },
+  "usage_after": {
+    "measured_at_utc": "2026-10-09 09:44:52 UTC",
+    "used_percent": 8,
+    "window_duration_mins": 10080,
+    "plan": "pro",
+    "ordinary_usage_allowed": true,
+    "rate_limit_reached_type": null
+  },
+  "usage_measurement_scope": "Whole signed-in account; concurrent app activity also consumes usage. Percentage difference is not an attributable per-test bill.",
+  "phase_summary": {
+    "seed": {
+      "calls": 8,
+      "successes": 8,
+      "median_seconds": 13.32,
+      "min_seconds": 8.9,
+      "max_seconds": 18.06,
+      "wall_seconds": 59.25
+    },
+    "round1": {
+      "calls": 8,
+      "successes": 8,
+      "median_seconds": 26.25,
+      "min_seconds": 23.29,
+      "max_seconds": 31.11,
+      "wall_seconds": 111.44,
+      "source_readable_price_counts": {
+        "Stock Analysis": 8,
+        "Yahoo Finance": 0,
+        "Webull": 8
+      },
+      "three_numeric_prices_match_count": 0
+    },
+    "round2": {
+      "calls": 8,
+      "successes": 8,
+      "median_seconds": 26.61,
+      "min_seconds": 22.98,
+      "max_seconds": 28.64,
+      "wall_seconds": 111.13,
+      "source_readable_price_counts": {
+        "Stock Analysis": 8,
+        "Yahoo Finance": 8,
+        "Webull": 7
+      },
+      "three_numeric_prices_match_count": 7
+    }
+  },
+  "limitations": [
+    "Short bounded test, not long-term quota or refresh validation.",
+    "Separate session stores/workspaces and own marker recall are not complete OS/mount/API authorization isolation.",
+    "Eight operational test sessions use one configured model; production personas/backend/memory lifecycle are not exercised.",
+    "Only AAPL represents the stock category; QQQ/TQQQ/EWC are tested. Full 50+20 stock universe is not tested.",
+    "Round 1 Yahoo native web calls returned 429; round 2 Yahoo visible browser excerpts were read by a collector then supplied to the model.",
+    "Market closed: 60-second regular quote freshness and executable BBO/size remain unvalidated.",
+    "No Hetzner changes, paper fills or real trades performed."
+  ],
+  "credential_cleanup": {
+    "created_auth_copies_removed": 8,
+    "original_login_modified": false
+  },
+  "runs": [
+    {
+      "wallet": "US_FAST",
+      "symbol": "AAPL",
+      "phase": "seed",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:37:07.749674+00:00",
+      "ended_at": "2026-10-09T09:37:20.483405+00:00",
+      "elapsed_s": 12.73,
+      "exit_code": 0,
+      "session_id": "01a12006-04f9-7113-93de-50d7a70508c1",
+      "session_matches_previous": null,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [],
+      "raw_jsonl_sha256": "9ea5a47e7040d488f33da2b317f32fe2262d694e1333477ac7a7e65b1dd55142",
+      "result": {
+        "account": "US_FAST",
+        "other_marker": null
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 11216,
+          "cached_input_tokens": 9216,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 52,
+          "reasoning_output_tokens": 12
+        }
+      ]
+    },
+    {
+      "wallet": "US_EVENT",
+      "symbol": "AAPL",
+      "phase": "seed",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:37:07.750076+00:00",
+      "ended_at": "2026-10-09T09:37:25.813333+00:00",
+      "elapsed_s": 18.06,
+      "exit_code": 0,
+      "session_id": "01a12006-04f9-7153-85aa-70664393684c",
+      "session_matches_previous": null,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [],
+      "raw_jsonl_sha256": "65d65b8679b191f5185208497364fa0416df440a30a5e256178f4bebccfbfd3a",
+      "result": {
+        "account": "US_EVENT",
+        "other_marker": null
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 11214,
+          "cached_input_tokens": 9216,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 49,
+          "reasoning_output_tokens": 10
+        }
+      ]
+    },
+    {
+      "wallet": "US_PATIENT",
+      "symbol": "AAPL",
+      "phase": "seed",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:37:20.483643+00:00",
+      "ended_at": "2026-10-09T09:37:33.818348+00:00",
+      "elapsed_s": 13.33,
+      "exit_code": 0,
+      "session_id": "01a12006-36c1-7003-b1bc-4ec1663425c2",
+      "session_matches_previous": null,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [],
+      "raw_jsonl_sha256": "6f364ff80eeb52d3fa1283dbe743374b8fdb2b883096949ac204e3f3dca17c0b",
+      "result": {
+        "account": "US_PATIENT",
+        "other_marker": null
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 11217,
+          "cached_input_tokens": 9216,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 37,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "wallet": "QQQ_FAST",
+      "symbol": "QQQ",
+      "phase": "seed",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:37:25.813623+00:00",
+      "ended_at": "2026-10-09T09:37:39.110119+00:00",
+      "elapsed_s": 13.3,
+      "exit_code": 0,
+      "session_id": "01a12006-4b7f-7cf3-930e-d964f6cb3e00",
+      "session_matches_previous": null,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [],
+      "raw_jsonl_sha256": "4bd88cf63dd87c38bbabf4fccc47b63641d26f04bd3eac09a01808301d99dcb6",
+      "result": {
+        "account": "QQQ_FAST",
+        "other_marker": null
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 11217,
+          "cached_input_tokens": 9216,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 53,
+          "reasoning_output_tokens": 15
+        }
+      ]
+    },
+    {
+      "wallet": "QQQ_PATIENT",
+      "symbol": "QQQ",
+      "phase": "seed",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:37:33.818632+00:00",
+      "ended_at": "2026-10-09T09:37:42.719757+00:00",
+      "elapsed_s": 8.9,
+      "exit_code": 0,
+      "session_id": "01a12006-6ac6-7da1-9dae-96bbc9dea99b",
+      "session_matches_previous": null,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [],
+      "raw_jsonl_sha256": "639c3a8229aabe63581b222e99b5afbb605c2c55db6eaeef99a3592b8638321c",
+      "result": {
+        "account": "QQQ_PATIENT",
+        "other_marker": null
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 11220,
+          "cached_input_tokens": 0,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 37,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "wallet": "TQQQ_FAST",
+      "symbol": "TQQQ",
+      "phase": "seed",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:37:39.110447+00:00",
+      "ended_at": "2026-10-09T09:37:52.244088+00:00",
+      "elapsed_s": 13.13,
+      "exit_code": 0,
+      "session_id": "01a12006-7f7a-7951-bfaa-d05beb5e4ebe",
+      "session_matches_previous": null,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [],
+      "raw_jsonl_sha256": "e1abaef8c62431c7f3156dede53ff5e428d58af3f4f26d0c64de3e9c74745d71",
+      "result": {
+        "account": "TQQQ_FAST",
+        "other_marker": null
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 11221,
+          "cached_input_tokens": 0,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 40,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "wallet": "TQQQ_PATIENT",
+      "symbol": "TQQQ",
+      "phase": "seed",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:37:42.720029+00:00",
+      "ended_at": "2026-10-09T09:37:58.263455+00:00",
+      "elapsed_s": 15.54,
+      "exit_code": 0,
+      "session_id": "01a12006-8d8f-7bb1-9024-e6bb633d98f5",
+      "session_matches_previous": null,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [],
+      "raw_jsonl_sha256": "12289376e0eb0b6d836b47c86bd893db692ad000a2fea5ad3939bbd347d20b56",
+      "result": {
+        "account": "TQQQ_PATIENT",
+        "other_marker": null
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 11224,
+          "cached_input_tokens": 9216,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 40,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "wallet": "EWC_BALANCED",
+      "symbol": "EWC",
+      "phase": "seed",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:37:52.244360+00:00",
+      "ended_at": "2026-10-09T09:38:07.002872+00:00",
+      "elapsed_s": 14.76,
+      "exit_code": 0,
+      "session_id": "01a12006-b2bd-7610-b189-b491001c4c3a",
+      "session_matches_previous": null,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [],
+      "raw_jsonl_sha256": "0a103173802e78dc1bc29f4d3f43308932c419744cfdfc5b83af4493322e81f1",
+      "result": {
+        "account": "EWC_BALANCED",
+        "other_marker": null
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 11220,
+          "cached_input_tokens": 9216,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 53,
+          "reasoning_output_tokens": 12
+        }
+      ]
+    },
+    {
+      "wallet": "US_FAST",
+      "symbol": "AAPL",
+      "phase": "round1",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:38:13.322978+00:00",
+      "ended_at": "2026-10-09T09:38:36.704151+00:00",
+      "elapsed_s": 23.38,
+      "exit_code": 0,
+      "session_id": "01a12006-04f9-7113-93de-50d7a70508c1",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "c3f9761dc73f23cb9c7f74833dd031618e91d6bf5bbb1b51d857b9ec2439a9e6",
+      "result": {
+        "account": "US_FAST",
+        "attempt": 1,
+        "method": "direct_live_web",
+        "records": [
+          {
+            "symbol": "AAPL",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/stocks/aapl/",
+            "access_status": "success",
+            "price": "340.42",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular_close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "AAPL",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/AAPL/",
+            "access_status": "failed",
+            "price": null,
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": null,
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": "Failed to fetch: (429) Too Many Requests"
+          },
+          {
+            "symbol": "AAPL",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-aapl",
+            "access_status": "success",
+            "price": "340.42",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular_last_inferred",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Each requested page was opened once; no retries or alternative sources were used.",
+          "Stock Analysis separately displayed a pre-market quote; its timestamp was not assigned to the regular close.",
+          "Webull's main price is inferred to be regular last because a separate pre-market quote is displayed. No explicit regular quote event time or currency was returned.",
+          "No bid, ask, bid/ask sizes, size units, or BBO timestamps were returned by the accessible pages. Closing times were not assigned to BBO.",
+          "Crawl times were not used as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 50126,
+          "cached_input_tokens": 23296,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 573,
+          "reasoning_output_tokens": 12
+        }
+      ]
+    },
+    {
+      "wallet": "US_EVENT",
+      "symbol": "AAPL",
+      "phase": "round1",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:38:13.323455+00:00",
+      "ended_at": "2026-10-09T09:38:41.918865+00:00",
+      "elapsed_s": 28.6,
+      "exit_code": 0,
+      "session_id": "01a12006-04f9-7153-85aa-70664393684c",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "0de7d2bc81157cedb8479bc8adb6b26569716bf824727d915cc2cf37552fee6e",
+      "result": {
+        "account": "US_EVENT",
+        "attempt": 1,
+        "method": "direct_live_web",
+        "records": [
+          {
+            "symbol": "AAPL",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/stocks/aapl/",
+            "access_status": "success",
+            "price": "340.42",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "AAPL",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/AAPL/",
+            "access_status": "failed",
+            "price": null,
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": null,
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": "Failed to fetch https://finance.yahoo.com/quote/AAPL/: (429) Too Many Requests"
+          },
+          {
+            "symbol": "AAPL",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-aapl",
+            "access_status": "success",
+            "price": "340.42",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular last (inferred from separate pre-market display)",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Each requested page was opened once; no retries or alternative sources were used.",
+          "Stock Analysis and Webull separately displayed pre-market quotes; those prices and times were excluded from regular quote fields. No overnight or after-hours quote was identified in returned content.",
+          "Webull did not explicitly display a regular quote event time or currency; its regular-session classification is inferred.",
+          "Returned content displayed no bid, ask, bid/ask sizes, size units, or BBO timestamps. Closing and pre-market times were not assigned to BBO.",
+          "Crawl and page-check times were not treated as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 50114,
+          "cached_input_tokens": 23296,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 593,
+          "reasoning_output_tokens": 10
+        }
+      ]
+    },
+    {
+      "wallet": "US_PATIENT",
+      "symbol": "AAPL",
+      "phase": "round1",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:38:36.704612+00:00",
+      "ended_at": "2026-10-09T09:39:01.729915+00:00",
+      "elapsed_s": 25.03,
+      "exit_code": 0,
+      "session_id": "01a12006-36c1-7003-b1bc-4ec1663425c2",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "82d173165abdc6c4362c06763c3ac075721e70b50ceab91a09f4ec472c9ed25a",
+      "result": {
+        "account": "US_PATIENT",
+        "attempt": 1,
+        "method": "direct_live_web",
+        "records": [
+          {
+            "symbol": "AAPL",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/stocks/aapl/",
+            "access_status": "success",
+            "price": "340.42",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular_close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "AAPL",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/AAPL/",
+            "access_status": "failed",
+            "price": null,
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": null,
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": "Failed to fetch https://finance.yahoo.com/quote/AAPL/: (429) Too Many Requests"
+          },
+          {
+            "symbol": "AAPL",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-aapl",
+            "access_status": "success",
+            "price": "340.42",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular_last_inferred_from_separate_premarket_display",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Each requested page was opened once; no retries or alternative sources were used.",
+          "Stock Analysis and Webull displayed separate premarket quotes, excluded from regular prices. No overnight or after-hours quote was used.",
+          "Webull did not display an explicit regular quote event time or currency in returned content; its main quote's regular-session classification is inferred.",
+          "Returned content displayed no bid, ask, bid/ask sizes, size units, or BBO timestamps. Closing and premarket times were not assigned to BBO.",
+          "Crawl and page-check times were not treated as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 50101,
+          "cached_input_tokens": 23296,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 578,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "wallet": "QQQ_FAST",
+      "symbol": "QQQ",
+      "phase": "round1",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:38:41.919228+00:00",
+      "ended_at": "2026-10-09T09:39:10.371106+00:00",
+      "elapsed_s": 28.45,
+      "exit_code": 0,
+      "session_id": "01a12006-4b7f-7cf3-930e-d964f6cb3e00",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "b99008f49c73e6cd7f96ab61e4bfd56b929ceaa52f4324a2c6a6d1920ed5f13d",
+      "result": {
+        "account": "QQQ_FAST",
+        "attempt": 1,
+        "method": "direct_live_web",
+        "records": [
+          {
+            "symbol": "QQQ",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/etf/qqq/",
+            "access_status": "success",
+            "price": "747.58",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular_close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "QQQ",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/QQQ/",
+            "access_status": "failed",
+            "price": null,
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": null,
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": "Failed to fetch https://finance.yahoo.com/quote/QQQ/: (429) Too Many Requests"
+          },
+          {
+            "symbol": "QQQ",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-qqq",
+            "access_status": "success",
+            "price": "747.58",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular_last_inferred_from_separate_after_hours_display",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Each requested page was opened once; no retries or alternative sources were used.",
+          "Stock Analysis separately displayed pre-market 754.23 at Oct 9, 2026, 5:30 AM EDT; this was excluded from the regular quote.",
+          "Webull separately displayed after-hours 747.73 at 19:59 10/08 EDT; that timestamp was not assigned to its regular quote. Regular quote event time and quote currency were absent.",
+          "No overnight quote was displayed in the returned content.",
+          "Bid, ask, sizes, size units and BBO/size timestamps were absent from the accessible returned content.",
+          "Crawl and page-check times were not used as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 50283,
+          "cached_input_tokens": 23296,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 642,
+          "reasoning_output_tokens": 15
+        }
+      ]
+    },
+    {
+      "wallet": "QQQ_PATIENT",
+      "symbol": "QQQ",
+      "phase": "round1",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:39:01.730211+00:00",
+      "ended_at": "2026-10-09T09:39:29.194828+00:00",
+      "elapsed_s": 27.47,
+      "exit_code": 0,
+      "session_id": "01a12006-6ac6-7da1-9dae-96bbc9dea99b",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "8d4441fd176e4ad28a18996edb833ebd42b7518cdb507358eee8ea43ec91c880",
+      "result": {
+        "account": "QQQ_PATIENT",
+        "attempt": 1,
+        "method": "direct_live_web",
+        "records": [
+          {
+            "symbol": "QQQ",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/etf/qqq/",
+            "access_status": "success",
+            "price": "747.58",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular_close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "QQQ",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/QQQ/",
+            "access_status": "failed",
+            "price": null,
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": null,
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": "Failed to fetch https://finance.yahoo.com/quote/QQQ/: (429) Too Many Requests"
+          },
+          {
+            "symbol": "QQQ",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-qqq",
+            "access_status": "success",
+            "price": "747.58",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular_last_inferred",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Each requested page was opened once; no retries or alternative sources were used.",
+          "Stock Analysis separately displayed pre-market 754.23 at Oct 9, 2026, 5:30 AM EDT; this was excluded from the regular closing record.",
+          "Webull's main price is inferred to be the regular last because its pre-market quote is displayed separately. No explicit regular quote event time or quote currency was returned; benchmark currency was not used.",
+          "Webull separately displayed pre-market 754.00 at 05:33 10/09 EDT; this time was not assigned to the regular quote.",
+          "No overnight or after-hours quote was returned. Neither accessible page displayed bid, ask, bid/ask sizes, size units, or BBO timestamps.",
+          "Crawl and page-check times were not used as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 50273,
+          "cached_input_tokens": 14080,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 655,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "wallet": "TQQQ_FAST",
+      "symbol": "TQQQ",
+      "phase": "round1",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:39:10.371391+00:00",
+      "ended_at": "2026-10-09T09:39:41.477347+00:00",
+      "elapsed_s": 31.11,
+      "exit_code": 0,
+      "session_id": "01a12006-7f7a-7951-bfaa-d05beb5e4ebe",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "f4d1a1ed3b32cb8d4a7c623deef493ef5a52556f16031926c1c4873cba8737a1",
+      "result": {
+        "account": "TQQQ_FAST",
+        "attempt": 1,
+        "method": "direct_live_web",
+        "records": [
+          {
+            "symbol": "TQQQ",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/etf/tqqq/",
+            "access_status": "success",
+            "price": "80.23",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "TQQQ",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/TQQQ/",
+            "access_status": "failed",
+            "price": null,
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": null,
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": "Failed to fetch: (429) Too Many Requests"
+          },
+          {
+            "symbol": "TQQQ",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-tqqq",
+            "access_status": "success",
+            "price": "80.23",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular last (inferred from separate after-hours display)",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Each requested page was opened once; no retries or alternative sources were used.",
+          "Stock Analysis separately displayed pre-market 82.20 at Oct 9, 2026, 5:19 AM EDT; excluded from the regular quote.",
+          "Webull separately displayed after-hours 80.25 at 19:59 10/08 EDT; that timestamp was not assigned to the regular quote. Regular quote event time and quote currency were absent.",
+          "Bid, ask, sizes, size units and BBO timestamps were absent from returned page content; Yahoo Finance returned no quote content.",
+          "Crawl times were not used as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 50460,
+          "cached_input_tokens": 14080,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 592,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "wallet": "TQQQ_PATIENT",
+      "symbol": "TQQQ",
+      "phase": "round1",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:39:29.195139+00:00",
+      "ended_at": "2026-10-09T09:39:53.648782+00:00",
+      "elapsed_s": 24.45,
+      "exit_code": 0,
+      "session_id": "01a12006-8d8f-7bb1-9024-e6bb633d98f5",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "0b785f4d9bbc6fd75ee97a490366550c9f3a6dae2b9730a353debda225ec8ce6",
+      "result": {
+        "account": "TQQQ_PATIENT",
+        "attempt": 1,
+        "method": "direct_live_web",
+        "records": [
+          {
+            "symbol": "TQQQ",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/etf/tqqq/",
+            "access_status": "success",
+            "price": "80.23",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "TQQQ",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/TQQQ/",
+            "access_status": "failed",
+            "price": null,
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": null,
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": "Failed to fetch https://finance.yahoo.com/quote/TQQQ/: (429) Too Many Requests"
+          },
+          {
+            "symbol": "TQQQ",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-tqqq",
+            "access_status": "success",
+            "price": "80.23",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular last (inferred from separate pre-market display)",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Each requested page was opened once; no retries or alternative sources were used.",
+          "Stock Analysis and Webull displayed separate pre-market quotes, excluded from regular quote fields. Neither returned an overnight or after-hours quote.",
+          "Webull's main quote lacks an explicit regular quote event string and quote currency; its benchmark's USD label was not used as quote currency.",
+          "Returned content displayed no bid/ask, bid/ask sizes, size units, or BBO/size timestamps. Closing and pre-market times were not assigned to BBO.",
+          "Crawl and page-check times were not treated as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 50476,
+          "cached_input_tokens": 23296,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 595,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "wallet": "EWC_BALANCED",
+      "symbol": "EWC",
+      "phase": "round1",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:39:41.477683+00:00",
+      "ended_at": "2026-10-09T09:40:04.766691+00:00",
+      "elapsed_s": 23.29,
+      "exit_code": 0,
+      "session_id": "01a12006-b2bd-7610-b189-b491001c4c3a",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "8a0f1eb4eab2db4c07196bf6e1edc768bf9ec1834c83917053dd5a5a83840be2",
+      "result": {
+        "account": "EWC_BALANCED",
+        "attempt": 1,
+        "method": "direct_live_web",
+        "records": [
+          {
+            "symbol": "EWC",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/etf/ewc/",
+            "access_status": "success",
+            "price": "58.32",
+            "currency": "USD",
+            "quote_event_time_text": "Oct 8, 2026, 4:00 PM EDT - Market closed",
+            "session": "regular close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "EWC",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/EWC/",
+            "access_status": "failed",
+            "price": null,
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": null,
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": "Failed to fetch https://finance.yahoo.com/quote/EWC/: (429) Too Many Requests"
+          },
+          {
+            "symbol": "EWC",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nysearca-ewc",
+            "access_status": "success",
+            "price": "58.32",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular last (inferred from separate after-hours display)",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Each requested page was opened once; no retries or alternative sources were used.",
+          "Stock Analysis and Webull returned no bid, ask, sizes, size units, or BBO timestamps.",
+          "Webull displayed a separate after-hours price of 58.32 at 19:30 10/08 EDT; that timestamp was not assigned to the regular last quote. Regular quote event time and quote currency were absent.",
+          "No overnight quote was displayed in the returned content. Crawl and page-check times were not used as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 50204,
+          "cached_input_tokens": 23296,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 587,
+          "reasoning_output_tokens": 12
+        }
+      ]
+    },
+    {
+      "wallet": "US_FAST",
+      "symbol": "AAPL",
+      "phase": "round2",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:42:53.578302+00:00",
+      "ended_at": "2026-10-09T09:43:16.758778+00:00",
+      "elapsed_s": 23.18,
+      "exit_code": 0,
+      "session_id": "01a12006-04f9-7113-93de-50d7a70508c1",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "b5be1aeb068f73aa47054d5e8486f7f7cf00836e39ec658f5d72ad749a9cde2b",
+      "result": {
+        "account": "US_FAST",
+        "attempt": 2,
+        "method": "browser_yahoo_plus_live_web",
+        "records": [
+          {
+            "symbol": "AAPL",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/stocks/aapl/",
+            "access_status": "success",
+            "price": "340.42",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular_close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "AAPL",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/AAPL/",
+            "access_status": "supplied_visible_dom",
+            "price": "340.42",
+            "currency": "USD",
+            "quote_event_time_text": "At close: October 8 at 4:00:00 PM EDT",
+            "session": "regular_close",
+            "bid": "338.02",
+            "ask": "342.47",
+            "bid_size": "400",
+            "ask_size": "400",
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "AAPL",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-aapl",
+            "access_status": "success",
+            "price": "340.42",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular_last_inferred",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Stock Analysis and Webull were each opened once this turn. Yahoo was extracted only from the supplied visible DOM excerpt and was not reopened.",
+          "Yahoo capture time 2026-10-09T09:38:58.765Z is separate from its displayed regular quote event time.",
+          "Yahoo displayed bid 338.02 x 400 and ask 342.47 x 400. Size unit, BBO timestamp, and BBO session were absent; neither closing time nor pre-market time was assigned to BBO.",
+          "Webull's main price is inferred to be regular last because it separately displays a pre-market quote. Its regular quote event time and currency were absent.",
+          "All three sources separately displayed pre-market quotes, excluded from regular prices and timestamps. No overnight or after-hours quote was used.",
+          "Stock Analysis and Webull returned no bid/ask, bid/ask sizes, size units, or BBO timestamps. Crawl/page times were not treated as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 114092,
+          "cached_input_tokens": 74368,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1215,
+          "reasoning_output_tokens": 12
+        }
+      ]
+    },
+    {
+      "wallet": "US_EVENT",
+      "symbol": "AAPL",
+      "phase": "round2",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:42:53.578702+00:00",
+      "ended_at": "2026-10-09T09:43:20.558444+00:00",
+      "elapsed_s": 26.98,
+      "exit_code": 0,
+      "session_id": "01a12006-04f9-7153-85aa-70664393684c",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "477cde958b02d4741889c249795cb6313b8c9938024dab6c6667b81ff09ce8b1",
+      "result": {
+        "account": "US_EVENT",
+        "attempt": 2,
+        "method": "browser_yahoo_plus_live_web",
+        "records": [
+          {
+            "symbol": "AAPL",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/stocks/aapl/",
+            "access_status": "success",
+            "price": "340.42",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "AAPL",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/AAPL/",
+            "access_status": "supplied visible browser DOM excerpt",
+            "price": "340.42",
+            "currency": "USD",
+            "quote_event_time_text": "At close: October 8 at 4:00:00 PM EDT",
+            "session": "regular close",
+            "bid": "338.02",
+            "ask": "342.47",
+            "bid_size": "400",
+            "ask_size": "400",
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "AAPL",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-aapl",
+            "access_status": "success",
+            "price": "340.42",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular last (inferred from separate pre-market display)",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Stock Analysis and Webull were each opened once this turn. Yahoo was extracted only from the supplied visible DOM excerpt and was not reopened.",
+          "Yahoo capture time was 2026-10-09T09:38:58.765Z; it is not the regular quote event time or a BBO timestamp.",
+          "Yahoo displayed bid 338.02 x 400 and ask 342.47 x 400, with no size unit, BBO timestamp, or explicit BBO session. The closing timestamp was not assigned to BBO.",
+          "Stock Analysis and Webull returned no displayed bid/ask sizes, size units, or BBO timestamps. Webull also omitted explicit regular quote time and currency.",
+          "All three sources separately displayed pre-market quotes, which were excluded from regular quote fields. No overnight or after-hours quote was identified.",
+          "Crawl, fetch, and page-check times were not used as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 114111,
+          "cached_input_tokens": 74368,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1227,
+          "reasoning_output_tokens": 10
+        }
+      ]
+    },
+    {
+      "wallet": "US_PATIENT",
+      "symbol": "AAPL",
+      "phase": "round2",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:43:16.759197+00:00",
+      "ended_at": "2026-10-09T09:43:41.770694+00:00",
+      "elapsed_s": 25.01,
+      "exit_code": 0,
+      "session_id": "01a12006-36c1-7003-b1bc-4ec1663425c2",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "96ac4f9aa44797c23665026201fc3c961a45b73ea10bc96491c5d7c1bc5aedc8",
+      "result": {
+        "account": "US_PATIENT",
+        "attempt": 2,
+        "method": "browser_yahoo_plus_live_web",
+        "records": [
+          {
+            "symbol": "AAPL",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/stocks/aapl/",
+            "access_status": "success",
+            "price": "340.42",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular_close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "AAPL",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/AAPL/",
+            "access_status": "supplied_visible_dom_excerpt",
+            "price": "340.42",
+            "currency": "USD",
+            "quote_event_time_text": "At close: October 8 at 4:00:00 PM EDT",
+            "session": "regular_close",
+            "bid": "338.02",
+            "ask": "342.47",
+            "bid_size": "400",
+            "ask_size": "400",
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "AAPL",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-aapl",
+            "access_status": "success",
+            "price": "340.42",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular_last_inferred_from_separate_premarket_display",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Stock Analysis and Webull were opened once each this turn. Yahoo was extracted only from the supplied visible DOM excerpt and was not reopened.",
+          "Yahoo capture time 2026-10-09T09:38:58.765Z is separate from its regular quote event time and is not a BBO timestamp.",
+          "Yahoo displayed bid 338.02 x 400 and ask 342.47 x 400; size unit, BBO timestamp, and BBO session were absent. No closing or premarket timestamp was assigned to BBO.",
+          "Stock Analysis and Webull returned no bid/ask, sizes, size units, or BBO timestamps. Webull returned no explicit regular quote event time or currency; its regular-session classification is inferred.",
+          "Separate premarket quotes were excluded from regular prices. No overnight or after-hours quote was used. Crawl, fetch, and page-check times were not treated as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 123359,
+          "cached_input_tokens": 78976,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1211,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "wallet": "QQQ_FAST",
+      "symbol": "QQQ",
+      "phase": "round2",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:43:20.558949+00:00",
+      "ended_at": "2026-10-09T09:43:48.285732+00:00",
+      "elapsed_s": 27.73,
+      "exit_code": 0,
+      "session_id": "01a12006-4b7f-7cf3-930e-d964f6cb3e00",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "6194601a7f7ac6c280f6d1364cfcc7d976868cd919ab71d39bbb28152e310de6",
+      "result": {
+        "account": "QQQ_FAST",
+        "attempt": 2,
+        "method": "browser_yahoo_plus_live_web",
+        "records": [
+          {
+            "symbol": "QQQ",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/etf/qqq/",
+            "access_status": "success",
+            "price": "747.58",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular_close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "QQQ",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/QQQ/",
+            "access_status": "supplied_visible_dom_excerpt",
+            "price": "747.58",
+            "currency": "USD",
+            "quote_event_time_text": "At close: October 8 at 4:00:00 PM EDT",
+            "session": "regular_close",
+            "bid": "717.24",
+            "ask": "717.49",
+            "bid_size": "100",
+            "ask_size": "100",
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "QQQ",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-qqq",
+            "access_status": "success",
+            "price": "747.58",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular_last_inferred_from_separate_premarket_display",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Stock Analysis and Webull were opened once each this turn. Yahoo was extracted solely from the supplied visible DOM excerpt and was not reopened.",
+          "Yahoo capture time 2026-10-09T09:38:34.737Z is capture metadata, not quote event time.",
+          "Yahoo displayed bid 717.24 x 100 and ask 717.49 x 100. Size unit, BBO/size timestamp and BBO session were absent; the regular closing timestamp was not assigned to BBO.",
+          "Stock Analysis and Webull returned no bid, ask, sizes, size units or BBO/size timestamps. Webull did not explicitly display regular quote event time or quote currency.",
+          "Excluded premarket quotes: Stock Analysis 754.23 at Oct 9, 2026, 5:30 AM EDT; Yahoo 754.00 at 5:38:06 AM EDT; Webull 754.00 at 05:33 10/09 EDT.",
+          "No overnight or after-hours quote was displayed in this turn's quote content. Crawl/page times were not used as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 122932,
+          "cached_input_tokens": 78720,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1320,
+          "reasoning_output_tokens": 15
+        }
+      ]
+    },
+    {
+      "wallet": "QQQ_PATIENT",
+      "symbol": "QQQ",
+      "phase": "round2",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:43:41.771047+00:00",
+      "ended_at": "2026-10-09T09:44:08.000918+00:00",
+      "elapsed_s": 26.23,
+      "exit_code": 0,
+      "session_id": "01a12006-6ac6-7da1-9dae-96bbc9dea99b",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "6899ece197d2325b8c209872594e2383ca44207877bf737254033d30a0079891",
+      "result": {
+        "account": "QQQ_PATIENT",
+        "attempt": 2,
+        "method": "browser_yahoo_plus_live_web",
+        "records": [
+          {
+            "symbol": "QQQ",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/etf/qqq/",
+            "access_status": "success",
+            "price": "747.58",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular_close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "QQQ",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/QQQ/",
+            "access_status": "supplied_visible_dom_excerpt",
+            "price": "747.58",
+            "currency": "USD",
+            "quote_event_time_text": "At close: October 8 at 4:00:00 PM EDT",
+            "session": "regular_close",
+            "bid": "717.24",
+            "ask": "717.49",
+            "bid_size": "100",
+            "ask_size": "100",
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "QQQ",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-qqq",
+            "access_status": "success",
+            "price": "747.58",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular_last_inferred",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Stock Analysis and Webull were opened once each this turn. Yahoo was extracted solely from the supplied visible DOM excerpt and was not reopened.",
+          "Yahoo capture time 2026-10-09T09:38:34.737Z is separate from its displayed regular quote event time.",
+          "Yahoo displayed bid 717.24 x 100 and ask 717.49 x 100. Size units, BBO timestamp, and BBO session were absent; the closing timestamp does not apply to BBO.",
+          "Stock Analysis separately displayed pre-market 754.23 at Oct 9, 2026, 5:30 AM EDT; Yahoo displayed pre-market 754.00 at 5:38:06 AM EDT; Webull displayed pre-market 754.00 at 05:33 10/09 EDT. These were excluded from regular quote fields.",
+          "Webull's main price is inferred to be regular last because pre-market is displayed separately. Its regular quote event time and quote currency were absent.",
+          "Stock Analysis and Webull returned no displayed bid/ask, bid/ask sizes, size units, or BBO timestamps.",
+          "No overnight or after-hours quote was provided in the returned content. Crawl, capture, and page-check times were not used as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 122984,
+          "cached_input_tokens": 69632,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1360,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "wallet": "TQQQ_FAST",
+      "symbol": "TQQQ",
+      "phase": "round2",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:43:48.285978+00:00",
+      "ended_at": "2026-10-09T09:44:16.075671+00:00",
+      "elapsed_s": 27.79,
+      "exit_code": 0,
+      "session_id": "01a12006-7f7a-7951-bfaa-d05beb5e4ebe",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "ecbda4448115f4ee1bbfe19641273e516587e7fca32fc975c47300dabaa65b72",
+      "result": {
+        "account": "TQQQ_FAST",
+        "attempt": 2,
+        "method": "browser_yahoo_plus_live_web",
+        "records": [
+          {
+            "symbol": "TQQQ",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/etf/tqqq/",
+            "access_status": "success",
+            "price": "80.23",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "TQQQ",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/TQQQ/",
+            "access_status": "supplied visible browser DOM excerpt",
+            "price": "80.23",
+            "currency": "USD",
+            "quote_event_time_text": "At close: October 8 at 4:00:00 PM EDT",
+            "session": "regular close",
+            "bid": "73.08",
+            "ask": "73.65",
+            "bid_size": "15100",
+            "ask_size": "15100",
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "TQQQ",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-tqqq",
+            "access_status": "success",
+            "price": "80.23",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular last (inferred from separate pre-market display)",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Stock Analysis and Webull were each opened once this turn. Yahoo was extracted only from the supplied visible DOM excerpt and was not reopened.",
+          "Yahoo capture time 2026-10-09T09:38:42.819Z is separate from quote event time. Its displayed bid/ask sizes have no explicit unit or timestamp; BBO session is unknown, and the closing timestamp was not assigned to BBO.",
+          "Stock Analysis separately displayed pre-market 82.20 at Oct 9, 2026, 5:19 AM EDT; Yahoo displayed pre-market 82.20 at 5:37:56 AM EDT; Webull displayed pre-market 82.21 at 05:36 10/09 EDT. These were excluded from regular prices.",
+          "Webull did not explicitly display regular quote event time or quote currency. Stock Analysis and Webull returned no bid/ask, sizes, size units or BBO timestamps.",
+          "Crawl and capture times were not used as quote event times. No overnight or after-hours quote was used."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 123641,
+          "cached_input_tokens": 70016,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1269,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "wallet": "TQQQ_PATIENT",
+      "symbol": "TQQQ",
+      "phase": "round2",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:44:08.001408+00:00",
+      "ended_at": "2026-10-09T09:44:30.976630+00:00",
+      "elapsed_s": 22.98,
+      "exit_code": 0,
+      "session_id": "01a12006-8d8f-7bb1-9024-e6bb633d98f5",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "fe7013e7cd3c103f1d9d5b7ce38d04ce0e5e5032cfd7d62878bff8b97db98b02",
+      "result": {
+        "account": "TQQQ_PATIENT",
+        "attempt": 2,
+        "method": "browser_yahoo_plus_live_web",
+        "records": [
+          {
+            "symbol": "TQQQ",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/etf/tqqq/",
+            "access_status": "success",
+            "price": "80.23",
+            "currency": "USD",
+            "quote_event_time_text": "At close: Oct 8, 2026, 4:00 PM EDT",
+            "session": "regular close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "TQQQ",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/TQQQ/",
+            "access_status": "supplied visible browser DOM excerpt",
+            "price": "80.23",
+            "currency": "USD",
+            "quote_event_time_text": "At close: October 8 at 4:00:00 PM EDT",
+            "session": "regular close",
+            "bid": "73.08",
+            "ask": "73.65",
+            "bid_size": "15100",
+            "ask_size": "15100",
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "TQQQ",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nasdaq-tqqq",
+            "access_status": "success",
+            "price": "80.23",
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": "regular last (inferred from separate pre-market display)",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          }
+        ],
+        "notes": [
+          "Stock Analysis and Webull were each opened once this turn. Yahoo was extracted only from the supplied browser excerpt and was not reopened.",
+          "Yahoo browser capture time: 2026-10-09T09:38:42.819Z. This is separate from the displayed regular quote event time.",
+          "Yahoo displayed Bid 73.08 x 15100 and Ask 73.65 x 15100. Size units, BBO session, and BBO/size timestamps were absent; neither closing nor pre-market time was assigned to them.",
+          "Stock Analysis and Webull returned no bid/ask, sizes, size units, or BBO/size timestamps.",
+          "Webull did not explicitly display a regular quote event time or quote currency; the benchmark USD label was not used as quote currency.",
+          "Separate pre-market quotes were excluded from regular price/time fields. No overnight or after-hours quote was displayed in the supplied or returned quote content. Crawl and page-check times were not used as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 123666,
+          "cached_input_tokens": 79232,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1227,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "wallet": "EWC_BALANCED",
+      "symbol": "EWC",
+      "phase": "round2",
+      "technical_attempt": 1,
+      "started_at": "2026-10-09T09:44:16.076006+00:00",
+      "ended_at": "2026-10-09T09:44:44.711800+00:00",
+      "elapsed_s": 28.64,
+      "exit_code": 0,
+      "session_id": "01a12006-b2bd-7610-b189-b491001c4c3a",
+      "session_matches_previous": true,
+      "marker_matches": true,
+      "structured_output_valid": true,
+      "subscription_quota_error_observed": false,
+      "tool_types": [
+        "web_search",
+        "web_search"
+      ],
+      "raw_jsonl_sha256": "75038e933b44b3488b306d6b0e887462fc49fa8465dcdf3852277eb2a91bbcae",
+      "result": {
+        "account": "EWC_BALANCED",
+        "attempt": 2,
+        "method": "browser_yahoo_plus_live_web",
+        "records": [
+          {
+            "symbol": "EWC",
+            "source": "Stock Analysis",
+            "url": "https://stockanalysis.com/etf/ewc/",
+            "access_status": "success",
+            "price": "58.32",
+            "currency": "USD",
+            "quote_event_time_text": "Oct 8, 2026, 4:00 PM EDT - Market closed",
+            "session": "regular close",
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "EWC",
+            "source": "Yahoo Finance",
+            "url": "https://finance.yahoo.com/quote/EWC/",
+            "access_status": "supplied visible browser DOM excerpt",
+            "price": "58.32",
+            "currency": "USD",
+            "quote_event_time_text": "At close: October 8 at 4:00:00 PM EDT",
+            "session": "regular close",
+            "bid": "58.44",
+            "ask": "58.71",
+            "bid_size": "80000",
+            "ask_size": "290000",
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": null
+          },
+          {
+            "symbol": "EWC",
+            "source": "Webull",
+            "url": "https://www.webull.com/quote/nysearca-ewc",
+            "access_status": "success; regular session attribution unclear",
+            "price": null,
+            "currency": null,
+            "quote_event_time_text": null,
+            "session": null,
+            "bid": null,
+            "ask": null,
+            "bid_size": null,
+            "ask_size": null,
+            "size_unit": null,
+            "supporting_text": null,
+            "failure_reason": "Returned price 58.32 with Closed 19:30 10/08 EDT, without an explicit regular last/closing event; regular-session attribution could not be established."
+          }
+        ],
+        "notes": [
+          "Stock Analysis and Webull were each opened once this turn. Yahoo was extracted only from the supplied browser excerpt and was not reopened.",
+          "Yahoo capture time was 2026-10-09T09:38:51.030Z; this is separate from its regular closing quote event time. Yahoo labels the quote delayed.",
+          "Yahoo bid/ask sizes are preserved as displayed. Their size unit, BBO timestamp, and session are absent; the closing timestamp was not assigned to BBO.",
+          "Stock Analysis and Webull returned no bid/ask, sizes, size units, or BBO timestamps.",
+          "Webull's 19:30 timestamp falls outside regular hours and was not used as a regular closing event. No explicit overnight quote was returned. Crawl and page-check times were not used as quote event times."
+        ]
+      },
+      "token_usage_events": [
+        {
+          "input_tokens": 122393,
+          "cached_input_tokens": 78592,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1203,
+          "reasoning_output_tokens": 12
+        }
+      ]
+    }
+  ]
+}
