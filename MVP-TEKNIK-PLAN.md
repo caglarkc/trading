@@ -1,6 +1,6 @@
 # Canlı Trading MVP — Uygulama ve Teknik Plan
 
-Güncelleme: 8 Ekim 2026. Durum: ürün/mimari sözleşmesi ve ayrıntılı uygulama tasarımı yazıldı; ürün kodu, kurulum, giriş ve sunucu bağlantısı henüz yapılmadı. Uygulama ayrıntıları 12. bölümdedir. Abonelik türü, sunucunun ortak kullanım durumu ve SSH erişim bilgisi kullanıcıdan bekleniyor. Gerçek abonelik erişimi, kimlik/oturum izolasyonu ve üç güncel fiyat kaynağının Hetzner'de çalışması kurulum kabul koşuludur. Bu koşullar geçmeden çalışan trading pilotu ilan edilmez.
+Güncelleme: 9 Ekim 2026. Durum: ürün/mimari sözleşmesi ve ayrıntılı uygulama tasarımı yazıldı. Kullanıcı ChatGPT Pro aboneliğini, paylaşılan Hetzner sunucusunu ve root SSH erişimini doğruladı; model seçimini sonraya bıraktı. Salt okunur SSH/kapasite incelemesi yapıldı; ürün kodu, trading kurulumu ve Codex hesap girişi henüz yapılmadı. Uygulama ayrıntıları 12. bölümdedir. Gerçek abonelik bağlantısı, kimlik/oturum izolasyonu ve üç güncel fiyat kaynağının Hetzner'de çalışması kurulum kabul koşuludur. Bu koşullar geçmeden çalışan trading pilotu ilan edilmez.
 
 Bu belge güncel teknik uygulama sözleşmesidir. Ürün kararları ve kaynak kapsamı [deney-plani.md](research/deney-plani.md) içindedir. Önceki beş belgenin değiştirilmeden korunmuş kopyaları [arşivdedir](research/archive-2026-10-08/MVP-TEKNIK-PLAN.md). Arşivdeki sayısal ETF/Python/API pilotu güncel MVP'nin gereksinimi değildir.
 
@@ -28,7 +28,9 @@ Bu belge güncel teknik uygulama sözleşmesidir. Ürün kararları ve kaynak ka
 
 **Geliştirme ve çalışma ortamı: Hetzner, hedef IP: `167.235.158.118`.** Backend, model bağlantıları, veri toplama ve sunucu testleri bu uzaktaki ortamda geliştirilip çalıştırılır. Mac yalnız yerel web gözlem uygulaması, kaynak dosyalarının düzenlenmesi ve uzak ortama erişim için kullanılır.
 
-**Bulunan hedef sunucu IP'si: 167.235.158.118.** 8 Ekim'de Mac'in ~/.ssh/known_hosts kayıtlarında ve anoons / 4-product-one-community projelerinin yerel deploy ayarlarında aynı IP bulundu; yerel Hetzner ayarı da bu adresi işaret ediyor. IP plana kaydedildi, sunucuya bağlantı kurulmadı. SSH kullanıcı/port/anahtar uygunluğu ve mevcut server servisleri uygulamanın ilk erişim incelemesinde doğrulanır; bu eski kayıt sunucunun bugün erişilebilir olduğunu kanıtlamaz.
+**Hedef sunucu: `root@167.235.158.118`, SSH portu `22`.** 8 Ekim'de IP yerel kayıt/deploy ayarlarında bulundu. Kullanıcının 9 Ekim yetkisiyle mevcut Mac SSH kimliği kullanılarak BatchMode ve StrictHostKeyChecking açık halde salt okunur bağlantı başarılı oldu. Mevcut servislerde değişiklik yapılmadı. Root erişimi başlangıç envanteri/kurulum içindir; trading servisleri ve agent süreçleri ayrı yetkilerle çalışır.
+
+9 Ekim envanteri: `immense-machine-v1`, Ubuntu 22.04.5 LTS, 4 vCPU, 7.747 MiB toplam RAM, kontrol anında 3.682 MiB available RAM; swap yok. Ana diskte yaklaşık 45 GiB boş yer var. Docker 29.3.1 ve Compose v5.1.1 mevcut, çeşitli projelerin konteynerleri çalışıyor. Bu tek anlık kontrol yeni uygulamanın kapasite kabulü değildir. Host PATH'inde `codex` bulunmadı; başka proje/container içinde bulunmadığı sonucu çıkarılmaz. Başlangıç render concurrency'si paylaşılan kapasite nedeniyle 1 olarak seçildi.
 
 Tek Hetzner sunucusunda Go HTTP servisi, worker/scheduler, PostgreSQL ve cüzdanlara özel Codex çalışma ortamları bulunur. Mevcut sunucu işletim sistemi ve kaynakları kurulumda okunur; sunucuyu sıfırlama veya yeni ücretli kaynak satın alma bu planın parçası değildir. Mevcut Linux dağıtımında container çalıştırma uygunsa Docker Compose ile dağıtım yapılır; sürümler kurulumda sabitlenir. [Docker Compose resmi belgesi](https://docs.docker.com/compose/). Yerel headless Chromium sadece kaynak sayfasının render gerektirdiği durumda çalışır. Ücretli veri servisi veya görünmeyen piyasa API'sine geçiş yapılmaz.
 
@@ -198,11 +200,11 @@ Kaçırılmış karar işi sonraki normal oturumda yeni veriyle devam eder; geç
 
 ### 6.1. Resmi abonelik bağlantısı
 
-Hetzner'de resmi Codex CLI, ChatGPT abonelik kimliğiyle çalışır. İlk kurulum headless device-code girişiyle planlanır: link/kod sunucuda üretilir, kullanıcı Mac tarayıcısında giriş adımını tamamlar. Bunun gerçek hesapta kullanılabilirliği kurulumda doğrulanır; otomatik giriş olmuş kabul edilmez. Kaynak: [resmi kimlik doğrulama / headless login](https://learn.chatgpt.com/docs/auth).
+Hetzner'de resmi Codex CLI, mevcut ChatGPT Pro abonelik kimliğiyle çalışır. Kullanıcı 9 Ekim'de mevcut aboneliğin kullanılmasını ve model seçiminin sonraya bırakılmasını istedi; abonelik yükseltmesi/kota tercihi yeniden sorulmaz. İlk kurulum headless device-code girişiyle planlanır: link/kod sunucuda üretilir, kullanıcı Mac tarayıcısında giriş adımını tamamlar. Bunun gerçek hesapta kullanılabilirliği kurulumda doğrulanır; otomatik giriş olmuş kabul edilmez. Kaynak: [resmi kimlik doğrulama / headless login](https://learn.chatgpt.com/docs/auth).
 
 Go runner CLI'yi doğrudan süreç olarak çalıştırır; prompt stdin ile verilir, JSONL olaylar okunur. İlk thread.started kimliği wallet_id ile eşlenir; sonraki çalışmalarda açık session ID ile resume yapılır. Ortak --last kullanılmaz. Geçerli JSON kararına kendi Go API'miz üzerinden emir gönderilir, backend makbuzu aynı oturuma geri verilir. İş/sonuç/sessiyon bağlantısı transaction ile kaydedilir. Yetkilendirme modelin metinde yazdığı wallet_id'ye güvenmez. [CLI otomasyon, JSONL ve resume](https://learn.chatgpt.com/docs/non-interactive-mode).
 
-Başlangıçta **2 paralel cüzdan worker'ı** seçildi; sayı config ile değişebilir. Aynı cüzdanda tek aktif writer vardır. Sekiz oturum tek hesabın kullanım hakkını paylaşır; gerçek eşzamanlı kapasite kurulumda ölçülür. Aynı temel model, CLI/config sürümü ve reasoning ayarı sekiz cüzdanda ortak kaydedilir. Kullanılacak model ID ilk abonelik erişim kontrolünde hesaptaki katalogdan seçilip sabitlenir; sessiz otomatik başka modele geçiş yok. Gemini/OpenRouter/Claude ile retry yapılmaz.
+Başlangıçta **2 paralel cüzdan worker'ı** seçildi; sayı config ile değişebilir. Aynı cüzdanda tek aktif writer vardır. Sekiz oturum tek hesabın kullanım hakkını paylaşır; gerçek eşzamanlı kapasite kurulumda ölçülür. Aynı temel model, CLI/config sürümü ve reasoning ayarı sekiz cüzdanda ortak kaydedilir. Model ID kullanıcıyla daha sonra seçilip pilot başlamadan sabitlenir; ilk bağlantı prototipindeki geçici model bunun nihai seçimi değildir ve kaydedilir. Sessiz otomatik başka modele geçiş yok. Gemini/OpenRouter/Claude ile retry yapılmaz.
 
 Canlı arama modu açıkça ayarlanır; cached sonuç fiyat güncelliği kanıtı değildir. Web metni veri olarak değerlendirilir; sayfadaki talimat hesap/karakter/araç yetkisini değiştiremez. [Canlı web araması ve ağ ayrımı](https://learn.chatgpt.com/docs/web-search).
 
@@ -297,7 +299,7 @@ Gecelik encrypted DB+özel rollout/konfigürasyon yedeği sunucuda 7 günlük ve
 
 Maliyet/takas/parasal transaction değişiklikleri için anlamlı otomatik testler gerekir; plan metni veya basit statik ekran değişikliği için sahte test yazılmaz. Bu tabloda kabul, yazılım doğruluğudur; yatırım başarısı değerlendirmesi değildir.
 
-Plan aşamasında yapılmış işler: resmi belgelerin okunması, ücretsiz sayfa erişim kontrolü, kararların seçilmesi ve belgelerin revizyonu. Yapılmamış işler: sunucuya giriş, CLI login/installation, product code, DB seed, canlı normal seans üçlü/BBO testi veya sanal trade.
+Plan aşamasında yapılmış işler: resmi belgelerin okunması, ücretsiz sayfa erişim kontrolü, kararların seçilmesi ve belgelerin revizyonu. 9 Ekim'de salt okunur sunucu erişim ve kapasite envanteri de yapıldı. Yapılmamış işler: trading kurulumu, CLI login/installation, product code, DB seed, canlı normal seans üçlü/BBO testi veya sanal trade.
 
 ## 11. Son genel revizyon sonucu
 
@@ -309,7 +311,7 @@ Plan aşamasında yapılmış işler: resmi belgelerin okunması, ücretsiz sayf
 - Yıllık hedef, kıyaslar ve başarı değerlendirmesi kullanıcı kararıyla sonraya bırakıldı; bakiye/işlem gözlemi korundu.
 - Fiyat/likidite testi veri çekme prototipi aşamasına yerleştirildi; bütün yapı tamamlanana kadar beklenmez. Hafıza ayrılığı kendi modülü içinde kısa işlev/yetki kontrolüyle doğrulanır. Ücretsiz kaynaklara erişimin başarılı olacağı vaat edilmedi.
 
-Bu revizyon kod yazmaya veya sunucuya kurulum yapmaya başlamadı. Sonraki uygulama işi, yukarıdaki sıranın ilk maddesidir.
+Belge revizyonu ürün kodu veya trading kurulumu başlatmadı; 9 Ekim'de ayrıca salt okunur SSH envanteri yapıldı. Sonraki uygulama işi, yukarıdaki sıranın ilk maddesidir.
 
 ## 12. Ayrıntılı uygulama tasarımı — 8 Ekim 2026
 
@@ -360,7 +362,7 @@ Sunucuda `/opt/trading` kaynak/release; `/var/lib/trading` kalıcı veriler; `/e
 
 Geliştirme/staging ile çalışan pilot farklı Compose proje adı, PG veritabanı ve volume kullanır. Başlangıçta yalnız staging vardır; kabulden sonra pilot açılır. Staging denemeleri pilot ledger'ına veya model oturumuna yazamaz. Her ortam bir defa seed edilir; tekrar deploy 100.000 USD eklemez.
 
-İki CLI ve en çok iki Chromium işi için başlangıç kapasite hedefi yaklaşık 4 vCPU / 8 GiB RAM'dir; bu ölçülmüş gereksinim veya satın alma kararı değildir. Gerçek sunucunun boş kapasitesine göre browser concurrency ve servis CPU/RAM limitleri ayarlanır. Kapasite yetersizliği ücretsiz kaynak/borsa kurallarını gevşetmez. Mevcut servisler için pay bırakılır; OOM veya disk baskısı görünür hata olur.
+İki CLI ve başlangıçta en çok bir Chromium işi için kapasite hedefi yaklaşık 4 vCPU / 8 GiB toplam RAM'dir; bu ölçülmüş gereksinim veya satın alma kararı değildir. Gerçek sunucunun boş kapasitesine göre browser concurrency ve servis CPU/RAM limitleri ayarlanır. Kapasite yetersizliği ücretsiz kaynak/borsa kurallarını gevşetmez. Mevcut servisler için pay bırakılır; OOM veya disk baskısı görünür hata olur.
 
 ### 12.3. Baştan sona günlük veri ve karar akışı
 
@@ -391,7 +393,7 @@ Reader yalnız izinli public URL'leri okur. Yönlendirmeler dahil private/loopba
 
 ### 12.5. Fiyat worker kapasitesi ve kabul çıktısı
 
-Başlangıçta global HTTP concurrency 8, render concurrency 2; her kaynak domain'inde en çok bir aktif okuma vardır. İstekler arasında başlangıç aralığı en az bir saniyedir; kaynağın ilan edilen daha sıkı kuralı ve Retry-After önceliklidir. Bu değerler erişim hakkı/kapasite kanıtı değildir; prototip sonucu düşürülebilir. Bağımsız sitelerin okumaları paralel yapılır. HTTP yeterliyse Chromium açılmaz.
+Başlangıçta global HTTP concurrency 8, render concurrency 1; her kaynak domain'inde en çok bir aktif okuma vardır. İstekler arasında başlangıç aralığı en az bir saniyedir; kaynağın ilan edilen daha sıkı kuralı ve Retry-After önceliklidir. Bu değerler erişim hakkı/kapasite kanıtı değildir; prototip sonucu düşürülebilir. Bağımsız sitelerin okumaları paralel yapılır. HTTP yeterliyse Chromium açılmaz.
 
 Bir asset'in aynı döngüdeki okuması bütün cüzdanlar/işler için bir kez yapılır. Aynı kaydı tekrar kullanmak tazelik şartını kaldırmaz. Öncelik sırası: kısa ömürlü MARKET, aktif koşullu emir, eldeki varlık değerlemesi, genel keşif. Süresi geçen görev yeni döngüye taşınırken eski gerçekleşme üretmez; backlog ve atlanan döngü sayısı görünür.
 
@@ -459,7 +461,7 @@ Scheduler UTC'de kalıcı `due_at` üretir; seans hesapları America/New_York ta
 
 ### 12.10. Abonelik adapter'i ve kimlik izolasyonu
 
-ChatGPT aboneliği browser sohbeti otomasyonu ile bağlanmaz; mevcut resmi Codex CLI adapter'i kullanılır. Device login kullanıcı tarayıcısında tamamlanır. Model ID ve reasoning ayarı erişim denemesinde ortak seçilip config sürümüyle sabitlenir. Yerel Mac'te gözlenen `0.162.0-alpha.2` CLI, Hetzner'e kurulacak sürüm veya hesap erişim kanıtı değildir. Hetzner kurulumu resmi dağıtımın test edilen sürümünü sabitler. [Resmi auth](https://learn.chatgpt.com/docs/auth), [exec/JSONL/resume](https://learn.chatgpt.com/docs/non-interactive-mode).
+ChatGPT aboneliği browser sohbeti otomasyonu ile bağlanmaz; mevcut resmi Codex CLI adapter'i kullanılır. Device login kullanıcı tarayıcısında tamamlanır. Mevcut abonelik ChatGPT Pro'dur. Nihai model ID ve reasoning ayarı kullanıcıyla daha sonra ortak seçilip pilot öncesi config sürümüyle sabitlenir; erişim denemesinde kullanılan geçici seçim ayrı kaydedilir. Yerel Mac'te gözlenen `0.162.0-alpha.2` CLI, Hetzner'e kurulacak sürüm veya hesap erişim kanıtı değildir. Hetzner kurulumu resmi dağıtımın test edilen sürümünü sabitler. [Resmi auth](https://learn.chatgpt.com/docs/auth), [exec/JSONL/resume](https://learn.chatgpt.com/docs/non-interactive-mode).
 
 Go `exec.CommandContext` CLI'yi sabit binary ve argümanlarla başlatır; model metni shell komutuna interpolate edilmez. Prompt stdin'dedir. Stdout JSONL parser ve stderr ayrı, boyut sınırlı log akışı olarak okunur. Process group timeout'ta sonlandırılır; alt süreçlerin kaldığı doğrulanır. Aynı session ID'ye concurrent resume yapılmaz. Resume ile schema/config ayarlarının kullanılan sürümde nasıl uygulandığı adapter kabulünde doğrulanır; desteklenmeyen flag varsayılmaz. [Go subprocess API](https://pkg.go.dev/os/exec).
 
@@ -540,6 +542,6 @@ Execution başlangıçta kapalıdır; kaynak ve muhasebe kabulü sonrası truste
 | 7 | Mac gözlem ve SSH proxy | Backendle aynı sayılar, güncellik/bağlantı/ops durumları görünür |
 | 8 | Staging bütünleşik normal seans + recovery/restore | Double fill yok, eski tetik geriye yazılmaz, checkpoint geri açılır; ardından pilot etkinleştirilebilir |
 
-Kullanıcıdan beklenen bilgiler: mevcut ChatGPT planı; Hetzner'in başka canlı projelerle paylaşılıp paylaşılmadığı; mevcut SSH kullanıcı/port veya bağlantı alias'ı. Öneri mevcut abonelikle başlangıç, paylaşılan sunucuda izole trading deployment ve mevcut Mac SSH anahtarıdır. Parola/token/özel anahtar içeriği konuşmaya istenmez. Bu bilgiler gelmeden sunucu kurulumu veya hesap girişi yapılmış sayılmaz; planın bağımsız modül tasarımı tamamlanabilir.
+9 Ekim kullanıcı cevapları kesinleşti: mevcut ChatGPT Pro aboneliği kullanılır; model seçimi sonraya bırakılır. Hetzner başka projelerle paylaşılır; trading izole deployment ve kaynak sınırlarıyla kurulur. `root@167.235.158.118:22` erişimi mevcut Mac SSH kimliğiyle salt okunur doğrulandı. Parola/token/özel anahtar içeriği istenmez. Kullanıcıdan bu aşamada ek planlama kararı beklenmez; gerçek Codex login adımı ve nihai model seçimi kendi uygulama aşamasında yapılır.
 
-Henüz kanıtlanmamış teknik koşullar: ücretsiz üç güncel fiyat + kullanılabilir BBO/size; aynı koşullarda istek kapasitesi; resmi runner'ın özel session/auth/refresh izolasyonu ve iki paralel çağrıyı hesapta desteklemesi; sunucunun boş kaynakları. Bunlar masa başında kesinleşen ürün tercihi değildir. Küçük ilk prototiplerde ölçülür ve sonuç gerektirdiğinde ilgili teknik bölüm revize edilir.
+Henüz kanıtlanmamış teknik koşullar: ücretsiz üç güncel fiyat + kullanılabilir BBO/size; aynı koşullarda istek kapasitesi; resmi runner'ın özel session/auth/refresh izolasyonu ve iki paralel çağrıyı hesapta desteklemesi; sunucuda trading için ayrılabilecek sürdürülebilir kapasite (9 Ekim anlık envanteri aşağıdaki yükün kabulü değildir). Bunlar masa başında kesinleşen ürün tercihi değildir. Küçük ilk prototiplerde ölçülür ve sonuç gerektirdiğinde ilgili teknik bölüm revize edilir.

@@ -1,6 +1,6 @@
 # ABD hisse ve ETF tahmini için matematiksel algoritmalar
 
-**Güncel MVP geliştirme ve çalışma ortamı: Hetzner (`167.235.158.118`).** Backend/model/veri işleri uzaktaki sunucudadır; Mac gözlem uygulaması ve uzak erişim içindir. Aşağıdaki tarihsel yöntem kataloğu bu yerleşimi değiştirmez; sunucu bağlantısı henüz yapılmadı.
+**Güncel MVP geliştirme ve çalışma ortamı: Hetzner (`167.235.158.118`).** Backend/model/veri işleri uzaktaki sunucudadır; Mac gözlem uygulaması ve uzak erişim içindir. Aşağıdaki tarihsel yöntem kataloğu bu yerleşimi değiştirmez; 9 Ekim'de root/22 SSH erişimi salt okunur doğrulandı; trading kurulumu yapılmadı. Mevcut ChatGPT Pro kullanılır, model seçimi sonraya bırakılmıştır.
 
 Güncel kapsam notu: 8 Ekim 2026. Bu dosya **2 Ekim sayısal P1 yöntem kataloğudur; güncel canlı trading MVP'nin uygulama sözleşmesi değildir**. Python/Ridge/GARCH, quantile hedefi, konfigürasyon bütçesi, sabit cutoff ve istatistiksel değerlendirme bu MVP'de uygulanmayacak. Kullanıcı değerlendirmeyi sonraya bıraktı. Yeni model/metrik ekleme taahhüdü yoktur.
 

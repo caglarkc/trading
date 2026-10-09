@@ -1,12 +1,12 @@
 # Canlı Trading Pilotu — Kesin Ürün ve Model Sözleşmesi
 
-**Geliştirme ve çalışma ortamı: Hetzner (`167.235.158.118`).** Backend, model bağlantıları ve veri işleri uzaktaki sunucudadır; Mac yerel web gözlem uygulaması ve uzak ortama erişim içindir. Sunucu bağlantısı ve SSH erişim doğrulaması henüz yapılmadı.
+**Geliştirme ve çalışma ortamı: Hetzner (`167.235.158.118`).** Backend, model bağlantıları ve veri işleri uzaktaki sunucudadır; Mac yerel web gözlem uygulaması ve uzak ortama erişim içindir. 9 Ekim'de `root@167.235.158.118:22` ile salt okunur SSH erişimi doğrulandı; trading kurulumu yapılmadı.
 
-Güncelleme: 8 Ekim 2026. Kullanıcı 1–4 numaralı ayrıntıları asistana bıraktı; Hetzner backend / Mac frontend yerleşimini seçti, başarı değerlendirmesini şimdilik erteledi. Son genel revizyon yapıldı. Kod veya sunucu kurulumu başlamadı; gerçek erişim testleri [teknik planın kabul koşullarındadır](../MVP-TEKNIK-PLAN.md#10-geliştirme-sırası-ve-kabul-koşulları).
+Güncelleme: 9 Ekim 2026. Kullanıcı 1–4 numaralı ayrıntıları asistana bıraktı; Hetzner backend / Mac frontend yerleşimini seçti, başarı değerlendirmesini şimdilik erteledi. Son genel revizyon yapıldı. Kod veya sunucu kurulumu başlamadı; gerçek erişim testleri [teknik planın kabul koşullarındadır](../MVP-TEKNIK-PLAN.md#10-geliştirme-sırası-ve-kabul-koşulları).
 
 Bu belge ürün kararlarının ve modelin görev metinlerinin kaynağıdır. Emir, maliyet, jobs, API, veri modeli, kurulum sırası ve çalışabilirlik sınırlarının tek teknik kaynağı [MVP-TEKNIK-PLAN.md](../MVP-TEKNIK-PLAN.md)'dir. Önceki sürümün tamamı [arşivde korunur](archive-2026-10-08/deney-plani.md); eski sayısal P1 deneyi güncel MVP'ye uygulanmaz.
 
-8 Ekim teknik ayrıntılandırması: aynı teknik belgenin 12. bölümü kod modülleri, veritabanı/transaction, kuyruk, CLI/auth sınırları, veri kapasitesi, API, yedek ve release tasarımını içerir. Mevcut abonelik türü, sunucunun ortak kullanımı ve SSH erişim bilgisi beklenir; ilk prototiplerin fiili kabulü henüz yapılmadı.
+8 Ekim teknik ayrıntılandırması: aynı teknik belgenin 12. bölümü kod modülleri, veritabanı/transaction, kuyruk, CLI/auth sınırları, veri kapasitesi, API, yedek ve release tasarımını içerir. 9 Ekim'de kullanıcı mevcut ChatGPT Pro aboneliğini ve sunucunun başka projelerle paylaşıldığını doğruladı; root SSH erişimi salt okunur sınandı. Model seçimi sonraya bırakıldı. İlk abonelik/veri prototiplerinin fiili kabulü henüz yapılmadı.
 
 ## 1. Ürün ve kapsam
 
@@ -14,7 +14,7 @@ Canlı ileriye dönük pilot A, ortak piyasa olgularını kullanan sekiz bağım
 
 Dört kategori ABD bireysel hisseleri, QQQ, TQQQ ve EWC'dir. EWC Kanada hisselerine maruziyet sağlayan ABD'de USD kotasyonlu ETF'dir; Çin piyasası değildir. QQQ/TQQQ ortak Nasdaq-100 maruziyetlidir, ayrı bağımsız piyasalar sayılmaz. TQQQ'nun günlük üç kat hedefi, uzun dönem QQQ getirisini üçle çarpmak değildir; simülasyon kendi gerçek ürün fiyatını kullanır.
 
-İlk erişim GPT aboneliğiyle resmi Codex CLI'dir; Gemini ve model API seçenekleri daha sonra. Claude zorunlu değil, OpenRouter kapsam dışı. Fiyat/haber için ek abonelik ve veri API anahtarı yok. Hazır trading API/backend kullanılmaz; kendi Go/chi kodu yazılır.
+İlk erişim mevcut ChatGPT Pro aboneliğiyle resmi Codex CLI'dir; nihai model kullanıcıyla daha sonra seçilir; Gemini ve model API seçenekleri daha sonra. Claude zorunlu değil, OpenRouter kapsam dışı. Fiyat/haber için ek abonelik ve veri API anahtarı yok. Hazır trading API/backend kullanılmaz; kendi Go/chi kodu yazılır.
 
 ## 2. Hesaplar ve serbestlik
 
@@ -198,6 +198,6 @@ Gözlem gereksinimi korunur: her cüzdanın kendi parası, açık varlıkların 
 
 Ürün kararları bu belgeye, teknik uygulama kararları MVP planına birleştirildi. Eski P1 evreni/cutoff/Python/anahtarlı API mimarisi güncel kapsamdan çıkarıldı ve arşive alındı. Matematik/repo/uzman raporları yöntem geçmişi olarak etiketlendi; güncel uygulamayı geçersiz kılan ikinci bir “aktif plan” değildir.
 
-Kullanıcıdan kalan strateji/risk/süre kararı yoktur. Kurulumda sunucuya erişim, gerçek hesap girişi ve model katalog bilgisi gerekir. Kullanıcının 8 Ekim yönlendirmesiyle üç canlı fiyat ve likidite alanları **veri çekme prototipi aşamasında**, bütün yapı tamamlanmadan Hetzner'de sınanır; kaynak/okuyucu değişiklikleri gerektiğinde burada yapılır. Bu çalışma henüz yapılmadı. Hafıza ayrılığı için ayrı uzun test fazı yoktur; kendi modülü yazılırken iki cüzdanla doğru not/session ve erişim yetkisi kontrol edilir. Planın tamamlanması gerçek veri erişiminin başarılı olduğu anlamına gelmez.
+Kullanıcıdan kalan strateji/risk/süre kararı yoktur. Sunucuya root SSH erişimi 9 Ekim'de doğrulandı; kurulumda gerçek Codex hesap girişi gerekir. Nihai model seçimi kullanıcı kararıyla sonraya bırakıldı. Kullanıcının 8 Ekim yönlendirmesiyle üç canlı fiyat ve likidite alanları **veri çekme prototipi aşamasında**, bütün yapı tamamlanmadan Hetzner'de sınanır; kaynak/okuyucu değişiklikleri gerektiğinde burada yapılır. Bu çalışma henüz yapılmadı. Hafıza ayrılığı için ayrı uzun test fazı yoktur; kendi modülü yazılırken iki cüzdanla doğru not/session ve erişim yetkisi kontrol edilir. Planın tamamlanması gerçek veri erişiminin başarılı olduğu anlamına gelmez.
 
 Sonraki uygulama sırası teknik planda verilmiştir. Bu revizyonda ürün kodu veya sunucu kurulumu yapılmadı.

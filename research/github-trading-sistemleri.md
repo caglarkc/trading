@@ -1,6 +1,6 @@
 # GitHub trading sistemleri araştırması
 
-**Güncel MVP geliştirme ve çalışma ortamı: Hetzner (`167.235.158.118`).** Kendi backend'imiz, model bağlantıları ve veri işleri uzaktaki sunucuda geliştirilip çalıştırılır; Mac yerel web gözlem uygulaması ve uzak erişim içindir. Sunucu bağlantısı henüz yapılmadı.
+**Güncel MVP geliştirme ve çalışma ortamı: Hetzner (`167.235.158.118`).** Kendi backend'imiz, model bağlantıları ve veri işleri uzaktaki sunucuda geliştirilip çalıştırılır; Mac yerel web gözlem uygulaması ve uzak erişim içindir. 9 Ekim'de root/22 SSH erişimi salt okunur doğrulandı; sunucu başka projelerle paylaşılır ve trading ayrı kurulacaktır. Mevcut ChatGPT Pro kullanılır; model seçimi sonraya bırakıldı.
 
 Güncel kapsam notu: 8 Ekim 2026. Bu katalog **2 Ekim repo incelemesinin yöntem geçmişidir**, güncel uygulama bağımlılık listesi değildir. Kullanıcı kendi Go backend'ini seçti; hazır trading API/backend, Python batch, Qlib/LEAN/NautilusTrader/FinRL motoru güncel MVP'ye eklenmez. HTTP routing için chi ve depolama için PostgreSQL kullanılması kendi iş kurallarımızı başka bir trading ürünüyle değiştirmez.
 
