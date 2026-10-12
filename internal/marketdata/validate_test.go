@@ -9,9 +9,9 @@ import (
 func ptr[T any](v T) *T { return &v }
 func testRows(now time.Time) []Observation {
 	return []Observation{
-		{ID: "one", AssetID: "asset", SourceID: "one", IdentityVerified: true, Price: ptr("99.5"), Currency: "USD", PriceType: "LAST", Session: "REGULAR", EventTime: ptr(now.Add(-time.Minute))},
-		{ID: "two", AssetID: "asset", SourceID: "two", IdentityVerified: true, Price: ptr("100"), Currency: "USD", PriceType: "LAST", Session: "REGULAR", EventTime: ptr(now.Add(-30 * time.Second))},
-		{ID: "three", AssetID: "asset", SourceID: "three", IdentityVerified: true, Price: ptr("100.5"), Currency: "USD", PriceType: "LAST", Session: "REGULAR", EventTime: ptr(now)},
+		{ID: "one", AssetID: "asset", SourceID: "one", IdentityVerified: true, Price: ptr("99.5"), Currency: "USD", PriceType: "LAST", Session: "REGULAR", ObservedAt: now.Add(-time.Minute)},
+		{ID: "two", AssetID: "asset", SourceID: "two", IdentityVerified: true, Price: ptr("100"), Currency: "USD", PriceType: "LAST", Session: "REGULAR", ObservedAt: now.Add(-30 * time.Second)},
+		{ID: "three", AssetID: "asset", SourceID: "three", IdentityVerified: true, Price: ptr("100.5"), Currency: "USD", PriceType: "LAST", Session: "REGULAR", ObservedAt: now},
 	}
 }
 func TestPriceBoundaryAndEvidenceFailures(t *testing.T) {
@@ -25,15 +25,12 @@ func TestPriceBoundaryAndEvidenceFailures(t *testing.T) {
 	}{
 		{"over_one_percent", func(r []Observation) []Observation { r[2].Price = ptr("100.500001"); return r }},
 		{"stale", func(r []Observation) []Observation {
-			r[0].EventTime = ptr(now.Add(-time.Minute - time.Nanosecond))
+			r[0].ObservedAt = now.Add(-time.Minute - time.Nanosecond)
 			return r
 		}},
-		{"future", func(r []Observation) []Observation { r[2].EventTime = ptr(now.Add(time.Nanosecond)); return r }},
-		{"missing_source_time", func(r []Observation) []Observation { r[0].EventTime = nil; return r }},
+		{"future", func(r []Observation) []Observation { r[2].ObservedAt = now.Add(time.Nanosecond); return r }},
+		{"missing_read_time", func(r []Observation) []Observation { r[0].ObservedAt = time.Time{}; return r }},
 		{"currency", func(r []Observation) []Observation { r[0].Currency = "CAD"; return r }},
-		{"close_substitution", func(r []Observation) []Observation { r[0].PriceType = "CLOSE"; return r }},
-		{"after_hours", func(r []Observation) []Observation { r[0].Session = "AFTER_HOURS"; return r }},
-		{"delayed", func(r []Observation) []Observation { r[0].Delayed = true; return r }},
 		{"duplicate_source", func(r []Observation) []Observation { r[0].SourceID = r[1].SourceID; return r }},
 		{"wrong_share_class", func(r []Observation) []Observation { r[0].AssetID = "other-class"; return r }},
 		{"two_sources", func(r []Observation) []Observation { return r[:2] }},
@@ -63,6 +60,26 @@ func TestBBOMissingTimeOrUnits(t *testing.T) {
 	r.BBOTime = nil
 	if VerifyLiquidity(r, now) {
 		t.Fatal("time invented")
+	}
+}
+
+func TestReadTimeValidationDoesNotRequireVendorMetadata(t *testing.T) {
+	now := time.Now().UTC()
+	rows := testRows(now)
+	for i := range rows {
+		rows[i].EventTime = nil
+		rows[i].Currency = ""
+		rows[i].Session = "UNKNOWN"
+		rows[i].PriceType = "UNKNOWN"
+		rows[i].Delayed = true
+	}
+	if v := Validate("asset", rows, now, true); !v.Verified {
+		t.Fatal(v)
+	}
+	rows[0].ObservedAt = now.Add(-61 * time.Second)
+	rows[0].EventTime = &now
+	if v := Validate("asset", rows, now, true); v.Verified {
+		t.Fatal("vendor timestamp hid a stale read", v)
 	}
 }
 func TestHTMLAndClosedTimeAttribution(t *testing.T) {
