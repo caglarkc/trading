@@ -1,0 +1,141 @@
+{
+  "environment": "hetzner-trading_flow",
+  "verified_at_utc": "2026-10-12T16:09:03.049036+00:00",
+  "service": {
+    "MainPID": "614136",
+    "NRestarts": "0",
+    "ActiveState": "active",
+    "SubState": "running",
+    "UnitFileState": "enabled"
+  },
+  "model": "gpt-6.1-sol",
+  "reasoning": "low",
+  "concurrency": 2,
+  "availability": "persistent systemd service; enabled at boot; automatic restart",
+  "routine_decisions": "two sessions per US trading day: open +30 minutes and close -60 minutes; scheduled research and accounting remain server-side",
+  "startup_research": {
+    "state": "completed",
+    "last_error": null,
+    "result": {
+      "model": "gpt-6.1-sol",
+      "evidence": 4,
+      "findings": 5,
+      "reasoning": "low",
+      "session_id": "01a130d7-6a85-77e1-885e-268f8fe50a16",
+      "duration_ms": 100149,
+      "output_hash": "1257d50883dc8f1c558eb51882f80715e19f9697cc70dd504df2ea9a745c7ee4"
+    }
+  },
+  "wallets": [
+    {
+      "code": "EWC-BALANCED",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T16:04:32.508259+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 4,
+      "actions": [
+        "HOLD"
+      ]
+    },
+    {
+      "code": "QQQ-FAST",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T16:05:41.145507+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 6,
+      "actions": [
+        "HOLD"
+      ]
+    },
+    {
+      "code": "QQQ-PATIENT",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T16:02:45.829571+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 6,
+      "actions": [
+        "HOLD"
+      ]
+    },
+    {
+      "code": "TQQQ-FAST",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T16:04:37.419413+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 4,
+      "actions": [
+        "HOLD"
+      ]
+    },
+    {
+      "code": "TQQQ-PATIENT",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T16:06:58.885441+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 4,
+      "actions": [
+        "HOLD"
+      ]
+    },
+    {
+      "code": "US-EVENT",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T16:06:12.892449+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 6,
+      "actions": [
+        "HOLD"
+      ]
+    },
+    {
+      "code": "US-FAST",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T16:07:33.229247+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 6,
+      "actions": [
+        "HOLD"
+      ]
+    },
+    {
+      "code": "US-PATIENT",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T16:03:14.758169+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 6,
+      "actions": [
+        "HOLD"
+      ]
+    }
+  ],
+  "control": {
+    "paused": false,
+    "execution_enabled": false,
+    "live_acceptance": {}
+  },
+  "orders": 0,
+  "fills": 0,
+  "restart_check": "service restarted after all eight completed; PID changed; wallet decisions, receipts, memories, orders and fills unchanged",
+  "tests": "go test ./... passed; targeted actors/modelrunner/jobs tests passed after final prompt edit",
+  "live_quote_check": {
+    "symbol": "QQQ",
+    "as_of": "2026-10-12T16:02:29.01398296Z",
+    "market_open": true,
+    "price_verified": false,
+    "reason": "quote_metadata_unverified",
+    "liquidity_verified": false
+  },
+  "limitations": [
+    "Live three-source timestamp and bid/ask size acceptance remains open; execution is disabled.",
+    "All eight startup decisions were HOLD; first-purchase preparation is recorded in private model decisions and memories.",
+    "Full backup/restore acceptance is not established by this service restart check."
+  ]
+}
