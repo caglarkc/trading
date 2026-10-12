@@ -193,11 +193,15 @@ func (r *Reader) renderPage(ctx context.Context, target string) (Page, error) {
 	defer func() { <-r.render }()
 	ctx, cancel := context.WithTimeout(ctx, 25*time.Second)
 	defer cancel()
-	opts := append(chromedp.DefaultExecAllocatorOptions[:], chromedp.ExecPath(r.ChromePath), chromedp.NoSandbox, chromedp.Flag("disable-dev-shm-usage", true))
+	opts := append(chromedp.DefaultExecAllocatorOptions[:], chromedp.ExecPath(r.ChromePath), chromedp.NoSandbox, chromedp.Flag("disable-dev-shm-usage", true), chromedp.NoInheritEnv, chromedp.Env("HOME=/tmp", "PATH=/usr/bin:/bin", "XDG_CONFIG_HOME=/tmp", "XDG_CACHE_HOME=/tmp"))
 	alloc, stop := chromedp.NewExecAllocator(ctx, opts...)
 	defer stop()
 	browser, closeBrowser := chromedp.NewContext(alloc)
 	defer closeBrowser()
+	// Allocate once before any event consumer can issue concurrent CDP calls.
+	if err := chromedp.Do(browser); err != nil {
+		return Page{}, err
+	}
 	events := chromedp.Events(browser, fetch.RequestPaused)
 	go func() {
 		for paused, eventErr := range events {
