@@ -19,14 +19,15 @@ type AccountEvent struct {
 }
 
 type Asset struct {
-	ID               uuid.UUID `json:"id"`
-	Symbol           string    `json:"symbol"`
-	Name             string    `json:"name"`
-	Category         string    `json:"category"`
-	Exchange         string    `json:"exchange"`
-	Aliases          []byte    `json:"aliases"`
-	Fixed            bool      `json:"fixed"`
-	ExecutionBlocked bool      `json:"execution_blocked"`
+	ID               uuid.UUID          `json:"id"`
+	Symbol           string             `json:"symbol"`
+	Name             string             `json:"name"`
+	Category         string             `json:"category"`
+	Exchange         string             `json:"exchange"`
+	Aliases          []byte             `json:"aliases"`
+	Fixed            bool               `json:"fixed"`
+	ExecutionBlocked bool               `json:"execution_blocked"`
+	QuoteNotBefore   pgtype.Timestamptz `json:"quote_not_before"`
 }
 
 type CalendarEvent struct {
@@ -86,6 +87,7 @@ type DecisionRun struct {
 	RuntimeEvents []byte             `json:"runtime_events"`
 	DurationMs    pgtype.Int8        `json:"duration_ms"`
 	Usage         []byte             `json:"usage"`
+	OutputBytes   []byte             `json:"output_bytes"`
 }
 
 type DynamicMember struct {
