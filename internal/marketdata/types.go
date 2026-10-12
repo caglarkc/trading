@@ -55,7 +55,10 @@ type Snapshot struct {
 	Observations      []Observation `json:"observations"`
 	Validation        Validation    `json:"validation"`
 	LiquidityVerified bool          `json:"liquidity_verified"`
+	ExecutionMode     string        `json:"execution_mode,omitempty"`
 }
+
+const ObservedPriceMode = "observed-price-v1"
 
 type Page struct {
 	PublishedAt          *time.Time
