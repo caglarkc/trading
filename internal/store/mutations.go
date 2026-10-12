@@ -263,7 +263,7 @@ func (s *Store) ApplyAction(ctx context.Context, wallet, decision string, x doma
 				if x.AssetID != nil {
 					var category string
 					var fixed bool
-					e = tx.QueryRow(ctx, "SELECT category,(fixed OR id IN (SELECT asset_id FROM dynamic_members WHERE version_id=(SELECT id FROM universe_versions ORDER BY effective_at DESC LIMIT 1)) OR ($2 AND EXISTS(SELECT 1 FROM position_lots WHERE asset_id=assets.id AND wallet_id=$3 AND quantity>0))) FROM assets WHERE id=$1", *x.AssetID, x.Side != nil && *x.Side == "SELL", wid).Scan(&category, &fixed)
+					e = tx.QueryRow(ctx, "SELECT category,(fixed OR id IN (SELECT asset_id FROM dynamic_members WHERE version_id=(SELECT id FROM universe_versions ORDER BY effective_at DESC LIMIT 1)) OR id IN (SELECT asset_id FROM wallet_watchlist_members WHERE wallet_id=$3 AND active) OR ($2 AND EXISTS(SELECT 1 FROM position_lots WHERE asset_id=assets.id AND wallet_id=$3 AND quantity>0))) FROM assets WHERE id=$1", *x.AssetID, x.Side != nil && *x.Side == "SELL", wid).Scan(&category, &fixed)
 					if e == nil {
 						allowed = category == row.Category && (row.Category != "US" || fixed)
 					}
