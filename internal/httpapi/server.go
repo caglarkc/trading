@@ -69,6 +69,17 @@ func (s *Server) Router() http.Handler {
 	})
 	r.Route("/operator", func(r chi.Router) {
 		r.Use(s.operatorAuth)
+		r.Get("/observation", func(w http.ResponseWriter, r *http.Request) {
+			ctx, cancel := context.WithTimeout(r.Context(), 8*time.Second)
+			defer cancel()
+			v, e := s.Operator.Observation(ctx)
+			if e != nil {
+				fail(w, 503, "observation_unavailable")
+				return
+			}
+			v.Execution = v.Execution && s.ExecutionEnabled
+			respond(w, 200, v)
+		})
 		r.Get("/wallets", func(w http.ResponseWriter, r *http.Request) {
 			v, e := s.Operator.Wallets(r.Context())
 			if e != nil {

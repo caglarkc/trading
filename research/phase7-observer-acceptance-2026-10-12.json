@@ -1,0 +1,27 @@
+{
+  "url": "http://127.0.0.1:5173",
+  "backend": "Hetzner trading_flow localhost18880",
+  "transport": "SSH localhost18883 and server-only operator proxy",
+  "balance": {
+    "wallets": 8,
+    "equity_usd": "800000",
+    "available_usd": "800000",
+    "execution_enabled": false
+  },
+  "checks": {
+    "typecheck_and_build": "passed",
+    "desktop_1440x1000": "passed",
+    "mobile_390x844": "passed; outer document width390, table intentionally scrollable",
+    "account_selection": "passed",
+    "decision_detail": "actual QQQ HOLD shown",
+    "system_status": "actual jobs/pending receipts shown",
+    "tunnel_interruption": "passed; preserved last successful amounts/time and explicit disconnect alert",
+    "tunnel_recovery": "passed",
+    "browser_console": "no app warning/error before intentional connection failure",
+    "missing_valuation_unit_test": "passed; unknown position value never becomes zero"
+  },
+  "design_reference": "design/observer-concept.png",
+  "browser": "Codex IAB via cua_repl",
+  "view_image_pair": "reference + latest desktop + mobile inspected",
+  "open_live_gate": "normal-session triple price/BBO pending; fills disabled"
+}

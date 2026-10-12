@@ -1,0 +1,1 @@
+{"name":"trading-observer","private":true,"version":"0.1.0","type":"module","scripts":{"dev":"node observe.mjs","build":"tsc --noEmit && vite build","preview":"vite preview --host 127.0.0.1 --port 5173 --strictPort"},"devDependencies":{"vite":"8.3.4","typescript":"6.0.2","@types/node":"25.0.10"}}
