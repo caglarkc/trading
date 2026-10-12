@@ -77,6 +77,18 @@ func main() {
 		fail(e)
 	}
 	reader := marketdata.NewReader(*chrome)
+	reader.RenderURL = os.Getenv("RENDER_URL")
+	if reader.RenderURL != "" {
+		reader.ChromePath = ""
+	}
+	calFile := os.Getenv("CALENDAR_FILE")
+	if calFile == "" {
+		calFile = "config/calendar.json"
+	}
+	cal, e := calendar.Load(calFile)
+	if e != nil {
+		fail(e)
+	}
 	encoder := json.NewEncoder(os.Stdout)
 	wanted := map[string]bool{"QQQ": true, "TQQQ": true, "EWC": true, "AAPL": true, "JPM": true, "XOM": true, "BRK.B": true}
 	for _, a := range list {
@@ -87,7 +99,7 @@ func main() {
 			continue
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
-		snapshot := reader.Collect(ctx, a, false)
+		snapshot := reader.Collect(ctx, a, cal.Open(time.Now()))
 		cancel()
 		if e = encoder.Encode(snapshot); e != nil {
 			fail(e)
