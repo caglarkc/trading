@@ -330,13 +330,23 @@ func (s *Store) Execute(ctx context.Context, wallet, order string, snapshot mark
 		}
 		before := clone(a)
 		var blocked bool
-		if e = tx.QueryRow(ctx, "SELECT execution_blocked FROM assets WHERE id=$1", snapshot.Asset.ID).Scan(&blocked); e != nil {
+		var epoch *time.Time
+		if e = tx.QueryRow(ctx, "SELECT execution_blocked,quote_not_before FROM assets WHERE id=$1", snapshot.Asset.ID).Scan(&blocked, &epoch); e != nil {
 			return e
 		}
 		if blocked {
 			out.Status = "waiting"
 			out.Error = "corporate_action_unresolved"
 			return nil
+		}
+		if epoch != nil {
+			for _, o := range snapshot.Observations {
+				if o.ObservedAt.Before(*epoch) {
+					out.Status = "waiting"
+					out.Error = "post_corporate_quote_required"
+					return nil
+				}
+			}
 		}
 		fill, opErr := a.TryFill(order, snapshot, now, cal, fee)
 		out.Order = a.Orders[order]
@@ -346,6 +356,12 @@ func (s *Store) Execute(ctx context.Context, wallet, order string, snapshot mark
 			_, e = tx.Exec(ctx, "INSERT INTO fills(id,wallet_id,order_id,body,occurred_at) VALUES($1,$2,$3,$4,$5)", fill.ID, wid, order, b, now)
 			if e != nil {
 				return e
+			}
+			if snapshot.ExecutionMode == marketdata.ObservedPriceMode {
+				_, e = tx.Exec(ctx, "INSERT INTO execution_quotes(id,asset_id,body,observed_at) VALUES($1,$2,$3,$4) ON CONFLICT(id) DO NOTHING", fill.QuoteID, snapshot.Asset.ID, marshal(snapshot), now)
+				if e != nil {
+					return e
+				}
 			}
 			for _, ob := range snapshot.Observations {
 				if domain.QuoteKey(ob) == fill.QuoteID {
