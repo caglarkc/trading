@@ -9,6 +9,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/netip"
 	"net/url"
 	"path"
 	"strings"
@@ -16,10 +17,13 @@ import (
 	"time"
 
 	"github.com/chromedp/cdproto/fetch"
+	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
 )
 
 type Reader struct {
+	Hosts      []string
+	RenderURL  string
 	Client     *http.Client
 	ChromePath string
 	mu         sync.Mutex
@@ -33,6 +37,7 @@ type Reader struct {
 
 func NewReader(chromePath string) *Reader {
 	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.Proxy = nil
 	transport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
 		host, port, e := net.SplitHostPort(address)
 		if e != nil {
@@ -52,7 +57,7 @@ func NewReader(chromePath string) *Reader {
 		}
 		return nil, last
 	}
-	r := &Reader{ChromePath: chromePath, gates: map[string]*sync.Mutex{}, last: map[string]time.Time{}, render: make(chan struct{}, 1), failures: map[string]int{}, cooldown: map[string]time.Time{}, slots: make(chan struct{}, 8)}
+	r := &Reader{Hosts: []string{"stockanalysis.com", "finance.yahoo.com", "webull.com"}, ChromePath: chromePath, gates: map[string]*sync.Mutex{}, last: map[string]time.Time{}, render: make(chan struct{}, 1), failures: map[string]int{}, cooldown: map[string]time.Time{}, slots: make(chan struct{}, 8)}
 	r.Client = &http.Client{Transport: transport, Timeout: 12 * time.Second, CheckRedirect: func(req *http.Request, via []*http.Request) error {
 		if len(via) >= 5 {
 			return fmt.Errorf("redirect limit")
@@ -77,6 +82,13 @@ func safeIPs(ctx context.Context, host string) ([]net.IP, error) {
 		return nil, fmt.Errorf("no public address")
 	}
 	for _, ip := range ips {
+		addr, _ := netip.AddrFromSlice(ip)
+		addr = addr.Unmap()
+		for _, network := range []string{"100.64.0.0/10", "192.0.0.0/24", "192.0.2.0/24", "198.18.0.0/15", "198.51.100.0/24", "203.0.113.0/24", "2001:db8::/32"} {
+			if netip.MustParsePrefix(network).Contains(addr) {
+				return nil, fmt.Errorf("reserved source address")
+			}
+		}
 		if !ip.IsGlobalUnicast() || ip.IsPrivate() || ip.IsLoopback() || ip.IsLinkLocalUnicast() {
 			return nil, fmt.Errorf("private or non-public source address")
 		}
@@ -95,6 +107,9 @@ func (r *Reader) page(ctx context.Context, target string, quote bool) (page Page
 	u, e := url.Parse(target)
 	if e != nil || u.Scheme != "https" || u.User != nil {
 		return Page{}, fmt.Errorf("invalid public URL")
+	}
+	if !r.permitted(target) {
+		return Page{}, fmt.Errorf("source_not_permitted")
 	}
 	if _, e = safeIPs(ctx, u.Hostname()); e != nil {
 		return Page{}, e
@@ -143,8 +158,8 @@ func (r *Reader) page(ctx context.Context, target string, quote bool) (page Page
 	case <-ctx.Done():
 		return Page{}, ctx.Err()
 	}
+	defer func() { <-r.slots }()
 	response, e := r.Client.Do(req)
-	<-r.slots
 	if e == nil {
 		defer response.Body.Close()
 		if response.StatusCode == http.StatusTooManyRequests {
@@ -171,11 +186,17 @@ func (r *Reader) page(ctx context.Context, target string, quote bool) (page Page
 			if len(b) > 5*1024*1024 {
 				return Page{}, fmt.Errorf("body exceeds 5 MiB")
 			}
+			if strings.Contains(strings.ToLower(response.Header.Get("Content-Type")), "application/pdf") {
+				return Page{}, fmt.Errorf("source_pdf_reader_required")
+			}
 			p := HTMLPage(string(b))
 			if p.RegularPrice != nil || (!quote && len(p.Text) > 100) {
 				return p, nil
 			}
 		}
+	}
+	if r.RenderURL != "" {
+		return r.remoteRender(ctx, target)
 	}
 	if r.ChromePath == "" {
 		return Page{}, fmt.Errorf("source inaccessible or needs render")
@@ -193,38 +214,35 @@ func (r *Reader) renderPage(ctx context.Context, target string) (Page, error) {
 	defer func() { <-r.render }()
 	ctx, cancel := context.WithTimeout(ctx, 25*time.Second)
 	defer cancel()
-	opts := append(chromedp.DefaultExecAllocatorOptions[:], chromedp.ExecPath(r.ChromePath), chromedp.NoSandbox, chromedp.Flag("disable-dev-shm-usage", true), chromedp.NoInheritEnv, chromedp.Env("HOME=/tmp", "PATH=/usr/bin:/bin", "XDG_CONFIG_HOME=/tmp", "XDG_CACHE_HOME=/tmp"))
+	opts := append(chromedp.DefaultExecAllocatorOptions[:], chromedp.ExecPath(r.ChromePath), chromedp.NoSandbox, chromedp.DisableGPU, chromedp.Flag("disable-software-rasterizer", true), chromedp.Flag("disable-features", "Vulkan"), chromedp.Flag("disable-dev-shm-usage", true), chromedp.Env("HOME=/tmp", "PATH=/usr/bin:/bin", "XDG_CONFIG_HOME=/tmp", "XDG_CACHE_HOME=/tmp"))
 	alloc, stop := chromedp.NewExecAllocator(ctx, opts...)
 	defer stop()
 	browser, closeBrowser := chromedp.NewContext(alloc)
 	defer closeBrowser()
-	// Allocate once before any event consumer can issue concurrent CDP calls.
-	if err := chromedp.Do(browser); err != nil {
-		return Page{}, err
+	if err := chromedp.Run(browser); err != nil {
+		return Page{}, fmt.Errorf("render_allocate: %w", err)
 	}
-	events := chromedp.Events(browser, fetch.RequestPaused)
-	go func() {
-		for paused, eventErr := range events {
-			if eventErr != nil {
-				return
-			}
-			go func(paused fetch.EventRequestPaused) {
-				u, e := url.Parse(paused.Request.URL)
-				if e == nil && (u.Scheme == "https" || u.Scheme == "http") {
-					_, e = safeIPs(browser, u.Hostname())
-				} else {
-					e = fmt.Errorf("non-public resource")
-				}
-				if e != nil {
-					_, _ = chromedp.Call(browser, fetch.FailRequest, fetch.FailRequestParams{RequestID: paused.RequestID, ErrorReason: "BlockedByClient"})
-				} else {
-					_, _ = chromedp.Call(browser, fetch.ContinueRequest, fetch.ContinueRequestParams{RequestID: paused.RequestID})
-				}
-			}(paused)
+	chromedp.ListenTarget(browser, func(event any) {
+		paused, ok := event.(*fetch.EventRequestPaused)
+		if !ok {
+			return
 		}
-	}()
-	if _, err := chromedp.Call(browser, fetch.Enable, fetch.EnableParams{}); err != nil {
-		return Page{}, err
+		go func() {
+			u, e := url.Parse(paused.Request.URL)
+			if e == nil && (u.Scheme == "https" || u.Scheme == "http") {
+				_, e = safeIPs(browser, u.Hostname())
+			} else {
+				e = fmt.Errorf("non-public resource")
+			}
+			if e != nil {
+				_ = chromedp.Run(browser, chromedp.ActionFunc(func(c context.Context) error { return fetch.FailRequest(paused.RequestID, "BlockedByClient").Do(c) }))
+			} else {
+				_ = chromedp.Run(browser, chromedp.ActionFunc(func(c context.Context) error { return fetch.ContinueRequest(paused.RequestID).Do(c) }))
+			}
+		}()
+	})
+	if err := chromedp.Run(browser, fetch.Enable()); err != nil {
+		return Page{}, fmt.Errorf("render_enable: %w", err)
 	}
 	type renderedPage struct {
 		Text, Heading, Title string
@@ -237,16 +255,10 @@ func (r *Reader) renderPage(ctx context.Context, target string) (Page, error) {
 	}
 	quoted, _ := json.Marshal(symbol)
 	js := fmt.Sprintf(`(()=>{const s=%s;const h=[...document.querySelectorAll('h1')];const heading=h.find(n=>n.innerText.includes('('+s+')'))||h.at(-1);const p=document.querySelector('fin-streamer[data-symbol="'+s+'"][data-field="regularMarketPrice"], [class~="text-4xl"]');return {Text:document.body.innerText,Heading:heading?.innerText||'',Title:document.title,Price:p?.innerText||null}})()`, quoted)
-	err := chromedp.Do(browser, chromedp.Navigate(target), chromedp.WaitReady(chromedp.CSS("body")))
+	var value renderedPage
+	err := chromedp.Run(browser, chromedp.ActionFunc(func(c context.Context) error { _, _, _, _, e := page.Navigate(target).Do(c); return e }), chromedp.Poll(`document.body && document.body.innerText.length>300`, nil), chromedp.Evaluate(js, &value))
 	if err != nil {
-		return Page{}, err
-	}
-	if _, err = chromedp.Run(browser, chromedp.Poll[bool](`document.body.innerText.length>300`)); err != nil {
-		return Page{}, err
-	}
-	value, err := chromedp.Run(browser, chromedp.Evaluate[renderedPage](js))
-	if err != nil {
-		return Page{}, err
+		return Page{}, fmt.Errorf("render_content: %w", err)
 	}
 	if regexpCaptcha(value.Title + "\n" + value.Text) {
 		return Page{}, fmt.Errorf("source_access_challenge")

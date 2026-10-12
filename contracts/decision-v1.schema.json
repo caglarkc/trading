@@ -34,8 +34,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "format": "uuid"
+            ]
           },
           "side": {
             "enum": [
@@ -72,15 +71,13 @@
             "type": [
               "string",
               "null"
-            ],
-            "format": "uuid"
+            ]
           },
           "oco_group_id": {
             "type": [
               "string",
               "null"
-            ],
-            "format": "uuid"
+            ]
           },
           "thesis": {
             "type": "string",
@@ -90,10 +87,8 @@
             "type": "array",
             "maxItems": 50,
             "items": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "uniqueItems": true
+              "type": "string"
+            }
           },
           "evidence_status": {
             "enum": [
@@ -122,8 +117,7 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "uniqueItems": true
+            }
           },
           "limit_price": {
             "type": [
@@ -150,66 +144,23 @@
         "required": [
           "action",
           "client_action_id",
+          "asset_id",
+          "side",
+          "quantity",
+          "order_type",
+          "time_in_force",
+          "target_order_id",
+          "oco_group_id",
           "thesis",
           "evidence_ids",
           "evidence_status",
           "expected_catalyst",
           "exit_condition",
-          "depends_on"
-        ],
-        "allOf": [
-          {
-            "if": {
-              "properties": {
-                "action": {
-                  "const": "HOLD"
-                }
-              }
-            },
-            "then": {
-              "required": [
-                "hold_reason"
-              ]
-            }
-          },
-          {
-            "if": {
-              "properties": {
-                "action": {
-                  "enum": [
-                    "SUBMIT",
-                    "REPLACE"
-                  ]
-                }
-              }
-            },
-            "then": {
-              "required": [
-                "asset_id",
-                "side",
-                "quantity",
-                "order_type",
-                "time_in_force"
-              ]
-            }
-          },
-          {
-            "if": {
-              "properties": {
-                "action": {
-                  "enum": [
-                    "CANCEL",
-                    "REPLACE"
-                  ]
-                }
-              }
-            },
-            "then": {
-              "required": [
-                "target_order_id"
-              ]
-            }
-          }
+          "hold_reason",
+          "depends_on",
+          "limit_price",
+          "stop_price",
+          "cash_budget_usd"
         ]
       }
     },

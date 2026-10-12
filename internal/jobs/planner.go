@@ -20,6 +20,33 @@ func (p Planner) Plan(ctx context.Context, now time.Time) error {
 	if _, e := p.Queue.Enqueue(ctx, Job{Kind: "settlement", Key: bucket.Format(time.RFC3339), Available: bucket, Deadline: bucket.Add(2 * time.Minute)}, nil, 2); e != nil {
 		return e
 	}
+	rows, err := p.Queue.Pool.Query(ctx, "SELECT id,expected_at FROM calendar_events WHERE status='verified_time' AND expected_at BETWEEN $1 AND $2", now.Add(-20*time.Minute), now.Add(24*time.Hour))
+	if err != nil {
+		return err
+	}
+	type calendarEvent struct {
+		id uuid.UUID
+		at time.Time
+	}
+	events := []calendarEvent{}
+	for rows.Next() {
+		var e calendarEvent
+		if err = rows.Scan(&e.id, &e.at); err != nil {
+			rows.Close()
+			return err
+		}
+		events = append(events, e)
+	}
+	err = rows.Err()
+	rows.Close()
+	if err != nil {
+		return err
+	}
+	for _, e := range events {
+		if err = p.EventJobs(ctx, e.id, e.at); err != nil {
+			return err
+		}
+	}
 	open, close, day, e := p.Calendar.Session(now)
 	if e != nil || !day {
 		return e
@@ -68,7 +95,7 @@ func (p Planner) Plan(ctx context.Context, now time.Time) error {
 	if !p.Calendar.Open(now) {
 		return nil
 	}
-	rows, e := p.Queue.Pool.Query(ctx, `SELECT asset_id::text, bool_or(body->>'order_type'='MARKET' OR body->>'order_type'='STOP_MARKET' AND (body->>'triggered')::boolean) FROM orders WHERE state IN ('accepted','waiting','partially_filled') GROUP BY asset_id`)
+	rows, e = p.Queue.Pool.Query(ctx, `SELECT asset_id::text, bool_or(body->>'order_type'='MARKET' OR body->>'order_type'='STOP_MARKET' AND (body->>'triggered')::boolean) FROM orders WHERE state IN ('accepted','waiting','partially_filled') GROUP BY asset_id`)
 	if e != nil {
 		return e
 	}

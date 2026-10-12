@@ -48,6 +48,39 @@ services:
     mem_limit: 128m
     cpus: 0.5
     logging: *logs
+  renderer:
+    image: ${READER_IMAGE:?READER_IMAGE must be pinned}
+    command: [--render-server, --listen, '0.0.0.0:18881', --hosts, /config/source-hosts.json]
+    volumes: [../config:/config:ro]
+    networks: [public_sources]
+    restart: unless-stopped
+    read_only: true
+    user: 65534:65534
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: ['/tmp:rw,nosuid,nodev,size=256m,mode=1777']
+    pids_limit: 256
+    mem_limit: 1g
+    cpus: 1
+    logging: *logs
+  worker:
+    image: ${READER_IMAGE:?READER_IMAGE must be pinned}
+    env_file: /etc/trading/staging/worker.env
+    environment: {CALENDAR_FILE: /config/calendar.json, FEES_FILE: /config/fees.json, RENDER_URL: 'http://renderer:18881', EXECUTION_ENABLED: 'false'}
+    command: [--listen, '0.0.0.0:18882', --hosts, /config/source-hosts.json]
+    volumes: [../config:/config:ro]
+    ports: [127.0.0.1:18882:18882]
+    networks: [database, public_sources]
+    depends_on: {db: {condition: service_healthy}}
+    restart: unless-stopped
+    read_only: true
+    user: 65534:65534
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 192m
+    cpus: 0.5
+    logging: *logs
 networks:
   database: {internal: true}
   ingress: {}
+  public_sources: {}

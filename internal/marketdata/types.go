@@ -58,6 +58,7 @@ type Snapshot struct {
 }
 
 type Page struct {
+	PublishedAt          *time.Time
 	Text, Heading, Title string
 	RegularPrice         *string
 	Method               string

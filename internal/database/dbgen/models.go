@@ -60,22 +60,32 @@ type DecisionAction struct {
 	CreatedAt      pgtype.Timestamptz `json:"created_at"`
 }
 
+type DecisionEvidence struct {
+	WalletID   uuid.UUID          `json:"wallet_id"`
+	DecisionID uuid.UUID          `json:"decision_id"`
+	EvidenceID uuid.UUID          `json:"evidence_id"`
+	SeenAt     pgtype.Timestamptz `json:"seen_at"`
+}
+
 type DecisionRun struct {
-	ID           uuid.UUID          `json:"id"`
-	WalletID     uuid.UUID          `json:"wallet_id"`
-	JobID        pgtype.UUID        `json:"job_id"`
-	State        string             `json:"state"`
-	SessionID    pgtype.Text        `json:"session_id"`
-	Input        []byte             `json:"input"`
-	Output       []byte             `json:"output"`
-	InputHash    pgtype.Text        `json:"input_hash"`
-	OutputHash   pgtype.Text        `json:"output_hash"`
-	Model        string             `json:"model"`
-	Reasoning    string             `json:"reasoning"`
-	StartedAt    pgtype.Timestamptz `json:"started_at"`
-	FinishedAt   pgtype.Timestamptz `json:"finished_at"`
-	FencingToken pgtype.Int8        `json:"fencing_token"`
-	Deadline     pgtype.Timestamptz `json:"deadline"`
+	ID            uuid.UUID          `json:"id"`
+	WalletID      uuid.UUID          `json:"wallet_id"`
+	JobID         pgtype.UUID        `json:"job_id"`
+	State         string             `json:"state"`
+	SessionID     pgtype.Text        `json:"session_id"`
+	Input         []byte             `json:"input"`
+	Output        []byte             `json:"output"`
+	InputHash     pgtype.Text        `json:"input_hash"`
+	OutputHash    pgtype.Text        `json:"output_hash"`
+	Model         string             `json:"model"`
+	Reasoning     string             `json:"reasoning"`
+	StartedAt     pgtype.Timestamptz `json:"started_at"`
+	FinishedAt    pgtype.Timestamptz `json:"finished_at"`
+	FencingToken  pgtype.Int8        `json:"fencing_token"`
+	Deadline      pgtype.Timestamptz `json:"deadline"`
+	RuntimeEvents []byte             `json:"runtime_events"`
+	DurationMs    pgtype.Int8        `json:"duration_ms"`
+	Usage         []byte             `json:"usage"`
 }
 
 type DynamicMember struct {

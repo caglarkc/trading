@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "findings",
+    "coverage"
+  ],
+  "properties": {
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "category",
+          "symbols",
+          "claim",
+          "evidence_status",
+          "sources",
+          "expected_at",
+          "missing"
+        ],
+        "properties": {
+          "category": {
+            "enum": [
+              "US",
+              "QQQ",
+              "TQQQ",
+              "EWC"
+            ]
+          },
+          "symbols": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 30
+          },
+          "claim": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "evidence_status": {
+            "enum": [
+              "two_sources",
+              "single_source",
+              "conflicting",
+              "missing"
+            ]
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "url",
+                "excerpt"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string"
+                },
+                "excerpt": {
+                  "type": "string",
+                  "minLength": 20,
+                  "maxLength": 4000
+                }
+              }
+            },
+            "maxItems": 4
+          },
+          "expected_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "missing": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        }
+      },
+      "maxItems": 100
+    },
+    "coverage": {
+      "type": "string",
+      "maxLength": 4000
+    }
+  }
+}

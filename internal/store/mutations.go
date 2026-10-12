@@ -141,6 +141,13 @@ func persist(ctx context.Context, tx pgx.Tx, q *dbgen.Queries, id uuid.UUID, bef
 }
 func (s *Store) ApplyAction(ctx context.Context, wallet, decision string, x domain.Action, now time.Time, cal calendar.Calendar, fee domain.FeeProfile, scopes ...ActionScope) (domain.Receipt, error) {
 	var out domain.Receipt
+	for _, id := range []*string{x.AssetID, x.Target, x.OCO} {
+		if id != nil {
+			if _, e := uuid.Parse(*id); e != nil {
+				return out, fmt.Errorf("invalid_identifier")
+			}
+		}
+	}
 	if !actionID.MatchString(x.ClientID) {
 		return out, fmt.Errorf("invalid_client_action_id")
 	}
@@ -221,6 +228,13 @@ func (s *Store) ApplyAction(ctx context.Context, wallet, decision string, x doma
 			}
 			for _, id := range x.EvidenceIDs {
 				if !seen[id] {
+					var found bool
+					if e = tx.QueryRow(ctx, "SELECT EXISTS(SELECT 1 FROM decision_evidence WHERE wallet_id=$1 AND decision_id=$2 AND evidence_id=$3)", wid, did, id).Scan(&found); e != nil {
+						return e
+					}
+					if found {
+						continue
+					}
 					opErr = fmt.Errorf("evidence_not_seen")
 					break
 				}
@@ -249,7 +263,7 @@ func (s *Store) ApplyAction(ctx context.Context, wallet, decision string, x doma
 				if x.AssetID != nil {
 					var category string
 					var fixed bool
-					e = tx.QueryRow(ctx, "SELECT category,fixed FROM assets WHERE id=$1", *x.AssetID).Scan(&category, &fixed)
+					e = tx.QueryRow(ctx, "SELECT category,(fixed OR id IN (SELECT asset_id FROM dynamic_members WHERE version_id=(SELECT id FROM universe_versions ORDER BY effective_at DESC LIMIT 1)) OR ($2 AND EXISTS(SELECT 1 FROM position_lots WHERE asset_id=assets.id AND wallet_id=$3 AND quantity>0))) FROM assets WHERE id=$1", *x.AssetID, x.Side != nil && *x.Side == "SELL", wid).Scan(&category, &fixed)
 					if e == nil {
 						allowed = category == row.Category && (row.Category != "US" || fixed)
 					}
@@ -292,7 +306,7 @@ func (s *Store) ApplyAction(ctx context.Context, wallet, decision string, x doma
 	})
 	return out, e
 }
-func (s *Store) Execute(ctx context.Context, wallet, order string, snapshot marketdata.Snapshot, now time.Time, cal calendar.Calendar, fee domain.FeeProfile, enabled bool) (domain.Receipt, error) {
+func (s *Store) Execute(ctx context.Context, wallet, order string, snapshot marketdata.Snapshot, now time.Time, cal calendar.Calendar, fee domain.FeeProfile, enabled bool, leases ...jobs.Job) (domain.Receipt, error) {
 	out := domain.Receipt{AsOf: now}
 	if !enabled {
 		out.Status = "waiting"
@@ -304,6 +318,11 @@ func (s *Store) Execute(ctx context.Context, wallet, order string, snapshot mark
 		row, e := q.LockWallet(ctx, wid)
 		if e != nil {
 			return e
+		}
+		for _, j := range leases {
+			if e := jobs.Guard(ctx, tx, j); e != nil {
+				return e
+			}
 		}
 		var a domain.Account
 		if e = json.Unmarshal(row.State, &a); e != nil {
@@ -368,12 +387,17 @@ func (s *Store) Execute(ctx context.Context, wallet, order string, snapshot mark
 	})
 	return out, e
 }
-func (s *Store) Settle(ctx context.Context, wallet string, now time.Time) error {
+func (s *Store) Settle(ctx context.Context, wallet string, now time.Time, leases ...jobs.Job) error {
 	return s.Scoped(ctx, wallet, func(tx pgx.Tx, q *dbgen.Queries) error {
 		wid := uuid.MustParse(wallet)
 		r, e := q.LockWallet(ctx, wid)
 		if e != nil {
 			return e
+		}
+		for _, j := range leases {
+			if e := jobs.Guard(ctx, tx, j); e != nil {
+				return e
+			}
 		}
 		var a domain.Account
 		if e = json.Unmarshal(r.State, &a); e != nil {
@@ -470,12 +494,17 @@ func (s *Store) Reconcile(ctx context.Context, wallet string) error {
 		return nil
 	})
 }
-func (s *Store) Corporate(ctx context.Context, wallet, eventID string, now time.Time) error {
+func (s *Store) Corporate(ctx context.Context, wallet, eventID string, now time.Time, leases ...jobs.Job) error {
 	return s.Scoped(ctx, wallet, func(tx pgx.Tx, q *dbgen.Queries) error {
 		wid := uuid.MustParse(wallet)
 		row, e := q.LockWallet(ctx, wid)
 		if e != nil {
 			return e
+		}
+		for _, j := range leases {
+			if e := jobs.Guard(ctx, tx, j); e != nil {
+				return e
+			}
 		}
 		var a domain.Account
 		if e = json.Unmarshal(row.State, &a); e != nil {

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "acknowledged_receipt_ids",
+    "memory_update"
+  ],
+  "properties": {
+    "acknowledged_receipt_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "maxItems": 200
+    },
+    "memory_update": {
+      "type": "string",
+      "maxLength": 12000
+    }
+  }
+}

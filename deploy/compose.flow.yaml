@@ -1,0 +1,48 @@
+name: trading-flow
+services:
+  migrate:
+    image: ${API_IMAGE:?pin API_IMAGE}
+    env_file: /etc/trading/flow/owner.env
+    environment: {ASSETS_FILE: /config/assets.json}
+    command: [--migrate]
+    volumes: [../config:/config:ro]
+    networks: [database]
+    profiles: [maintenance]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+  api:
+    image: ${API_IMAGE:?pin API_IMAGE}
+    env_file: /etc/trading/flow/api.env
+    environment: {API_LISTEN: '0.0.0.0:18880', EXECUTION_ENABLED: 'false', CALENDAR_FILE: /config/calendar.json, FEES_FILE: /config/fees.json}
+    ports: [127.0.0.1:18880:18880]
+    volumes: [../config:/config:ro]
+    networks: [database, public_sources]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 128m
+    cpus: 0.5
+    logging: &logs
+      driver: json-file
+      options: {max-size: 10m, max-file: '3'}
+  worker:
+    image: ${READER_IMAGE:?pin READER_IMAGE}
+    env_file: /etc/trading/flow/worker.env
+    environment: {CALENDAR_FILE: /config/calendar.json, FEES_FILE: /config/fees.json, RENDER_URL: 'http://trading-staging-renderer-1:18881', EXECUTION_ENABLED: 'false'}
+    command: [--listen, '0.0.0.0:18882', --hosts, /config/source-hosts.json]
+    ports: [127.0.0.1:18882:18882]
+    volumes: [../config:/config:ro]
+    networks: [database, public_sources]
+    restart: unless-stopped
+    read_only: true
+    user: 65534:65534
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 192m
+    cpus: 0.5
+    logging: *logs
+networks:
+  database: {external: true, name: trading-staging_database}
+  public_sources: {external: true, name: trading-staging_public_sources}

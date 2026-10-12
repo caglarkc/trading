@@ -147,7 +147,10 @@ func (q Queue) Run(ctx context.Context, j Job, fn func(context.Context) (any, er
 	if work.Err() != nil {
 		return work.Err()
 	}
-	return q.Finish(ctx, j, result, e)
+	if finishErr := q.Finish(ctx, j, result, e); finishErr != nil {
+		return finishErr
+	}
+	return e
 }
 
 // Guard holds a shared job-row lock inside the result transaction. Acquisition

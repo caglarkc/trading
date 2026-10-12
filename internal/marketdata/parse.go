@@ -47,6 +47,12 @@ func HTMLPage(body string) Page {
 			if attrs["aria-hidden"] == "true" || attrs["hidden"] != "" || strings.Contains(attrs["style"], "display:none") {
 				return
 			}
+			if n.Data == "meta" && (attrs["property"] == "article:published_time" || attrs["name"] == "datePublished") {
+				if t, e := time.Parse(time.RFC3339, attrs["content"]); e == nil {
+					t = t.UTC()
+					p.PublishedAt = &t
+				}
+			}
 			if n.Data == "title" {
 				p.Title = nodeText(n)
 			}

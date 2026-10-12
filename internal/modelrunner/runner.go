@@ -84,10 +84,10 @@ func (r *Runner) Run(ctx context.Context, q Request) (result Result, err error) 
 			return result, err
 		}
 		compiler := jsonschema.NewCompiler()
-		if err = compiler.AddResource("decision.json", doc); err != nil {
+		if err = compiler.AddResource("https://trading.invalid/contracts/output.json", doc); err != nil {
 			return result, err
 		}
-		schema, err = compiler.Compile("decision.json")
+		schema, err = compiler.Compile("https://trading.invalid/contracts/output.json")
 		if err != nil {
 			return result, err
 		}
@@ -111,6 +111,18 @@ func (r *Runner) Run(ctx context.Context, q Request) (result Result, err error) 
 	}
 	if schema != nil {
 		args = append(args, "--output-schema", "/workspace/output.schema.json")
+	}
+	if q.MCP {
+		args = append(args, "-c", `mcp_servers.trading.command="/opt/trading-tools/trading-runner"`, "-c", `mcp_servers.trading.args=["--mcp","--socket","/workspace/bridge.sock"]`, "-c", `mcp_servers.trading.startup_timeout_sec=10`, "-c", `mcp_servers.trading.tool_timeout_sec=50`)
+	}
+	if q.RunID != "" {
+		if !sessionPattern.MatchString(q.RunID) {
+			return result, &Error{"invalid_run_id", "run UUID required"}
+		}
+		if err = atomicWrite(filepath.Join(work, q.RunID+".input.json"), []byte(q.Prompt), 0600); err != nil {
+			return result, err
+		}
+		args = append(args, "--output-last-message", "/workspace/"+q.RunID+".output.json")
 	}
 	args = append(args, "-")
 	binary, argv, cleanup, err := r.Launcher.Build(ctx, home, work, args)
@@ -147,30 +159,49 @@ func (r *Runner) Run(ctx context.Context, q Request) (result Result, err error) 
 			break
 		}
 		var e struct {
-			Type     string                      `json:"type"`
-			ThreadID string                      `json:"thread_id"`
-			Usage    json.RawMessage             `json:"usage"`
-			Item     struct{ Type, Text string } `json:"item"`
-			Message  string                      `json:"message"`
+			Type     string                                    `json:"type"`
+			ThreadID string                                    `json:"thread_id"`
+			Usage    json.RawMessage                           `json:"usage"`
+			Item     struct{ Type, Text, Server, Tool string } `json:"item"`
+			Message  string                                    `json:"message"`
+			Error    struct {
+				Message string `json:"message"`
+				Code    string `json:"code"`
+			} `json:"error"`
 		}
 		if json.Unmarshal(scanner.Bytes(), &e) != nil {
 			protocolError = &Error{"invalid_jsonl", "malformed CLI event"}
 			continue
 		}
+		result.Events = append(result.Events, safeEvent(scanner.Bytes()))
 		switch e.Type {
 		case "thread.started":
 			result.SessionID = e.ThreadID
+			if q.OnSessionStarted != nil {
+				if !sessionPattern.MatchString(e.ThreadID) {
+					protocolError = &Error{"invalid_session", "native session UUID missing"}
+					cancel()
+				} else if callbackErr := q.OnSessionStarted(e.ThreadID); callbackErr != nil {
+					protocolError = callbackErr
+					cancel()
+				}
+			}
 		case "turn.completed":
 			result.Usage = e.Usage
 		case "error", "turn.failed":
-			protocolError = &Error{"model_error", redact(e.Message)}
+			message := e.Message
+			if message == "" {
+				message = e.Error.Message
+			}
+			protocolError = &Error{"model_error", redact(message)}
 		}
 		if e.Type == "item.completed" {
 			if e.Item.Type == "agent_message" {
 				output = e.Item.Text
 			} else if e.Item.Type != "" {
 				result.Tools = append(result.Tools, e.Item.Type)
-				if e.Item.Type != "web_search" {
+				allowedMCP := q.MCP && e.Item.Type == "mcp_tool_call" && e.Item.Server == "trading" && (e.Item.Tool == "account" || e.Item.Tool == "positions" || e.Item.Tool == "orders" || e.Item.Tool == "receipts" || e.Item.Tool == "memory" || e.Item.Tool == "evidence" || e.Item.Tool == "read_source")
+				if e.Item.Type != "web_search" && e.Item.Type != "reasoning" && !allowedMCP {
 					cancel()
 					protocolError = &Error{"forbidden_tool", "unexpected tool type " + e.Item.Type}
 				}
@@ -181,11 +212,11 @@ func (r *Runner) Run(ctx context.Context, q Request) (result Result, err error) 
 	waitErr := cmd.Wait()
 	result.DurationMS = time.Since(start).Milliseconds()
 	result.FinishedAt = time.Now().UTC()
-	if ctx.Err() != nil {
-		return result, &Error{"session_deadline", "CLI deadline or cancellation"}
-	}
 	if protocolError != nil {
 		return result, protocolError
+	}
+	if ctx.Err() != nil {
+		return result, &Error{"session_deadline", "CLI deadline or cancellation"}
 	}
 	if readErr != nil {
 		return result, readErr
@@ -258,3 +289,36 @@ func (b *boundedBuffer) Write(p []byte) (int, error) {
 }
 
 var _ io.Writer = (*boundedBuffer)(nil)
+
+func safeEvent(data []byte) json.RawMessage {
+	var value any
+	if json.Unmarshal(data, &value) != nil {
+		return json.RawMessage(`{"type":"invalid_event"}`)
+	}
+	var clean func(any) any
+	clean = func(v any) any {
+		switch x := v.(type) {
+		case map[string]any:
+			for key, v := range x {
+				switch strings.ToLower(key) {
+				case "access_token", "refresh_token", "id_token", "authorization", "api_key", "password":
+					x[key] = "[redacted]"
+				default:
+					x[key] = clean(v)
+				}
+			}
+			return x
+		case []any:
+			for i, v := range x {
+				x[i] = clean(v)
+			}
+			return x
+		case string:
+			return regexp.MustCompile(`[A-Za-z0-9_-]{15,}\.[A-Za-z0-9_-]{15,}\.[A-Za-z0-9_-]{10,}`).ReplaceAllString(x, "[redacted-token]")
+		default:
+			return v
+		}
+	}
+	b, _ := json.Marshal(clean(value))
+	return b
+}

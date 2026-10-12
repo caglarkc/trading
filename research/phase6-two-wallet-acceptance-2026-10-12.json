@@ -1,0 +1,39 @@
+{
+  "environment": "trading_flow",
+  "execution_enabled": false,
+  "initial_capital_usd": "800000",
+  "model": "gpt-6.1-sol",
+  "reasoning": "low",
+  "wallets": [
+    {
+      "code": "QQQ-FAST",
+      "session": "01a12f31-3713-7a13-83fc-1996f39bbce4",
+      "duration_ms": 64399,
+      "output_hash": "c06d8d146effe0099527feef9de0c7c4e9a0fad45966d7400efacd654d67e198",
+      "action": "HOLD",
+      "state": "completed",
+      "memory_versions": 2,
+      "pending_receipts": 0
+    },
+    {
+      "code": "QQQ-PATIENT",
+      "session": "01a12f31-3713-7b21-a0ff-fc19e336c41a",
+      "duration_ms": 79532,
+      "output_hash": "851975a2e309840ab95d906130d194c0a528cd9888f3671d652952557f754825",
+      "action": "HOLD",
+      "state": "completed",
+      "memory_versions": 2,
+      "pending_receipts": 0
+    }
+  ],
+  "scoped_mcp_tools_observed": [
+    "account",
+    "memory",
+    "evidence",
+    "read_source"
+  ],
+  "receipt_same_session": true,
+  "first_attempt": "Provider rejected uniqueItems in strict output schema; removed provider keywords and retained identity/duplicate validation in Go.",
+  "staging_fixture_history": "preserved separately; not fed to actors",
+  "eight_wallet_status": "pending"
+}

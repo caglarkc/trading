@@ -1,0 +1,28 @@
+{
+  "environment": "trading_staging",
+  "model": "gpt-6.1-sol",
+  "reasoning": "low",
+  "live_subscription": true,
+  "shared_research": {
+    "status": "passed",
+    "duration_ms": 103951,
+    "session_id": "01a12f18-d76a-7800-8b96-ad3938ab8195",
+    "output_hash": "4a4b28f8b900f761c308e8d6b826ac7d14f0a2ad725ea7ba5cf976ce40ac7e53",
+    "findings": 5,
+    "read_evidence": 4,
+    "statuses": {
+      "single_source": 4,
+      "missing": 1
+    },
+    "as_of": "2026-10-12T07:53:44.794983Z"
+  },
+  "prior_attempts": [
+    "schema_resource_permission",
+    "model_error",
+    "deadline"
+  ],
+  "alternative": "Narrowed to five findings across four categories with four-minute model budget; source claims require read-body excerpt checks.",
+  "source_gate": "open; closed-market observations and missing BBO do not permit fills",
+  "dynamic_universe": "implemented; live 20-candidate listing acceptance pending",
+  "private_actor": "two-wallet flow passed; eight-wallet acceptance pending"
+}
