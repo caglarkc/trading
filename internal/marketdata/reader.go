@@ -301,7 +301,7 @@ func (r *Reader) Collect(ctx context.Context, a Asset, marketOpen bool) Snapshot
 	for _, row := range rows {
 		liq = liq || VerifyLiquidity(row, now)
 	}
-	return Snapshot{a, rows, v, liq}
+	return Snapshot{Asset: a, Observations: rows, Validation: v, LiquidityVerified: liq, ExecutionMode: ObservedPriceMode}
 }
 func (r *Reader) PublicPage(ctx context.Context, target string) (string, error) {
 	p, e := r.page(ctx, target, false)
