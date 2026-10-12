@@ -51,7 +51,7 @@ func (s *Service) applyAndAcknowledge(ctx context.Context, j jobs.Job, did uuid.
 	if e = jobs.Guard(ctx, tx, j); e != nil {
 		return nil, e
 	}
-	_, e = tx.Exec(ctx, "UPDATE decision_runs SET output=$3,output_hash=$4,runtime_events=$5,duration_ms=$6,usage=$7,state='ready',session_id=$8 WHERE wallet_id=$1 AND id=$2", wallet, did, result.Output, digest(result.Output), bytesOf(result.Events), result.DurationMS, result.Usage, result.SessionID)
+	_, e = tx.Exec(ctx, "UPDATE decision_runs SET output=$3,output_bytes=$9,output_hash=$4,runtime_events=$5,duration_ms=$6,usage=$7,state='ready',session_id=$8 WHERE wallet_id=$1 AND id=$2", wallet, did, result.Output, digest(result.Output), bytesOf(result.Events), result.DurationMS, result.Usage, result.SessionID, []byte(result.Output))
 	if e != nil {
 		return nil, e
 	}
