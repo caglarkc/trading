@@ -1,0 +1,387 @@
+{
+  "campaign": "a81e041b-2e62-4124-8931-84f525707c24",
+  "environment": "hetzner-trading_flow",
+  "completed_at_utc": "2026-10-12T19:29:39.095935+00:00",
+  "user_request": "First all eight research broad market and 50 stocks; then select/review 20 personal additional stocks; only afterward issue mandatory >=80% initial-capital buying instruction.",
+  "review_audit": [
+    {
+      "wallet": "US-EVENT",
+      "stage": "wallet_screen",
+      "evaluated": 50,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 120,
+      "watchlist": [
+        "ANET",
+        "MRVL",
+        "KLAC",
+        "LRCX",
+        "ADI",
+        "CRWD",
+        "PANW",
+        "NOW",
+        "DDOG",
+        "VRT",
+        "PWR",
+        "GEV",
+        "FSLR",
+        "HWM",
+        "LMT",
+        "DHR",
+        "ISRG",
+        "VRTX",
+        "TJX",
+        "ICE"
+      ]
+    },
+    {
+      "wallet": "US-PATIENT",
+      "stage": "wallet_deep",
+      "evaluated": 20,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 217,
+      "watchlist": []
+    },
+    {
+      "wallet": "EWC-BALANCED",
+      "stage": "wallet_screen",
+      "evaluated": 50,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 107,
+      "watchlist": [
+        "ADP",
+        "ADBE",
+        "ANET",
+        "CDNS",
+        "KLAC",
+        "TXN",
+        "ISRG",
+        "DHR",
+        "ABT",
+        "AMGN",
+        "PGR",
+        "TRV",
+        "ICE",
+        "CME",
+        "WM",
+        "RSG",
+        "COP",
+        "EOG",
+        "PWR",
+        "DE"
+      ]
+    },
+    {
+      "wallet": "US-PATIENT",
+      "stage": "wallet_screen",
+      "evaluated": 50,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 112,
+      "watchlist": [
+        "ROP",
+        "ADP",
+        "FAST",
+        "CTAS",
+        "ODFL",
+        "WM",
+        "RSG",
+        "AZO",
+        "ORLY",
+        "LOW",
+        "ISRG",
+        "DHR",
+        "ABT",
+        "VEEV",
+        "ICE",
+        "CME",
+        "SPGI",
+        "MCO",
+        "PGR",
+        "ANET"
+      ]
+    },
+    {
+      "wallet": "QQQ-FAST",
+      "stage": "wallet_deep",
+      "evaluated": 20,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 210,
+      "watchlist": []
+    },
+    {
+      "wallet": "QQQ-PATIENT",
+      "stage": "wallet_deep",
+      "evaluated": 20,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 260,
+      "watchlist": []
+    },
+    {
+      "wallet": "QQQ-FAST",
+      "stage": "wallet_screen",
+      "evaluated": 50,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 126,
+      "watchlist": [
+        "ANET",
+        "VRT",
+        "MRVL",
+        "CDNS",
+        "SNPS",
+        "CRWD",
+        "PANW",
+        "DDOG",
+        "NOW",
+        "SNOW",
+        "GEV",
+        "PWR",
+        "HWM",
+        "RKLB",
+        "UBER",
+        "HOOD",
+        "COIN",
+        "DUOL",
+        "AXON",
+        "FIX"
+      ]
+    },
+    {
+      "wallet": "QQQ-PATIENT",
+      "stage": "wallet_screen",
+      "evaluated": 50,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 110,
+      "watchlist": [
+        "ANET",
+        "VRT",
+        "KLAC",
+        "LRCX",
+        "ADI",
+        "CDNS",
+        "SNPS",
+        "CRWD",
+        "PANW",
+        "FTNT",
+        "ADBE",
+        "INTU",
+        "ISRG",
+        "DHR",
+        "ABT",
+        "HWM",
+        "WM",
+        "RSG",
+        "ORLY",
+        "FAST"
+      ]
+    },
+    {
+      "wallet": "TQQQ-FAST",
+      "stage": "wallet_deep",
+      "evaluated": 20,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 220,
+      "watchlist": []
+    },
+    {
+      "wallet": "TQQQ-FAST",
+      "stage": "wallet_screen",
+      "evaluated": 50,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 114,
+      "watchlist": [
+        "ANET",
+        "VRT",
+        "PWR",
+        "CEG",
+        "GEV",
+        "HWM",
+        "KTOS",
+        "CRWD",
+        "PANW",
+        "DDOG",
+        "NET",
+        "NOW",
+        "UBER",
+        "HOOD",
+        "SOFI",
+        "ISRG",
+        "NTRA",
+        "FSLR",
+        "MPC",
+        "FCX"
+      ]
+    },
+    {
+      "wallet": "TQQQ-PATIENT",
+      "stage": "wallet_deep",
+      "evaluated": 20,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 227,
+      "watchlist": []
+    },
+    {
+      "wallet": "US-FAST",
+      "stage": "wallet_deep",
+      "evaluated": 20,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 220,
+      "watchlist": []
+    },
+    {
+      "wallet": "TQQQ-PATIENT",
+      "stage": "wallet_screen",
+      "evaluated": 50,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 136,
+      "watchlist": [
+        "ANET",
+        "VRT",
+        "ETN",
+        "PWR",
+        "HWM",
+        "ISRG",
+        "DHR",
+        "ABT",
+        "REGN",
+        "VRTX",
+        "ADBE",
+        "NOW",
+        "CRWD",
+        "PANW",
+        "ADP",
+        "ICE",
+        "CME",
+        "SPGI",
+        "WM",
+        "ORLY"
+      ]
+    },
+    {
+      "wallet": "US-FAST",
+      "stage": "wallet_screen",
+      "evaluated": 50,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 113,
+      "watchlist": [
+        "ANET",
+        "VRT",
+        "MRVL",
+        "CRWD",
+        "PANW",
+        "DDOG",
+        "NOW",
+        "UBER",
+        "DASH",
+        "HOOD",
+        "SOFI",
+        "APP",
+        "NET",
+        "DELL",
+        "HWM",
+        "LMT",
+        "FSLR",
+        "PWR",
+        "CEG",
+        "NTRA"
+      ]
+    },
+    {
+      "wallet": "US-EVENT",
+      "stage": "wallet_deep",
+      "evaluated": 20,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 222,
+      "watchlist": []
+    },
+    {
+      "wallet": "EWC-BALANCED",
+      "stage": "wallet_deep",
+      "evaluated": 20,
+      "evidence_excerpts_independently_checked": true,
+      "minimum_assessment_chars": 331,
+      "watchlist": []
+    }
+  ],
+  "buying_instruction_issued_utc": "2026-10-12T19:12:34Z",
+  "allocation_target_usd": 80000,
+  "cash_ceiling_usd": 20000,
+  "completed_balances": [
+    {
+      "code": "EWC-BALANCED",
+      "cash": 18656.24,
+      "reserved": 0,
+      "unsettled": 0
+    },
+    {
+      "code": "QQQ-FAST",
+      "cash": 19463.39,
+      "reserved": 0,
+      "unsettled": 0
+    },
+    {
+      "code": "QQQ-PATIENT",
+      "cash": 19463.39,
+      "reserved": 0,
+      "unsettled": 0
+    },
+    {
+      "code": "TQQQ-FAST",
+      "cash": 18192.24,
+      "reserved": 0,
+      "unsettled": 0
+    },
+    {
+      "code": "TQQQ-PATIENT",
+      "cash": 18952.35,
+      "reserved": 0,
+      "unsettled": 0
+    },
+    {
+      "code": "US-EVENT",
+      "cash": 17095.63,
+      "reserved": 0,
+      "unsettled": 0
+    },
+    {
+      "code": "US-FAST",
+      "cash": 18143.44,
+      "reserved": 0,
+      "unsettled": 0
+    },
+    {
+      "code": "US-PATIENT",
+      "cash": 13946.91,
+      "reserved": 0,
+      "unsettled": 0
+    }
+  ],
+  "ledger_checks": {
+    "unbalanced_journals": 0,
+    "negative_cash": 0,
+    "filled_orders": 28,
+    "fills": 28,
+    "watchlists": {
+      "US-EVENT": 20,
+      "TQQQ-FAST": 20,
+      "QQQ-PATIENT": 20,
+      "US-PATIENT": 20,
+      "QQQ-FAST": 20,
+      "US-FAST": 20,
+      "TQQQ-PATIENT": 20,
+      "EWC-BALANCED": 20
+    },
+    "research_only_lock_removed": true,
+    "models_service": "active"
+  },
+  "model": "gpt-6.1-sol",
+  "reasoning": "low",
+  "tests": [
+    "Go test suite passed",
+    "Checkpoint archive tests passed",
+    "PostgreSQL private watchlist purchase acceptance and peer denial passed"
+  ],
+  "operational_fixes": [
+    "Enable container init to reap orphaned Chromium processes; verified render response 200 and PID usage 14/256.",
+    "Retry expired and rejected allocations; pending reservations excluded from spending completion."
+  ],
+  "execution": "virtual backend wallet transactions; public sites supply only price/data, no broker orders"
+}
