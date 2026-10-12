@@ -1,0 +1,22 @@
+[Unit]
+Description=Trading eight-wallet model coordinator
+Wants=network-online.target docker.service
+After=network-online.target docker.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=trading
+Group=trading
+SupplementaryGroups=docker
+EnvironmentFile=/etc/trading/flow/runner.env
+WorkingDirectory=/var/lib/trading
+ExecStart=/opt/trading/bin/trading-runner --service --environment flow --root /var/lib/trading/flow/wallets --tools-binary /opt/trading/bin/trading-runner --uid 998 --gid 998 --image trading-codex:0.162.1
+Restart=always
+RestartSec=15
+TimeoutStopSec=45
+KillMode=control-group
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
