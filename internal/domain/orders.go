@@ -271,7 +271,7 @@ func (a *Account) TryFill(id string, s marketdata.Snapshot, now time.Time, cal c
 		return nil, fmt.Errorf("fee_profile_unverified")
 	}
 	for _, row := range s.Observations {
-		if row.ObservedAt.Before(o.CreatedAt) || row.EventTime == nil || row.EventTime.Before(o.CreatedAt) {
+		if row.ObservedAt.Before(o.CreatedAt) {
 			return nil, fmt.Errorf("quote_predates_order")
 		}
 	}
@@ -293,24 +293,39 @@ func (a *Account) TryFill(id string, s marketdata.Snapshot, now time.Time, cal c
 		}
 	}
 	var quote *marketdata.Observation
-	for i := range s.Observations {
-		row := &s.Observations[i]
-		if marketdata.VerifyLiquidity(*row, now) && row.BBOTime != nil && !row.BBOTime.Before(o.CreatedAt) {
-			quote = row
-			break
+	key := ""
+	size := o.Remaining
+	raw := dec(*v.Median)
+	volumeKey := ""
+	executionVersion := marketdata.ObservedPriceMode
+	if s.ExecutionMode == marketdata.ObservedPriceMode {
+		b, _ := json.Marshal([]any{s.Asset.ID, v.Observations, v.Median})
+		h := sha256.Sum256(b)
+		key = hex.EncodeToString(h[:])
+	} else {
+		// Retain the historic BBO execution model for existing fixtures/replays.
+		for i := range s.Observations {
+			row := &s.Observations[i]
+			if marketdata.VerifyLiquidity(*row, now) && row.BBOTime != nil && !row.BBOTime.Before(o.CreatedAt) {
+				quote = row
+				break
+			}
 		}
+		if quote == nil {
+			return nil, fmt.Errorf("liquidity_unverified")
+		}
+		key = QuoteKey(*quote)
+		size = *quote.AskSize
+		raw = dec(*quote.Ask)
+		if o.Side == "SELL" {
+			size = *quote.BidSize
+			raw = dec(*quote.Bid)
+		}
+		executionVersion = "bbo-adverse-5bps-v1"
 	}
-	if quote == nil {
-		return nil, fmt.Errorf("liquidity_unverified")
-	}
-	key := QuoteKey(*quote)
 	sideKey := key + ":" + o.Side
-	size := *quote.AskSize
-	raw := dec(*quote.Ask)
 	factor := decimal.NewFromInt(1).Add(dec(fee.Slippage).Div(decimal.NewFromInt(10000)))
 	if o.Side == "SELL" {
-		size = *quote.BidSize
-		raw = dec(*quote.Bid)
 		factor = decimal.NewFromInt(1).Sub(dec(fee.Slippage).Div(decimal.NewFromInt(10000)))
 	}
 	price := raw.Mul(factor).Div(dec(fee.Tick))
@@ -326,11 +341,13 @@ func (a *Account) TryFill(id string, s marketdata.Snapshot, now time.Time, cal c
 	if o.Limit != nil && (o.Side == "BUY" && price.GreaterThan(dec(*o.Limit)) || o.Side == "SELL" && price.LessThan(dec(*o.Limit))) {
 		return nil, fmt.Errorf("limit_not_reached")
 	}
-	qty := min(o.Remaining, size-a.QuoteUse[sideKey])
-	volumeKey := ""
-	if quote.MinuteVolume != nil && quote.VolumeMinute != nil && quote.VolumeScope == quote.VenueScope && *quote.MinuteVolume > 0 && now.Sub(*quote.VolumeMinute) >= 0 && now.Sub(*quote.VolumeMinute) <= 60*time.Second {
-		volumeKey = "volume:" + o.AssetID + ":" + quote.SourceID + ":" + quote.VolumeMinute.UTC().Format(time.RFC3339)
-		qty = min(qty, *quote.MinuteVolume/100-a.QuoteUse[volumeKey])
+	qty := o.Remaining
+	if quote != nil {
+		qty = min(o.Remaining, size-a.QuoteUse[sideKey])
+		if quote.MinuteVolume != nil && quote.VolumeMinute != nil && quote.VolumeScope == quote.VenueScope && *quote.MinuteVolume > 0 && now.Sub(*quote.VolumeMinute) >= 0 && now.Sub(*quote.VolumeMinute) <= 60*time.Second {
+			volumeKey = "volume:" + o.AssetID + ":" + quote.SourceID + ":" + quote.VolumeMinute.UTC().Format(time.RFC3339)
+			qty = min(qty, *quote.MinuteVolume/100-a.QuoteUse[volumeKey])
+		}
 	}
 	if qty <= 0 {
 		return nil, fmt.Errorf("liquidity_consumed")
@@ -373,7 +390,7 @@ func (a *Account) TryFill(id string, s marketdata.Snapshot, now time.Time, cal c
 	}
 	n, c, r := calc(qty)
 	fees := c.Add(r)
-	fill := &Fill{uuid.NewString(), id, o.AssetID, qty, price.String(), c.String(), r.String(), now, key, v.Observations, fee.Version, "bbo-adverse-5bps-v1"}
+	fill := &Fill{uuid.NewString(), id, o.AssetID, qty, price.String(), c.String(), r.String(), now, key, v.Observations, fee.Version, executionVersion}
 	if o.Side == "BUY" {
 		cost := n.Add(fees)
 		o.ReservedCash = dec(o.ReservedCash).Sub(cost).String()
