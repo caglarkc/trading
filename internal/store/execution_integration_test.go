@@ -442,3 +442,97 @@ func TestScopedActionFencing(t *testing.T) {
 
 func testMarshal(v any) []byte { b, _ := json.Marshal(v); return b }
 func testHash(b []byte) string { h := sha256.Sum256(b); return hex.EncodeToString(h[:]) }
+
+func TestPostgresObservedPriceExecution(t *testing.T) {
+	if os.Getenv("TEST_OWNER_URL") == "" {
+		t.Skip("isolated PostgreSQL required")
+	}
+	ctx := context.Background()
+	if e := database.Migrate(ctx, os.Getenv("TEST_OWNER_URL")); e != nil {
+		t.Fatal(e)
+	}
+	owner, e := Open(ctx, os.Getenv("TEST_OWNER_URL"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer owner.Close()
+	worker, e := Open(ctx, os.Getenv("TEST_WORKER_URL"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer worker.Close()
+	agent, e := Open(ctx, os.Getenv("TEST_AGENT_URL"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer agent.Close()
+	data, e := os.ReadFile("../../config/assets.json")
+	if e != nil {
+		t.Fatal(e)
+	}
+	assets, e := marketdata.DecodeAssets(data)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = owner.Seed(ctx, assets); e != nil {
+		t.Fatal(e)
+	}
+	cal, e := calendar.Load("../../config/calendar.json")
+	if e != nil {
+		t.Fatal(e)
+	}
+	fee, e := domain.LoadFees("../../config/fees.json")
+	if e != nil {
+		t.Fatal(e)
+	}
+	now := time.Date(2026, 10, 12, 14, 0, 0, 0, time.UTC)
+	wallet := WalletID(Codes[0]).String()
+	asset := uuid.NewSHA1(uuid.NameSpaceURL, []byte("trading:asset:AAPL")).String()
+	decision := uuid.NewString()
+	if _, e = owner.Pool.Exec(ctx, "INSERT INTO decision_runs(id,wallet_id,state,input,model,reasoning,started_at) VALUES($1,$2,'ready','{\"evidence_ids\":[]}','fixture','low',$3)", decision, wallet, now); e != nil {
+		t.Fatal(e)
+	}
+	action := domain.Action{Action: "SUBMIT", ClientID: uuid.NewString(), AssetID: &asset, Side: str("BUY"), Quantity: qty(2), Type: str("MARKET"), TIF: str("DAY"), Budget: str("1000")}
+	receipt, e := agent.ApplyAction(ctx, wallet, decision, action, now, cal, fee)
+	if e != nil || receipt.Status != "accepted" {
+		t.Fatal(receipt, e)
+	}
+	snapshot := marketdata.Snapshot{Asset: marketdata.Asset{ID: asset}, ExecutionMode: marketdata.ObservedPriceMode}
+	for _, source := range []string{"stockanalysis", "yahoo", "webull"} {
+		snapshot.Observations = append(snapshot.Observations, marketdata.Observation{ID: uuid.NewString(), AssetID: asset, SourceID: source, IdentityVerified: true, Price: str("100"), ObservedAt: now.Add(time.Second)})
+	}
+	receipt, e = worker.Execute(ctx, wallet, receipt.Order.ID, snapshot, now.Add(time.Second), cal, fee, true)
+	if e != nil || receipt.Fill == nil || receipt.Fill.Quantity != 2 || receipt.Fill.Price != "100.05" {
+		t.Fatal(receipt, e)
+	}
+	oid := receipt.Order.ID
+	if e = worker.Reconcile(ctx, wallet); e != nil {
+		t.Fatal(e)
+	}
+	repeat, e := worker.Execute(ctx, wallet, oid, snapshot, now.Add(2*time.Second), cal, fee, true)
+	if e != nil || repeat.Fill != nil {
+		t.Fatal("fill replay", repeat, e)
+	}
+	var count int
+	if e = owner.Pool.QueryRow(ctx, "SELECT count(*) FROM execution_quotes WHERE id=$1", receipt.Fill.QuoteID).Scan(&count); e != nil || count != 1 {
+		t.Fatal("snapshot provenance missing", count, e)
+	}
+	action.Side = str("SELL")
+	action.Budget = nil
+	action.ClientID = uuid.NewString()
+	receipt, e = agent.ApplyAction(ctx, wallet, decision, action, now.Add(3*time.Second), cal, fee)
+	if e != nil || receipt.Status != "accepted" {
+		t.Fatal(receipt, e)
+	}
+	for i := range snapshot.Observations {
+		snapshot.Observations[i].ID = uuid.NewString()
+		snapshot.Observations[i].ObservedAt = now.Add(4 * time.Second)
+	}
+	receipt, e = worker.Execute(ctx, wallet, receipt.Order.ID, snapshot, now.Add(4*time.Second), cal, fee, true)
+	if e != nil || receipt.Fill == nil || receipt.Fill.Quantity != 2 || receipt.Fill.Price != "99.95" {
+		t.Fatal(receipt, e)
+	}
+	if e = worker.Reconcile(ctx, wallet); e != nil {
+		t.Fatal(e)
+	}
+}
