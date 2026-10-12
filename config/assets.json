@@ -1,0 +1,638 @@
+[
+  {
+    "id": "c62384e5-5de0-579a-ac23-19401ad7d1a8",
+    "symbol": "NVDA",
+    "name": "NVIDIA",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/nvda/",
+      "yahoo": "https://finance.yahoo.com/quote/NVDA/",
+      "webull": "https://www.webull.com/quote/nasdaq-nvda"
+    }
+  },
+  {
+    "id": "23352d84-59b3-5f70-bfbd-806ae78cc045",
+    "symbol": "AAPL",
+    "name": "Apple",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/aapl/",
+      "yahoo": "https://finance.yahoo.com/quote/AAPL/",
+      "webull": "https://www.webull.com/quote/nasdaq-aapl"
+    }
+  },
+  {
+    "id": "2fa0590b-959a-5a8b-b3fc-46786e2509dd",
+    "symbol": "MSFT",
+    "name": "Microsoft",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/msft/",
+      "yahoo": "https://finance.yahoo.com/quote/MSFT/",
+      "webull": "https://www.webull.com/quote/nasdaq-msft"
+    }
+  },
+  {
+    "id": "a63f036d-3ff6-51dd-8d7d-19537e10e882",
+    "symbol": "AVGO",
+    "name": "Broadcom",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/avgo/",
+      "yahoo": "https://finance.yahoo.com/quote/AVGO/",
+      "webull": "https://www.webull.com/quote/nasdaq-avgo"
+    }
+  },
+  {
+    "id": "b03927b8-e443-5908-a265-2ea2f64170bb",
+    "symbol": "AMD",
+    "name": "Advanced Micro Devices",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/amd/",
+      "yahoo": "https://finance.yahoo.com/quote/AMD/",
+      "webull": "https://www.webull.com/quote/nasdaq-amd"
+    }
+  },
+  {
+    "id": "859a7692-b50f-5e45-867d-db6384f17e54",
+    "symbol": "MU",
+    "name": "Micron Technology",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/mu/",
+      "yahoo": "https://finance.yahoo.com/quote/MU/",
+      "webull": "https://www.webull.com/quote/nasdaq-mu"
+    }
+  },
+  {
+    "id": "52c534db-e2be-57e4-b160-084d7720fb5d",
+    "symbol": "ORCL",
+    "name": "Oracle",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/orcl/",
+      "yahoo": "https://finance.yahoo.com/quote/ORCL/",
+      "webull": "https://www.webull.com/quote/nyse-orcl"
+    }
+  },
+  {
+    "id": "9f432eb2-34fa-5289-891b-92e581bfba9c",
+    "symbol": "CRM",
+    "name": "Salesforce",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/crm/",
+      "yahoo": "https://finance.yahoo.com/quote/CRM/",
+      "webull": "https://www.webull.com/quote/nyse-crm"
+    }
+  },
+  {
+    "id": "5681d1c3-4841-5748-9a40-41d1f0881d0b",
+    "symbol": "CSCO",
+    "name": "Cisco Systems",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/csco/",
+      "yahoo": "https://finance.yahoo.com/quote/CSCO/",
+      "webull": "https://www.webull.com/quote/nasdaq-csco"
+    }
+  },
+  {
+    "id": "03b836b2-cae2-57c1-8870-bf63f1459afd",
+    "symbol": "QCOM",
+    "name": "Qualcomm",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/qcom/",
+      "yahoo": "https://finance.yahoo.com/quote/QCOM/",
+      "webull": "https://www.webull.com/quote/nasdaq-qcom"
+    }
+  },
+  {
+    "id": "35dc01c2-93f3-5e12-89e7-017b09b89478",
+    "symbol": "AMAT",
+    "name": "Applied Materials",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/amat/",
+      "yahoo": "https://finance.yahoo.com/quote/AMAT/",
+      "webull": "https://www.webull.com/quote/nasdaq-amat"
+    }
+  },
+  {
+    "id": "c2841919-01b2-52ed-aa58-9d204d28e17c",
+    "symbol": "PLTR",
+    "name": "Palantir Technologies",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/pltr/",
+      "yahoo": "https://finance.yahoo.com/quote/PLTR/",
+      "webull": "https://www.webull.com/quote/nasdaq-pltr"
+    }
+  },
+  {
+    "id": "4f86b223-4cf7-5425-8078-cf81ba5e826e",
+    "symbol": "GOOGL",
+    "name": "Alphabet Class A",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/googl/",
+      "yahoo": "https://finance.yahoo.com/quote/GOOGL/",
+      "webull": "https://www.webull.com/quote/nasdaq-googl"
+    }
+  },
+  {
+    "id": "c35e543d-f361-5bd3-bda6-25e4361c28d5",
+    "symbol": "META",
+    "name": "Meta Platforms",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/meta/",
+      "yahoo": "https://finance.yahoo.com/quote/META/",
+      "webull": "https://www.webull.com/quote/nasdaq-meta"
+    }
+  },
+  {
+    "id": "c89d303c-67c1-5d35-a6c0-48022b717e6f",
+    "symbol": "NFLX",
+    "name": "Netflix",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/nflx/",
+      "yahoo": "https://finance.yahoo.com/quote/NFLX/",
+      "webull": "https://www.webull.com/quote/nasdaq-nflx"
+    }
+  },
+  {
+    "id": "493d9eff-13e3-552c-bc33-1b769712d630",
+    "symbol": "DIS",
+    "name": "Walt Disney",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/dis/",
+      "yahoo": "https://finance.yahoo.com/quote/DIS/",
+      "webull": "https://www.webull.com/quote/nyse-dis"
+    }
+  },
+  {
+    "id": "da900738-5a90-51e2-a0dd-b41e7ea36072",
+    "symbol": "VZ",
+    "name": "Verizon",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/vz/",
+      "yahoo": "https://finance.yahoo.com/quote/VZ/",
+      "webull": "https://www.webull.com/quote/nyse-vz"
+    }
+  },
+  {
+    "id": "e50f38f2-a75f-555c-9f34-993cba6ab8e8",
+    "symbol": "AMZN",
+    "name": "Amazon",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/amzn/",
+      "yahoo": "https://finance.yahoo.com/quote/AMZN/",
+      "webull": "https://www.webull.com/quote/nasdaq-amzn"
+    }
+  },
+  {
+    "id": "d791ea5a-0aee-53d9-89ea-6a7d0c97bc4d",
+    "symbol": "TSLA",
+    "name": "Tesla",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/tsla/",
+      "yahoo": "https://finance.yahoo.com/quote/TSLA/",
+      "webull": "https://www.webull.com/quote/nasdaq-tsla"
+    }
+  },
+  {
+    "id": "2ea03c1a-4493-5b9e-9ebd-eff96e5af570",
+    "symbol": "HD",
+    "name": "Home Depot",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/hd/",
+      "yahoo": "https://finance.yahoo.com/quote/HD/",
+      "webull": "https://www.webull.com/quote/nyse-hd"
+    }
+  },
+  {
+    "id": "d6087a49-2ae4-5e97-ba3d-f80afdadbebb",
+    "symbol": "MCD",
+    "name": "McDonald’s",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/mcd/",
+      "yahoo": "https://finance.yahoo.com/quote/MCD/",
+      "webull": "https://www.webull.com/quote/nyse-mcd"
+    }
+  },
+  {
+    "id": "4627492e-c946-5c1b-9ad2-ccab34eee29e",
+    "symbol": "BKNG",
+    "name": "Booking Holdings",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/bkng/",
+      "yahoo": "https://finance.yahoo.com/quote/BKNG/",
+      "webull": "https://www.webull.com/quote/nasdaq-bkng"
+    }
+  },
+  {
+    "id": "56434918-eca4-5101-81c9-4dc1485424f4",
+    "symbol": "WMT",
+    "name": "Walmart",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/wmt/",
+      "yahoo": "https://finance.yahoo.com/quote/WMT/",
+      "webull": "https://www.webull.com/quote/nyse-wmt"
+    }
+  },
+  {
+    "id": "4988b8c9-4875-5e7e-abe0-0dfb874572bd",
+    "symbol": "COST",
+    "name": "Costco",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/cost/",
+      "yahoo": "https://finance.yahoo.com/quote/COST/",
+      "webull": "https://www.webull.com/quote/nasdaq-cost"
+    }
+  },
+  {
+    "id": "d488181d-22d0-5b76-b484-6c0c6a795b78",
+    "symbol": "PG",
+    "name": "Procter & Gamble",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/pg/",
+      "yahoo": "https://finance.yahoo.com/quote/PG/",
+      "webull": "https://www.webull.com/quote/nyse-pg"
+    }
+  },
+  {
+    "id": "70d17d4b-4c49-5fbc-8068-f930452b3b75",
+    "symbol": "KO",
+    "name": "Coca-Cola",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/ko/",
+      "yahoo": "https://finance.yahoo.com/quote/KO/",
+      "webull": "https://www.webull.com/quote/nyse-ko"
+    }
+  },
+  {
+    "id": "8180ed7c-7f1d-5958-b2dc-a3f218be3253",
+    "symbol": "PEP",
+    "name": "PepsiCo",
+    "category": "US",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/pep/",
+      "yahoo": "https://finance.yahoo.com/quote/PEP/",
+      "webull": "https://www.webull.com/quote/nasdaq-pep"
+    }
+  },
+  {
+    "id": "cba7ebfe-fc4c-5b84-b628-29b5cb282f6d",
+    "symbol": "BRK.B",
+    "name": "Berkshire Hathaway Class B",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/brk.b/",
+      "yahoo": "https://finance.yahoo.com/quote/BRK-B/",
+      "webull": "https://www.webull.com/quote/nyse-brk.b"
+    }
+  },
+  {
+    "id": "4d0165c4-2cb1-5667-8085-7f1c2f24d188",
+    "symbol": "JPM",
+    "name": "JPMorgan Chase",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/jpm/",
+      "yahoo": "https://finance.yahoo.com/quote/JPM/",
+      "webull": "https://www.webull.com/quote/nyse-jpm"
+    }
+  },
+  {
+    "id": "157dca3b-1566-5926-9b4e-6a96a32fbf45",
+    "symbol": "BAC",
+    "name": "Bank of America",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/bac/",
+      "yahoo": "https://finance.yahoo.com/quote/BAC/",
+      "webull": "https://www.webull.com/quote/nyse-bac"
+    }
+  },
+  {
+    "id": "df47806e-297b-548b-90c0-c5cddf25a0f2",
+    "symbol": "WFC",
+    "name": "Wells Fargo",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/wfc/",
+      "yahoo": "https://finance.yahoo.com/quote/WFC/",
+      "webull": "https://www.webull.com/quote/nyse-wfc"
+    }
+  },
+  {
+    "id": "887b3efd-2817-58f1-add8-4dc97c391625",
+    "symbol": "GS",
+    "name": "Goldman Sachs",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/gs/",
+      "yahoo": "https://finance.yahoo.com/quote/GS/",
+      "webull": "https://www.webull.com/quote/nyse-gs"
+    }
+  },
+  {
+    "id": "eddee367-3903-5897-b09e-11d5eebc744f",
+    "symbol": "MS",
+    "name": "Morgan Stanley",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/ms/",
+      "yahoo": "https://finance.yahoo.com/quote/MS/",
+      "webull": "https://www.webull.com/quote/nyse-ms"
+    }
+  },
+  {
+    "id": "6cc0fe91-5778-503c-ad9f-992a74e52865",
+    "symbol": "V",
+    "name": "Visa",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/v/",
+      "yahoo": "https://finance.yahoo.com/quote/V/",
+      "webull": "https://www.webull.com/quote/nyse-v"
+    }
+  },
+  {
+    "id": "2df46558-9660-5a07-93d3-73827038db03",
+    "symbol": "MA",
+    "name": "Mastercard",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/ma/",
+      "yahoo": "https://finance.yahoo.com/quote/MA/",
+      "webull": "https://www.webull.com/quote/nyse-ma"
+    }
+  },
+  {
+    "id": "ea2fec8e-2d82-5ade-8bcf-8e322480a381",
+    "symbol": "LLY",
+    "name": "Eli Lilly",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/lly/",
+      "yahoo": "https://finance.yahoo.com/quote/LLY/",
+      "webull": "https://www.webull.com/quote/nyse-lly"
+    }
+  },
+  {
+    "id": "6c3583b0-2546-5f0e-a2a5-736b005e1956",
+    "symbol": "JNJ",
+    "name": "Johnson & Johnson",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/jnj/",
+      "yahoo": "https://finance.yahoo.com/quote/JNJ/",
+      "webull": "https://www.webull.com/quote/nyse-jnj"
+    }
+  },
+  {
+    "id": "aef837c1-2d3c-5302-ac2d-1f10ea1305ff",
+    "symbol": "ABBV",
+    "name": "AbbVie",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/abbv/",
+      "yahoo": "https://finance.yahoo.com/quote/ABBV/",
+      "webull": "https://www.webull.com/quote/nyse-abbv"
+    }
+  },
+  {
+    "id": "e688a6f0-1e53-56d6-8ef2-703f89a0fe3c",
+    "symbol": "MRK",
+    "name": "Merck",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/mrk/",
+      "yahoo": "https://finance.yahoo.com/quote/MRK/",
+      "webull": "https://www.webull.com/quote/nyse-mrk"
+    }
+  },
+  {
+    "id": "efe84553-8a43-5376-9107-027c7c614979",
+    "symbol": "UNH",
+    "name": "UnitedHealth Group",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/unh/",
+      "yahoo": "https://finance.yahoo.com/quote/UNH/",
+      "webull": "https://www.webull.com/quote/nyse-unh"
+    }
+  },
+  {
+    "id": "2d698993-b3d1-5848-9c38-3f04f91dff1b",
+    "symbol": "TMO",
+    "name": "Thermo Fisher Scientific",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/tmo/",
+      "yahoo": "https://finance.yahoo.com/quote/TMO/",
+      "webull": "https://www.webull.com/quote/nyse-tmo"
+    }
+  },
+  {
+    "id": "146253ac-a093-57cd-80cc-46b49baac5de",
+    "symbol": "CAT",
+    "name": "Caterpillar",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/cat/",
+      "yahoo": "https://finance.yahoo.com/quote/CAT/",
+      "webull": "https://www.webull.com/quote/nyse-cat"
+    }
+  },
+  {
+    "id": "84ce6c12-a273-54e4-b82a-35e7fda523d0",
+    "symbol": "GE",
+    "name": "GE Aerospace",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/ge/",
+      "yahoo": "https://finance.yahoo.com/quote/GE/",
+      "webull": "https://www.webull.com/quote/nyse-ge"
+    }
+  },
+  {
+    "id": "038029e4-1628-5106-b805-deb1f287521e",
+    "symbol": "RTX",
+    "name": "RTX",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/rtx/",
+      "yahoo": "https://finance.yahoo.com/quote/RTX/",
+      "webull": "https://www.webull.com/quote/nyse-rtx"
+    }
+  },
+  {
+    "id": "39993b6a-ec1c-5b56-998b-57b8ec3dd95e",
+    "symbol": "UNP",
+    "name": "Union Pacific",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/unp/",
+      "yahoo": "https://finance.yahoo.com/quote/UNP/",
+      "webull": "https://www.webull.com/quote/nyse-unp"
+    }
+  },
+  {
+    "id": "a4d99e3b-8e7d-5c4a-8a13-38309b0eb2ef",
+    "symbol": "XOM",
+    "name": "Exxon Mobil",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/xom/",
+      "yahoo": "https://finance.yahoo.com/quote/XOM/",
+      "webull": "https://www.webull.com/quote/nyse-xom"
+    }
+  },
+  {
+    "id": "b321c966-4be2-5586-aa8d-622b7a1b487c",
+    "symbol": "CVX",
+    "name": "Chevron",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/cvx/",
+      "yahoo": "https://finance.yahoo.com/quote/CVX/",
+      "webull": "https://www.webull.com/quote/nyse-cvx"
+    }
+  },
+  {
+    "id": "11eaf120-b590-5c34-87b0-0cf540777a9c",
+    "symbol": "LIN",
+    "name": "Linde",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/lin/",
+      "yahoo": "https://finance.yahoo.com/quote/LIN/",
+      "webull": "https://www.webull.com/quote/nyse-lin"
+    }
+  },
+  {
+    "id": "5838a96e-093e-513e-b896-0a48f9e059ba",
+    "symbol": "NEE",
+    "name": "NextEra Energy",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/nee/",
+      "yahoo": "https://finance.yahoo.com/quote/NEE/",
+      "webull": "https://www.webull.com/quote/nyse-nee"
+    }
+  },
+  {
+    "id": "c17a899a-7d1e-5d6e-bf1a-4f7b6ba033be",
+    "symbol": "AMT",
+    "name": "American Tower",
+    "category": "US",
+    "exchange": "NYSE",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/stocks/amt/",
+      "yahoo": "https://finance.yahoo.com/quote/AMT/",
+      "webull": "https://www.webull.com/quote/nyse-amt"
+    }
+  },
+  {
+    "id": "9085b5c2-8bcc-5469-8af0-bcdd50e8909f",
+    "symbol": "QQQ",
+    "name": "Invesco QQQ Trust",
+    "category": "QQQ",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/etf/qqq/",
+      "yahoo": "https://finance.yahoo.com/quote/QQQ/",
+      "webull": "https://www.webull.com/quote/nasdaq-qqq"
+    }
+  },
+  {
+    "id": "2f385d1c-7840-5497-9be4-b5db358faa57",
+    "symbol": "TQQQ",
+    "name": "ProShares UltraPro QQQ",
+    "category": "TQQQ",
+    "exchange": "NASDAQ",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/etf/tqqq/",
+      "yahoo": "https://finance.yahoo.com/quote/TQQQ/",
+      "webull": "https://www.webull.com/quote/nasdaq-tqqq"
+    }
+  },
+  {
+    "id": "6e822fff-9399-5199-a85c-6b442be3b362",
+    "symbol": "EWC",
+    "name": "iShares MSCI Canada ETF",
+    "category": "EWC",
+    "exchange": "NYSEARCA",
+    "aliases": {
+      "stockanalysis": "https://stockanalysis.com/etf/ewc/",
+      "yahoo": "https://finance.yahoo.com/quote/EWC/",
+      "webull": "https://www.webull.com/quote/nysearca-ewc"
+    }
+  }
+]
