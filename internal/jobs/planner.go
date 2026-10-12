@@ -47,6 +47,29 @@ func (p Planner) Plan(ctx context.Context, now time.Time) error {
 			return err
 		}
 	}
+	rows, err = p.Queue.Pool.Query(ctx, "SELECT id,effective_at FROM corporate_events WHERE effective_at BETWEEN $1 AND $2", now.Add(-24*time.Hour), now.Add(24*time.Hour))
+	if err != nil {
+		return err
+	}
+	events = nil
+	for rows.Next() {
+		var e calendarEvent
+		if err = rows.Scan(&e.id, &e.at); err != nil {
+			rows.Close()
+			return err
+		}
+		events = append(events, e)
+	}
+	err = rows.Err()
+	rows.Close()
+	if err != nil {
+		return err
+	}
+	for _, e := range events {
+		if _, err = p.Queue.Enqueue(ctx, Job{Kind: "corporate_action", Key: e.id.String(), Available: e.at, Deadline: e.at.Add(24 * time.Hour), Payload: payload(map[string]string{"event_id": e.id.String()})}, nil, 0); err != nil {
+			return err
+		}
+	}
 	open, close, day, e := p.Calendar.Session(now)
 	if e != nil || !day {
 		return e
