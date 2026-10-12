@@ -9,3 +9,6 @@ dist/
 .codex/
 runtime/
 backups/
+bin/
+*.test
+coverage.out

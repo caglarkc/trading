@@ -672,3 +672,24 @@ Sırlar ve tek kullanımlık kod içermeyen [uzak giriş test kaydı](research/g
 ### 15.3. Sonraki entegrasyon adımı
 
 Uzak resmi CLI ve hesap bağlantısı ön koşulu tamamlandı. Sonraki adım 12.10’daki kendi Go runner’ını bu sabit binary/ChatGPT kimliğiyle bağlamak; yapılandırılmış çıktı, özel session depoları, makbuz döngüsü ve auth koordinasyonunu uygulamaktır. Bu turda Go backend veya üretim worker servisi başlatılmadı. Diğer sunucu projelerinde Docker/firewall/deployment değişikliği yapılmadı.
+
+## 16. Sekiz fazın uygulama kaydı — 12 Ekim 2026
+
+Kullanıcının uygulama yetkisiyle ilk pilot modeli **gpt-6.1-sol / low** olarak sabitlendi. Fazlar sırasıyla uygulanır; her aşamanın kabulü ayrı kaydedilir. Üretim sanal gerçekleşmesi kaynak ve muhasebe kabulüne kadar kapalıdır.
+
+| Faz | Durum | Kanıt / kalan iş |
+|---|---|---|
+| 1 — Go GPT runner | Geçti | Go race testleri, Hetzner’de iki paralel model çağrısı, explicit resume, özel işaret, başka session’ın reddi ve Docker dosya sınırı |
+| 2 — Kaynak okuyucuları | Sırada | Açık seans üç fiyat ve BBO/size kabulü ayrıca gerekir |
+| 3 — API / DB / seed | Sırada | Sekiz hesap ve 800.000 USD, tekil başlangıç journal’ı |
+| 4 — Emir / muhasebe | Sırada | Atomic fill, rezerv, OCO, FIFO, ücret ve takas |
+| 5 — Jobs / araştırma | Sırada | Kalıcı zamanlama ve ortak veri |
+| 6 — Persona / hafıza | Sırada | Sekiz hesap, makbuz ve özel geçmiş entegrasyonu |
+| 7 — Mac ekranı | Sırada | Gerçek backend verileri ve SSH proxy |
+| 8 — Bütünleşik kabul | Sırada | Kaynak, restart, restore ve pilot etkinleştirme |
+
+Faz 1: `internal/modelrunner` native CLI’yi prompt stdin / JSONL / JSON Schema sözleşmesiyle çağırır; unknown çıktı ve explicit session sapması reddedilir. Her wallet çağrısı yalnız kendi CODEX_HOME/workspace’i ve salt okunur resmi CLI paketinin mount edildiği, non-root ve kaynak limitli Docker konteynerinde çalışır. Kişisel config/rules taşınmaz; genel shell/exec kapalıdır. Docker erişimi yalnız trusted Go runner’dadır, model konteynerinde socket yoktur. Aynı wallet’ta tek writer; global üst sınır iki çağrıdır.
+
+Auth coordinator tek server cache’inden yalnız aktif çağrı için 0600 özel snapshot oluşturur, bitişte kaldırır. Eski/sona yaklaşan cache, aktif çağrı yokken resmi CLI app-server’ın yalnız auth amaçlı `account/read {refreshToken:true}` yöntemiyle yenilenir; inference/karar yolu yine CLI exec’tir. Çelişen refresh sonucu auth_required olur, ücretli API veya başka hesaba dönüşmez. [Resmî auth/account protokolü](https://learn.chatgpt.com/docs/app-server#auth-endpoints).
+
+[Gerçek faz 1 kabul çıktısı](research/phase1-runner-acceptance-2026-10-12.json) dört model çağrısını ve ölçülen iki eşzamanlı çağrıyı kaydeder. Auth dosyası veya özel test işaretleri Git’e yazılmaz. Phase 1 çalışma binary’si `/opt/trading/bin/trading-runner`; hedef runner image kimliği kabul kaydında sabittir. Sonraki fazlar runtime kanıtlarıyla bu tabloyu günceller.
