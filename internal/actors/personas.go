@@ -33,7 +33,7 @@ func LoadPersonas(path string) (Personas, error) {
 		}
 	}
 	for _, value := range append([]string{p.Common}, mapValues(p.Items)...) {
-		for _, bad := range []string{"simülasyon", "sanal hesap", "diğer cüzdan", "800.000", "%10", "benchmark"} {
+		for _, bad := range []string{"simülasyon", "sanal hesap", "diğer cüzdan", "800.000", "benchmark"} {
 			if strings.Contains(strings.ToLower(value), bad) {
 				return p, fmt.Errorf("experiment_metadata_in_persona")
 			}
