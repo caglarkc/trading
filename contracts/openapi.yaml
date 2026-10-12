@@ -1,0 +1,71 @@
+openapi: 3.1.0
+info: {title: Trading internal API, version: 1.0.0}
+servers: [{url: 'http://127.0.0.1:18880'}]
+components:
+  securitySchemes:
+    agentScope: {type: http, scheme: bearer, description: Signed wallet/job/decision claims, maximum 15 minutes}
+    operatorRead: {type: http, scheme: bearer, description: Independent observer token, GET routes only}
+  schemas:
+    Decimal: {type: string, pattern: '^(0|[1-9][0-9]*)(\.[0-9]{1,8})?$'}
+    Error: {type: object, required: [error], properties: {error: {type: string}}}
+paths:
+  /health:
+    get:
+      operationId: readiness
+      responses: {'200': {description: Database readiness, release and execution gate}, '503': {description: Unavailable}}
+  /agent/account:
+    get:
+      operationId: ownAccount
+      security: [{agentScope: []}]
+      responses: {'200': {description: Own authoritative decimal account snapshot}, '401': {description: Invalid scope}}
+  /agent/positions:
+    get:
+      operationId: ownPositions
+      security: [{agentScope: []}]
+      responses: {'200': {description: Own authoritative positions}}
+  /agent/orders:
+    get:
+      operationId: ownOrders
+      security: [{agentScope: []}]
+      responses: {'200': {description: Own orders, cursor pagination, maximum 200}}
+  /agent/receipts:
+    get:
+      operationId: ownReceipts
+      security: [{agentScope: []}]
+      responses: {'200': {description: Own receipts after monotonic cursor}}
+  /agent/memory:
+    get:
+      operationId: ownMemory
+      security: [{agentScope: []}]
+      responses: {'200': {description: Latest own immutable summary version}}
+  /agent/evidence:
+    get:
+      operationId: sharedEvidence
+      security: [{agentScope: []}]
+      responses: {'200': {description: Public evidence, origin and verification metadata}}
+  /operator/wallets:
+    get:
+      operationId: observeWallets
+      security: [{operatorRead: []}]
+      responses: {'200': {description: Eight independent virtual wallets}}
+  /operator/wallets/{id}:
+    get:
+      operationId: observeWallet
+      security: [{operatorRead: []}]
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses: {'200': {description: One wallet}, '404': {description: Unknown wallet}}
+  /operator/orders:
+    get:
+      operationId: observeOrders
+      security: [{operatorRead: []}]
+      responses: {'200': {description: Order history, cursor pagination}}
+  /operator/evidence:
+    get:
+      operationId: observeEvidence
+      security: [{operatorRead: []}]
+      responses: {'200': {description: Evidence and provenance}}
+  /operator/system-status:
+    get:
+      operationId: observeSystem
+      security: [{operatorRead: []}]
+      responses: {'200': {description: Gate, release, jobs and incidents}}

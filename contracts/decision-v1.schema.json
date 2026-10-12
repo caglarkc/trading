@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "decision-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "actions",
+    "memory_update"
+  ],
+  "properties": {
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "enum": [
+              "HOLD",
+              "SUBMIT",
+              "CANCEL",
+              "REPLACE"
+            ]
+          },
+          "client_action_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[A-Za-z0-9_-]+$"
+          },
+          "asset_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "side": {
+            "enum": [
+              "BUY",
+              "SELL",
+              null
+            ]
+          },
+          "quantity": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "order_type": {
+            "enum": [
+              "MARKET",
+              "LIMIT",
+              "STOP_MARKET",
+              "STOP_LIMIT",
+              null
+            ]
+          },
+          "time_in_force": {
+            "enum": [
+              "DAY",
+              "GTC",
+              null
+            ]
+          },
+          "target_order_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "oco_group_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "thesis": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "evidence_ids": {
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
+          },
+          "evidence_status": {
+            "enum": [
+              "two_sources",
+              "single_source",
+              "conflicting",
+              "missing"
+            ]
+          },
+          "expected_catalyst": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "exit_condition": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "hold_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 4000
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "limit_price": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^(0|[1-9][0-9]{0,19})(\\.[0-9]{1,8})?$"
+          },
+          "stop_price": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^(0|[1-9][0-9]{0,19})(\\.[0-9]{1,8})?$"
+          },
+          "cash_budget_usd": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^(0|[1-9][0-9]{0,19})(\\.[0-9]{1,8})?$"
+          }
+        },
+        "required": [
+          "action",
+          "client_action_id",
+          "thesis",
+          "evidence_ids",
+          "evidence_status",
+          "expected_catalyst",
+          "exit_condition",
+          "depends_on"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "action": {
+                  "const": "HOLD"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "hold_reason"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "action": {
+                  "enum": [
+                    "SUBMIT",
+                    "REPLACE"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "asset_id",
+                "side",
+                "quantity",
+                "order_type",
+                "time_in_force"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "action": {
+                  "enum": [
+                    "CANCEL",
+                    "REPLACE"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "target_order_id"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "memory_update": {
+      "type": "string",
+      "maxLength": 12000
+    }
+  }
+}

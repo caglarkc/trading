@@ -1,0 +1,52 @@
+name: trading-staging
+services:
+  db:
+    image: postgres@sha256:5a5a84b19854a9ffaa54082c166ff4ec27473a361e496e5ea167f298f2da9722
+    env_file: /etc/trading/staging/db.env
+    command: [postgres, -c, unix_socket_directories=/var/run/postgresql, -c, max_connections=40]
+    volumes:
+      - /var/lib/trading/staging/postgres:/var/lib/postgresql
+      - /var/lib/trading/staging/pgsocket:/var/run/postgresql
+      - ./init-roles.sh:/docker-entrypoint-initdb.d/01-roles.sh:ro
+    networks: [database]
+    restart: unless-stopped
+    mem_limit: 512m
+    cpus: 0.75
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    logging: &logs
+      driver: json-file
+      options: {max-size: 10m, max-file: '3'}
+  migrate:
+    image: ${API_IMAGE:?API_IMAGE must be pinned}
+    env_file: /etc/trading/staging/owner.env
+    environment: {ASSETS_FILE: /config/assets.json}
+    command: [--migrate]
+    volumes: [../config:/config:ro]
+    networks: [database]
+    depends_on: {db: {condition: service_healthy}}
+    profiles: [maintenance]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    logging: *logs
+  api:
+    image: ${API_IMAGE:?API_IMAGE must be pinned}
+    env_file: /etc/trading/staging/api.env
+    environment: {API_LISTEN: '0.0.0.0:18880', EXECUTION_ENABLED: 'false'}
+    ports: [127.0.0.1:18880:18880]
+    networks: [database, ingress]
+    depends_on: {db: {condition: service_healthy}}
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 128m
+    cpus: 0.5
+    logging: *logs
+networks:
+  database: {internal: true}
+  ingress: {}

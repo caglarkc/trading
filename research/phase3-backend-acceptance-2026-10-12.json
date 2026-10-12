@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-12",
+  "environment": "hetzner-staging",
+  "postgres_image": "postgres@sha256:5a5a84b19854a9ffaa54082c166ff4ec27473a361e496e5ea167f298f2da9722",
+  "go_builder": "golang@sha256:8a5910f31396cd4d89662f56c68b3ae31d374308270a1c3bd96672ee5ed43414",
+  "migrations": [
+    1,
+    2
+  ],
+  "database": {
+    "wallets": 8,
+    "capital_usd": "800000",
+    "seed_repeated": 2,
+    "unscoped_rls": "denied",
+    "peer_read_write": "denied",
+    "cross_wallet_fk": "denied",
+    "unbalanced_journal": "denied",
+    "journal_update": "denied",
+    "operator_write": "denied",
+    "operator_private_memory": "denied"
+  },
+  "api": {
+    "operator_wallets": 8,
+    "capital_usd": "800000",
+    "unauthenticated": "denied",
+    "operator_write": "denied",
+    "wallet_query_override": "ignored",
+    "agent_operator_access": "denied"
+  },
+  "execution_enabled": false
+}
