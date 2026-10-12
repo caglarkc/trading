@@ -47,6 +47,13 @@ func (q Queue) Acquire(ctx context.Context, owner string, kinds []string) (*Job,
 	if e != nil {
 		return nil, e
 	}
+	var paused bool
+	if e = tx.QueryRow(ctx, "SELECT paused FROM runtime_control WHERE id FOR SHARE").Scan(&paused); e != nil {
+		return nil, e
+	}
+	if paused {
+		return nil, tx.Commit(ctx)
+	}
 	var j Job
 	e = tx.QueryRow(ctx, `SELECT j.id,j.kind,j.job_key,j.wallet_id,j.payload,j.available_at,j.deadline,j.fencing_token,j.attempts FROM jobs j WHERE j.kind=ANY($1) AND j.available_at<=now() AND j.deadline>now() AND j.attempts<3 AND (j.state='pending' OR j.state='running' AND j.lease_until<=now()) AND (j.depends_on IS NULL OR EXISTS(SELECT 1 FROM jobs d WHERE d.id=j.depends_on AND d.state IN ('completed','failed','expired'))) AND (j.wallet_id IS NULL OR NOT EXISTS(SELECT 1 FROM jobs active WHERE active.wallet_id=j.wallet_id AND active.state='running' AND active.id<>j.id)) AND (j.kind<>'price_refresh' OR NOT EXISTS(SELECT 1 FROM jobs active WHERE active.kind='price_refresh' AND active.state='running' AND active.id<>j.id AND active.payload->>'asset_id'=j.payload->>'asset_id')) AND NOT EXISTS(SELECT 1 FROM runtime_control WHERE paused) ORDER BY j.priority,j.available_at,j.id FOR UPDATE OF j SKIP LOCKED LIMIT 1`, kinds).Scan(&j.ID, &j.Kind, &j.Key, &j.Wallet, &j.Payload, &j.Available, &j.Deadline, &j.Fence, &j.Attempts)
 	if e == pgx.ErrNoRows {
