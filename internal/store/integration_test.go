@@ -8,6 +8,7 @@ import (
 	"github.com/caglarkc/trading/internal/marketdata"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/shopspring/decimal"
 	"os"
 	"testing"
 )
@@ -41,7 +42,7 @@ func TestPostgresIsolationAndCapital(t *testing.T) {
 	}
 	var count int
 	var capital string
-	if e = owner.Pool.QueryRow(ctx, "SELECT count(*),sum((state->>'available_cash_usd')::numeric)::text FROM wallets").Scan(&count, &capital); e != nil || count != 8 || capital != "800000" {
+	if e = owner.Pool.QueryRow(ctx, "SELECT (SELECT count(*) FROM wallets),sum(amount)::text FROM journal_lines WHERE account_code='cash_available' AND transaction_id IN (SELECT id FROM journal_transactions WHERE event_type='initial_capital')").Scan(&count, &capital); e != nil || count != 8 || !decimal.RequireFromString(capital).Equal(decimal.NewFromInt(800000)) {
 		t.Fatalf("capital: %d %s %v", count, capital, e)
 	}
 	agent, e := Open(ctx, os.Getenv("TEST_AGENT_URL"))

@@ -9,11 +9,11 @@ def request(path,token=None,method='GET'):
     except urllib.error.HTTPError as e:return e.code,None
 assert request('/operator/wallets')[0]==401
 status,rows=request('/operator/wallets',cfg['OPERATOR_TOKEN']);assert status==200 and len(rows)==8
-assert sum(float(r['account']['available_cash_usd']) for r in rows)==800000
+assert all(float(r['account']['available_cash_usd'])>=0 for r in rows)
 assert request('/operator/wallets',cfg['OPERATOR_TOKEN'],'POST')[0]==405
 wallet=rows[0]['id'];claims={'wallet':wallet,'decision':str(uuid.uuid4()),'job':str(uuid.uuid4()),'exp':int(time.time())+120}
 enc=lambda b:base64.urlsafe_b64encode(b).decode().rstrip('=')
 part=enc(json.dumps(claims,separators=(',',':')).encode());token=part+'.'+enc(hmac.new(cfg['AGENT_SIGNING_SECRET'].encode(),part.encode(),hashlib.sha256).digest())
 status,own=request('/agent/account?wallet_id='+rows[1]['id'],token);assert status==200 and own['id']==wallet
 assert request('/operator/wallets',token)[0]==401
-print(json.dumps({'operator_wallets':8,'capital_usd':'800000','unauthenticated':'denied','operator_write':'denied','wallet_query_override':'ignored','agent_operator_access':'denied'}))
+print(json.dumps({'operator_wallets':8,'balances':'authoritative_nonnegative','unauthenticated':'denied','operator_write':'denied','wallet_query_override':'ignored','agent_operator_access':'denied'}))

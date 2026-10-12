@@ -12,6 +12,9 @@ type Asset struct {
 }
 
 type Observation struct {
+	MinuteVolume     *int64     `json:"minute_volume_shares,omitempty"`
+	VolumeMinute     *time.Time `json:"volume_minute,omitempty"`
+	VolumeScope      string     `json:"volume_scope,omitempty"`
 	ID               string     `json:"id"`
 	AssetID          string     `json:"asset_id"`
 	Symbol           string     `json:"symbol"`

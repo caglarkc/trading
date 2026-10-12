@@ -69,6 +69,12 @@ type Wallet struct {
 func DecodeWallet(row dbgen.Wallet) (Wallet, error) {
 	var a domain.Account
 	e := json.Unmarshal(row.State, &a)
+	if a.DividendIncome == "" {
+		a.DividendIncome = "0"
+	}
+	if a.Receivables == nil {
+		a.Receivables = []domain.Receivable{}
+	}
 	return Wallet{row.ID, row.Code, row.Category, row.AccountVersion, a, time.Now().UTC()}, e
 }
 func (s *Store) Wallet(ctx context.Context, id string) (Wallet, error) {

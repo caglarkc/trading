@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
+	"github.com/caglarkc/trading/internal/calendar"
 	"github.com/caglarkc/trading/internal/database"
+	"github.com/caglarkc/trading/internal/domain"
 	"github.com/caglarkc/trading/internal/httpapi"
 	"github.com/caglarkc/trading/internal/marketdata"
 	"github.com/caglarkc/trading/internal/store"
@@ -57,7 +59,15 @@ func main() {
 		log.Fatal(e)
 	}
 	defer operator.Close()
-	s := &httpapi.Server{Agent: agent, Operator: operator, Secret: []byte(required("AGENT_SIGNING_SECRET")), OperatorToken: required("OPERATOR_TOKEN"), Release: release, ExecutionEnabled: os.Getenv("EXECUTION_ENABLED") == "true"}
+	cal, e := calendar.Load(required("CALENDAR_FILE"))
+	if e != nil {
+		log.Fatal(e)
+	}
+	fee, e := domain.LoadFees(required("FEES_FILE"))
+	if e != nil {
+		log.Fatal(e)
+	}
+	s := &httpapi.Server{Calendar: cal, Fees: fee, Agent: agent, Operator: operator, Secret: []byte(required("AGENT_SIGNING_SECRET")), OperatorToken: required("OPERATOR_TOKEN"), Release: release, ExecutionEnabled: os.Getenv("EXECUTION_ENABLED") == "true"}
 	srv := &http.Server{Addr: env("API_LISTEN", "127.0.0.1:18880"), Handler: s.Router(), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 8192}
 	go func() {
 		<-ctx.Done()

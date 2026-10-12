@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-12",
+  "environment": "hetzner-staging",
+  "migrations": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "api_image": "sha256:9f82d93ede2eff2dee5d44319a62c4a50f0490f301220c9f1ad93e7af575fe79",
+  "execution_enabled": false,
+  "unit_acceptance": [
+    "MARKET/LIMIT/STOP_MARKET/STOP_LIMIT",
+    "CANCEL and replace primitives",
+    "whole shares and settled cash only",
+    "partial quantity and FIFO",
+    "OCO quantity reduction and single reservation",
+    "daily incremental fees",
+    "quote capacity replay and proven minute volume cap",
+    "T+1 settlement holiday, DST and early close",
+    "split replay and fractional unresolved block",
+    "ordinary-US 30% withholding assumption and unclassified distribution hold"
+  ],
+  "postgres_acceptance": [
+    "concurrent cash reservations",
+    "action replay and body conflict",
+    "partial fill and quote replay",
+    "fill/cancel race",
+    "late receipt failure rolls back fill/cash/lot/fee/consumption",
+    "concurrent OCO leg execution",
+    "settlement replay",
+    "split/historical entitlement/dividend payment replay",
+    "journal and normalized position reconciliation"
+  ],
+  "tests": "local race/vet and Hetzner pinned Go build/unit + actual PostgreSQL passed",
+  "fixtures": "Staging uses invented market/corporate observations only; these are not live source acceptance or pilot trades. Test assets have TEST- prefix and remain in staging history.",
+  "limitations": [
+    "Future fee/settlement periods without verified profiles are blocked.",
+    "Corporate revision or fractional cash-in-lieu without official terms is unresolved and must block the asset.",
+    "Actual reader price and BBO acceptance remains open."
+  ]
+}

@@ -7,17 +7,19 @@ import (
 )
 
 type Account struct {
-	Available     string            `json:"available_cash_usd"`
-	Reserved      string            `json:"reserved_cash_usd"`
-	Unsettled     string            `json:"unsettled_cash_usd"`
-	Dividend      string            `json:"dividend_receivable_usd"`
-	Realized      string            `json:"realized_pnl_usd"`
-	Fees          string            `json:"fees_usd"`
-	Orders        map[string]*Order `json:"orders"`
-	Lots          []Lot             `json:"lots"`
-	Settlements   []Settlement      `json:"settlements"`
-	QuoteUse      map[string]int64  `json:"quote_use"`
-	AppliedEvents map[string]bool   `json:"applied_events"`
+	DividendIncome string            `json:"dividend_income_usd"`
+	Receivables    []Receivable      `json:"receivables"`
+	Available      string            `json:"available_cash_usd"`
+	Reserved       string            `json:"reserved_cash_usd"`
+	Unsettled      string            `json:"unsettled_cash_usd"`
+	Dividend       string            `json:"dividend_receivable_usd"`
+	Realized       string            `json:"realized_pnl_usd"`
+	Fees           string            `json:"fees_usd"`
+	Orders         map[string]*Order `json:"orders"`
+	Lots           []Lot             `json:"lots"`
+	Settlements    []Settlement      `json:"settlements"`
+	QuoteUse       map[string]int64  `json:"quote_use"`
+	AppliedEvents  map[string]bool   `json:"applied_events"`
 }
 type Order struct {
 	ID           string              `json:"id"`
@@ -65,7 +67,7 @@ type Settlement struct {
 }
 
 func NewAccount() Account {
-	return Account{Available: "100000", Reserved: "0", Unsettled: "0", Dividend: "0", Realized: "0", Fees: "0", Orders: map[string]*Order{}, Lots: []Lot{}, Settlements: []Settlement{}, QuoteUse: map[string]int64{}, AppliedEvents: map[string]bool{}}
+	return Account{DividendIncome: "0", Receivables: []Receivable{}, Available: "100000", Reserved: "0", Unsettled: "0", Dividend: "0", Realized: "0", Fees: "0", Orders: map[string]*Order{}, Lots: []Lot{}, Settlements: []Settlement{}, QuoteUse: map[string]int64{}, AppliedEvents: map[string]bool{}}
 }
 func Money(s string) (decimal.Decimal, error) {
 	d, e := decimal.NewFromString(s)
@@ -98,8 +100,13 @@ func (a Account) Check() error {
 	}
 	for _, l := range a.Lots {
 		c, e := Money(l.Cost)
-		if l.Quantity < 0 || e != nil || c.IsNegative() {
+		if l.Quantity < 0 || e != nil || c.IsNegative() || (l.Quantity == 0 && !c.IsZero()) {
 			return fmt.Errorf("invalid_lot")
+		}
+	}
+	for _, l := range a.Lots {
+		if a.ReservedShares(l.AssetID, "") > a.Shares(l.AssetID) {
+			return fmt.Errorf("share_reserve_mismatch")
 		}
 	}
 	return nil

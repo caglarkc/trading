@@ -13,6 +13,14 @@ paths:
     get:
       operationId: readiness
       responses: {'200': {description: Database readiness, release and execution gate}, '503': {description: Unavailable}}
+  /agent/order-actions:
+    post:
+      operationId: submitOwnOrderAction
+      security: [{agentScope: []}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {type: object, description: Single action from decision-v1 schema; wallet is trusted token scope}}}
+      responses: {'200': {description: Idempotent receipt; acceptance is distinct from fill}, '400': {description: Invalid JSON}, '403': {description: Inactive decision}, '409': {description: Idempotency or account conflict}}
   /agent/account:
     get:
       operationId: ownAccount

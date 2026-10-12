@@ -36,7 +36,8 @@ services:
   api:
     image: ${API_IMAGE:?API_IMAGE must be pinned}
     env_file: /etc/trading/staging/api.env
-    environment: {API_LISTEN: '0.0.0.0:18880', EXECUTION_ENABLED: 'false'}
+    environment: {API_LISTEN: '0.0.0.0:18880', EXECUTION_ENABLED: 'false', CALENDAR_FILE: /config/calendar.json, FEES_FILE: /config/fees.json}
+    volumes: [../config:/config:ro]
     ports: [127.0.0.1:18880:18880]
     networks: [database, ingress]
     depends_on: {db: {condition: service_healthy}}

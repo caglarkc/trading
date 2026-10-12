@@ -3,6 +3,8 @@ package httpapi
 import (
 	"context"
 	"encoding/json"
+	"github.com/caglarkc/trading/internal/calendar"
+	"github.com/caglarkc/trading/internal/domain"
 	"github.com/caglarkc/trading/internal/store"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
@@ -22,6 +24,8 @@ type Server struct {
 	Secret           []byte
 	OperatorToken    string
 	Release          string
+	Calendar         calendar.Calendar
+	Fees             domain.FeeProfile
 	ExecutionEnabled bool
 }
 
@@ -48,6 +52,7 @@ func (s *Server) Router() http.Handler {
 	})
 	r.Route("/agent", func(r chi.Router) {
 		r.Use(s.agentAuth)
+		r.Post("/order-actions", s.orderAction)
 		r.Get("/account", s.account)
 		r.Get("/positions", s.account)
 		r.Get("/orders", s.agentRows("orders"))

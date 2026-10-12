@@ -9,6 +9,15 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type AccountEvent struct {
+	ID              uuid.UUID          `json:"id"`
+	WalletID        uuid.UUID          `json:"wallet_id"`
+	EventType       string             `json:"event_type"`
+	ExternalEventID string             `json:"external_event_id"`
+	OccurredAt      pgtype.Timestamptz `json:"occurred_at"`
+	StateHash       string             `json:"state_hash"`
+}
+
 type Asset struct {
 	ID               uuid.UUID `json:"id"`
 	Symbol           string    `json:"symbol"`
@@ -18,6 +27,17 @@ type Asset struct {
 	Aliases          []byte    `json:"aliases"`
 	Fixed            bool      `json:"fixed"`
 	ExecutionBlocked bool      `json:"execution_blocked"`
+}
+
+type CorporateEvent struct {
+	ID          uuid.UUID          `json:"id"`
+	AssetID     uuid.UUID          `json:"asset_id"`
+	EventType   string             `json:"event_type"`
+	EffectiveAt pgtype.Timestamptz `json:"effective_at"`
+	Status      string             `json:"status"`
+	SourceUrl   string             `json:"source_url"`
+	Body        []byte             `json:"body"`
+	Supersedes  pgtype.UUID        `json:"supersedes"`
 }
 
 type DecisionAction struct {
@@ -55,6 +75,13 @@ type Evidence struct {
 	Status      string             `json:"status"`
 	Body        []byte             `json:"body"`
 	Supersedes  pgtype.UUID        `json:"supersedes"`
+}
+
+type ExecutionQuote struct {
+	ID         string             `json:"id"`
+	AssetID    uuid.UUID          `json:"asset_id"`
+	Body       []byte             `json:"body"`
+	ObservedAt pgtype.Timestamptz `json:"observed_at"`
 }
 
 type Fill struct {
@@ -109,6 +136,13 @@ type Observation struct {
 	Body       []byte             `json:"body"`
 }
 
+type OcoGroup struct {
+	WalletID       uuid.UUID `json:"wallet_id"`
+	ID             uuid.UUID `json:"id"`
+	AssetID        uuid.UUID `json:"asset_id"`
+	ReservedShares int64     `json:"reserved_shares"`
+}
+
 type Order struct {
 	ID        uuid.UUID          `json:"id"`
 	WalletID  uuid.UUID          `json:"wallet_id"`
@@ -120,6 +154,31 @@ type Order struct {
 	Seq       pgtype.Int8        `json:"seq"`
 }
 
+type OrderEvent struct {
+	ID         int64              `json:"id"`
+	WalletID   uuid.UUID          `json:"wallet_id"`
+	OrderID    uuid.UUID          `json:"order_id"`
+	Body       []byte             `json:"body"`
+	OccurredAt pgtype.Timestamptz `json:"occurred_at"`
+}
+
+type PositionLot struct {
+	ID         uuid.UUID          `json:"id"`
+	WalletID   uuid.UUID          `json:"wallet_id"`
+	AssetID    uuid.UUID          `json:"asset_id"`
+	FillID     uuid.UUID          `json:"fill_id"`
+	Quantity   int64              `json:"quantity"`
+	CostBasis  pgtype.Numeric     `json:"cost_basis"`
+	AcquiredAt pgtype.Timestamptz `json:"acquired_at"`
+}
+
+type QuoteConsumption struct {
+	WalletID uuid.UUID `json:"wallet_id"`
+	QuoteID  string    `json:"quote_id"`
+	Side     string    `json:"side"`
+	Quantity int64     `json:"quantity"`
+}
+
 type Receipt struct {
 	ID          int64              `json:"id"`
 	WalletID    uuid.UUID          `json:"wallet_id"`
@@ -127,6 +186,33 @@ type Receipt struct {
 	Body        []byte             `json:"body"`
 	DeliveredAt pgtype.Timestamptz `json:"delivered_at"`
 	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+}
+
+type Receivable struct {
+	WalletID uuid.UUID          `json:"wallet_id"`
+	EventID  uuid.UUID          `json:"event_id"`
+	Gross    pgtype.Numeric     `json:"gross"`
+	Tax      pgtype.Numeric     `json:"tax"`
+	Net      pgtype.Numeric     `json:"net"`
+	Quantity int64              `json:"quantity"`
+	PayAt    pgtype.Timestamptz `json:"pay_at"`
+	Status   string             `json:"status"`
+}
+
+type Reservation struct {
+	WalletID uuid.UUID      `json:"wallet_id"`
+	OrderID  uuid.UUID      `json:"order_id"`
+	OcoID    pgtype.UUID    `json:"oco_id"`
+	CashUsd  pgtype.Numeric `json:"cash_usd"`
+	Shares   int64          `json:"shares"`
+}
+
+type Settlement struct {
+	WalletID uuid.UUID          `json:"wallet_id"`
+	FillID   uuid.UUID          `json:"fill_id"`
+	Amount   pgtype.Numeric     `json:"amount"`
+	DueAt    pgtype.Timestamptz `json:"due_at"`
+	Settled  bool               `json:"settled"`
 }
 
 type SystemEvent struct {
