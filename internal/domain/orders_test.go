@@ -262,3 +262,49 @@ func TestProvenMinuteVolumeCapacity(t *testing.T) {
 		t.Fatal("minute volume reused by new quote")
 	}
 }
+
+func TestObservedPriceFillWithoutLiquidity(t *testing.T) {
+	cal, fee, now, asset := fixtures(t)
+	a := NewAccount()
+	id := uuid.NewString()
+	if e := a.Submit(buy(asset, 10, "2000"), id, now, cal, fee, true); e != nil {
+		t.Fatal(e)
+	}
+	at := now.Add(time.Second)
+	s := quote(asset, at, "100", "1", "999", 1)
+	s.ExecutionMode = marketdata.ObservedPriceMode
+	for i := range s.Observations {
+		s.Observations[i].EventTime = nil
+		s.Observations[i].BBOTime = nil
+		s.Observations[i].Bid = nil
+		s.Observations[i].Ask = nil
+		s.Observations[i].BidSize = nil
+		s.Observations[i].AskSize = nil
+		s.Observations[i].Session = "UNKNOWN"
+	}
+	f, e := a.TryFill(id, s, at, cal, fee)
+	if e != nil || f.Quantity != 10 || f.Price != "100.05" || f.ExecutionVersion != marketdata.ObservedPriceMode || a.Shares(asset) != 10 {
+		t.Fatal(f, e, a)
+	}
+	if _, e = a.TryFill(id, s, at, cal, fee); e == nil {
+		t.Fatal("filled order replayed")
+	}
+	id = uuid.NewString()
+	sell := Action{AssetID: &asset, Side: ptr("SELL"), Quantity: ptr(int64(10)), Type: ptr("MARKET"), TIF: ptr("DAY")}
+	if e = a.Submit(sell, id, at.Add(time.Second), cal, fee, false); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = a.TryFill(id, s, at.Add(2*time.Second), cal, fee); e == nil {
+		t.Fatal("read before order accepted")
+	}
+	for i := range s.Observations {
+		s.Observations[i].ObservedAt = at.Add(2 * time.Second)
+	}
+	f, e = a.TryFill(id, s, at.Add(2*time.Second), cal, fee)
+	if e != nil || f.Quantity != 10 || f.Price != "99.95" || a.Shares(asset) != 0 || a.Unsettled == "0" {
+		t.Fatal(f, e, a)
+	}
+	if e = a.Check(); e != nil {
+		t.Fatal(e)
+	}
+}
