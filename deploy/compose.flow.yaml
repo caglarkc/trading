@@ -14,7 +14,7 @@ services:
   api:
     image: ${API_IMAGE:?pin API_IMAGE}
     env_file: /etc/trading/flow/api.env
-    environment: {API_LISTEN: '0.0.0.0:18880', EXECUTION_ENABLED: 'false', CALENDAR_FILE: /config/calendar.json, FEES_FILE: /config/fees.json}
+    environment: {API_LISTEN: '0.0.0.0:18880', EXECUTION_ENABLED: '${EXECUTION_ENABLED:-false}', CALENDAR_FILE: /config/calendar.json, FEES_FILE: /config/fees.json}
     ports: [127.0.0.1:18880:18880]
     volumes: [../config:/config:ro]
     networks: [database, public_sources]
@@ -30,7 +30,7 @@ services:
   worker:
     image: ${READER_IMAGE:?pin READER_IMAGE}
     env_file: /etc/trading/flow/worker.env
-    environment: {CALENDAR_FILE: /config/calendar.json, FEES_FILE: /config/fees.json, RENDER_URL: 'http://trading-staging-renderer-1:18881', EXECUTION_ENABLED: 'false'}
+    environment: {CALENDAR_FILE: /config/calendar.json, FEES_FILE: /config/fees.json, RENDER_URL: 'http://trading-staging-renderer-1:18881', EXECUTION_ENABLED: '${EXECUTION_ENABLED:-false}'}
     command: [--listen, '0.0.0.0:18882', --hosts, /config/source-hosts.json]
     ports: [127.0.0.1:18882:18882]
     volumes: [../config:/config:ro]
