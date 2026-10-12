@@ -6,6 +6,8 @@ import (
 	"github.com/caglarkc/trading/internal/jobs"
 	"github.com/caglarkc/trading/internal/modelrunner"
 	"github.com/google/uuid"
+	"os"
+	"path/filepath"
 	"sync"
 	"time"
 )
@@ -42,7 +44,11 @@ func (s *Service) Loop(ctx context.Context, root string, probe bool) error {
 				if ctx.Err() != nil {
 					return
 				}
-				j, e := q.Acquire(ctx, fmt.Sprintf("%s-%d", owner, slot), []string{"research", "dynamic_universe", "wallet_decision"})
+				kinds := []string{"research", "dynamic_universe", "wallet_decision", "wallet_screen", "wallet_deep", "wallet_allocation"}
+				if _, err := os.Stat(filepath.Join(filepath.Dir(root), "reviews", "research-only.lock")); err == nil {
+					kinds = []string{"wallet_screen", "wallet_deep", "wallet_allocation"}
+				}
+				j, e := q.Acquire(ctx, fmt.Sprintf("%s-%d", owner, slot), kinds)
 				if e != nil {
 					errCh <- e
 					return
@@ -59,7 +65,7 @@ func (s *Service) Loop(ctx context.Context, root string, probe bool) error {
 					if j.Kind == "dynamic_universe" {
 						return s.Dynamic(c, *j)
 					}
-					if j.Kind == "wallet_decision" {
+					if j.Kind == "wallet_decision" || j.Kind == "wallet_screen" || j.Kind == "wallet_deep" || j.Kind == "wallet_allocation" {
 						if s.WalletHandler == nil {
 							return nil, fmt.Errorf("wallet_handler_unavailable")
 						}
