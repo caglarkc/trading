@@ -29,24 +29,24 @@ func Validate(asset string, rows []Observation, now time.Time, marketOpen bool) 
 			v.Reason = "asset_identity_unverified"
 			return v
 		}
-		if r.Currency != "USD" || r.Session != "REGULAR" || r.PriceType != "LAST" || r.Delayed || r.Error != "" {
+		if r.Currency != "" && r.Currency != "USD" || r.Error != "" {
 			v.Reason = "quote_metadata_unverified"
 			return v
 		}
-		if r.EventTime == nil {
-			v.Reason = "source_event_time_missing"
+		if r.ObservedAt.IsZero() {
+			v.Reason = "read_time_missing"
 			return v
 		}
-		age := now.Sub(*r.EventTime)
+		age := now.Sub(r.ObservedAt)
 		if age < 0 || age > time.Minute {
 			v.Reason = "quote_stale_or_future"
 			return v
 		}
-		if first.IsZero() || r.EventTime.Before(first) {
-			first = *r.EventTime
+		if first.IsZero() || r.ObservedAt.Before(first) {
+			first = r.ObservedAt
 		}
-		if last.IsZero() || r.EventTime.After(last) {
-			last = *r.EventTime
+		if last.IsZero() || r.ObservedAt.After(last) {
+			last = r.ObservedAt
 		}
 		if r.Price == nil {
 			v.Reason = "price_missing"
