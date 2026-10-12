@@ -65,6 +65,11 @@ func val(s string) decimal.Decimal       { v, _ := decimal.NewFromString(s); ret
 func valueWallet(w Wallet, names map[string]string, quotes map[string]marketdata.Snapshot, now time.Time) WalletView {
 	a := w.Account
 	v := WalletView{ID: w.ID, Code: w.Code, Category: w.Category, Version: w.Version, Available: a.Available, Reserved: a.Reserved, Unsettled: a.Unsettled, Dividend: a.Dividend, Fees: a.Fees, Realized: a.Realized, Complete: true, Positions: []PositionView{}, Orders: []*domain.Order{}, Decisions: []json.RawMessage{}, Fills: []json.RawMessage{}}
+	for _, r := range a.Receivables {
+		if r.Quantity > 0 && r.Status == "classification_unresolved" {
+			v.Complete = false
+		}
+	}
 	lots := map[string]*PositionView{}
 	for _, l := range a.Lots {
 		if l.Quantity == 0 {
@@ -94,7 +99,8 @@ func valueWallet(w Wallet, names map[string]string, quotes map[string]marketdata
 				for _, o := range q.Observations {
 					if o.IdentityVerified && o.Currency == "USD" && o.Price != nil {
 						p.Price = o.Price
-						p.AsOf = o.EventTime
+						stamp := o.ObservedAt
+						p.AsOf = &stamp
 						p.Quality = "unverified"
 						break
 					}
