@@ -136,7 +136,7 @@ def main():
     for w in balances:
      if Decimal(str(w['cash']))+Decimal(str(w['reserved']))+Decimal(str(w['unsettled']))<=20000:continue
      detail=json.loads(sql("SELECT json_build_object('wallet_id',id::text,'open_orders',(SELECT count(*) FROM orders WHERE wallet_id=wallets.id AND state IN ('accepted','waiting','partially_filled')),'last_state',(SELECT state FROM jobs WHERE wallet_id=wallets.id AND kind='wallet_allocation' AND payload->>'campaign'="+quoted(args.campaign)+" ORDER BY created_at DESC LIMIT 1),'allocation_jobs',(SELECT count(*) FROM jobs WHERE wallet_id=wallets.id AND kind='wallet_allocation' AND payload->>'campaign'="+quoted(args.campaign)+")) FROM wallets WHERE code="+quoted(w['code'])+";"))
-     if detail['open_orders'] or detail['last_state'] in ['pending','running'] or detail['allocation_jobs']>=4:continue
+     if (detail['open_orders'] and Decimal(str(w['cash']))<=20000) or detail['last_state'] in ['pending','running'] or detail['allocation_jobs']>=4:continue
      cal=json.loads(pathlib.Path('/opt/trading/staging-src/config/calendar.json').read_text());now=datetime.datetime.now(datetime.timezone.utc);et=ZoneInfo('America/New_York');local=now.astimezone(et)
      for offset in range(15):
       day=local.date()+datetime.timedelta(days=offset)
