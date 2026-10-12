@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/caglarkc/trading/internal/actors"
 	"github.com/caglarkc/trading/internal/bridge"
+	"github.com/caglarkc/trading/internal/domain"
 	"github.com/caglarkc/trading/internal/modelrunner"
 	"github.com/caglarkc/trading/internal/research"
 	"github.com/caglarkc/trading/internal/store"
@@ -21,6 +22,7 @@ func main() {
 	toolsBinary := flag.String("tools-binary", "", "read-only scoped tool binary")
 	environment := flag.String("environment", "staging", "owned container environment label")
 	personasPath := flag.String("personas", "/opt/trading/staging-src/config/personas.json", "trusted persona config")
+	feesPath := flag.String("fees", "/opt/trading/staging-src/config/fees.json", "trusted execution fee config")
 	walletProbe := flag.Int("wallet-probe", 0, "real private wallet/receipt acceptance: 2 or 8")
 	service := flag.Bool("service", false, "persistent model job coordinator")
 	researchProbe := flag.Bool("research-probe", false, "real shared research pipeline acceptance")
@@ -54,6 +56,11 @@ func main() {
 			fail(e)
 		}
 		actor := &actors.Service{Store: db, Runner: runner, Personas: p, Root: *root, API: os.Getenv("API_URL"), Collector: os.Getenv("COLLECTOR_URL"), Secret: []byte(os.Getenv("AGENT_SIGNING_SECRET"))}
+		fees, e := domain.LoadFees(*feesPath)
+		if e != nil {
+			fail(e)
+		}
+		actor.Fees = &fees
 		svc.WalletHandler = actor.Run
 		if *walletProbe > 0 {
 			if *toolsBinary == "" {
