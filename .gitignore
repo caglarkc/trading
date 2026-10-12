@@ -12,3 +12,6 @@ backups/
 bin/
 *.test
 coverage.out
+
+__pycache__/
+*.pyc
