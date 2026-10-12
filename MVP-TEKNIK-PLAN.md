@@ -713,3 +713,15 @@ Site işlem zamanı ve likidite kabulü kaldırıldı; backend okuma timestamp�
 Yerel Go testleri geçti. Ayrı `trading_observed_acceptance` DB’de vendor zamanı/BBO olmadan 2 pay alış ve satış, fill tekrarı engeli, fiyat kanıtı saklama ve journal/FIFO reconciliation testi geçti. Bu fixture işlemleri çalışan sekiz flow cüzdanına yazılmadı.
 
 Yeni kuralla sekiz hesabın tamamı yeniden değerlendirme turunu tamamladı; job hatası yok. TQQQ-PATIENT 125 pay alım emri verdi, backend 79,69 USD fiyat ve 1,01 USD toplam masrafla tamamen gerçekleştirdi. Diğer yedi hesap HOLD seçti. Gerçek flow kayıtlarında dengesiz journal ve negatif cash sayıları sıfır. Karar eylemi makbuzları teslim edildi; asenkron fill makbuzu sonraki rutin oturum için outbox’ta bekliyor. Kanıt: `research/observed-price-execution-2026-10-12.json`.
+
+## 19. Kullanıcının 50+20 araştırma ve zorunlu başlangıç alımı talebi
+
+12 Ekim’de kullanıcı sekiz hesabın önce genel piyasa ve 50 sabit ABD hissesini ayrı ayrı değerlendirmesini, ardından kendi seçtiği 20 ek hisseyi ayrıntılı incelemesini ve ancak bundan sonra başlangıç sermayesinin en az %80’ini kullanacak ikinci alım talimatı almasını istedi. 20 aday sabit 50’nin dışından, hesaba özel seçiliyor; ETF hesaplarının araştırma kapsamı genişlese de QQQ/TQQQ/EWC satın alma yetkileri değişmiyor.
+
+`wallet_screen`: 50 kaynak yakalaması + altı piyasa/Fed belgesi, 50 benzersiz değerlendirme, risk/katalizör/puan ve kaynakta gerçekten bulunan alıntı; 20 kişisel izleme seçimi. `wallet_deep`: seçilen 20 hisse için şirket kimliği ve NYSE/NASDAQ listing kontrolü, kaynak yakalaması ve daha ayrıntılı 20 değerlendirme. Alıntı veya kapsam hatası başarı sayılmaz; bozuk alıntıya dar, kaynakla doğrulanan biçim düzeltmesi uygulanabilir. Raporlar kalıcı jobs.result içinde, oturumlar her hesabın kendi native geçmişinde korunur.
+
+Araştırma-only kilidi rutin kararları geçici olarak durdurur. Sekiz hesabın her iki raporu da doğrulanmadan ikinci talimat verilmez. Daha sonra `wallet_allocation` işleriyle en az 80000 USD başlangıç sermayesi harcama, kalan toplam nakit en çok 20000 USD hedefi verilir; mevcut yatırımlar hedefe dahildir. HOLD veya eski öznel giriş tavanı bu ek oturumdaki zorunlu alımı karşılamaz. Satın alma niyeti gerçek nakit kullanımı sayılmaz; controller available+reserved+unsettled toplamını kontrol eder. Fiyat/nakit/pay/masraf/seans kontrolleri korunur; gerçekleşme yalnız kendi backendinde sanaldır.
+
+Kişisel 20 liste `wallet_watchlist_members` RLS tablosundadır. Bir hisse hesabının liste üyeliği diğerinin alım yetkisini genişletmez; PostgreSQL’de kendi liste alış kabulü ve akran liste alış reddi test edildi. Hesapların gerçek nakit kullanım hedefi tamamlanınca rutin model işleri yeniden açılır. Piyasa zamanı uygun değilse alım işleri sonraki doğrulanmış normal seansa zamanlanır.
+
+Controller: `/opt/trading/bin/campaign.py`, kalıcı servis: `trading-user-campaign.service`, kampanya: `a81e041b-2e62-4124-8931-84f525707c24`. Kaynak: `deploy/campaign.py`, `internal/actors/review.go`, migration 12.
