@@ -1,6 +1,6 @@
 # Canlı Trading MVP — Uygulama ve Teknik Plan
 
-Güncelleme: 12 Ekim 2026. Durum: ürün/mimari sözleşmesi ve ayrıntılı uygulama tasarımı yazıldı. Kullanıcı ChatGPT Pro aboneliğini, paylaşılan Hetzner sunucusunu ve root SSH erişimini doğruladı; model seçimini sonraya bıraktı. Salt okunur SSH/kapasite incelemesi yapıldı. Mac’te mevcut ChatGPT girişini kullanan iki paralel Codex oturumu, açık session ID ile devam ve üç kaynak okuma yöntemi gerçek çağrılarla sınandı (13. bölüm). Ardından sekiz ayrı oturumda, iki eşzamanlı worker ile 24 çağrılık tekrar denemesi tamamlandı (14. bölüm). 12 Ekim’de Hetzner’de ayrı trading kullanıcısıyla resmi Codex CLI 0.162.1 kuruldu; mevcut ChatGPT giriş kaydı resmî SSH alternatif yöntemiyle aktarıldı, gerçek model çağrısı ve aynı session’a devam doğrulandı (15. bölüm). Ürün backend kodu ve bütün trading deployment henüz kurulmadı. Uygulama ayrıntıları 12. bölümdedir. Gerçek abonelik bağlantısı, kimlik/oturum izolasyonu ve üç güncel fiyat kaynağının Hetzner'de çalışması kurulum kabul koşuludur. Bu koşullar geçmeden çalışan trading pilotu ilan edilmez.
+Güncelleme: 12 Ekim 2026. Güncel durum: Hetzner’de sekiz hesap için 7/24 kalıcı model servisi ve backend çalışıyor; sanal gerçekleşme `observed-price-v1` kuralıyla açık. Kullanıcının son düzeltmesi: sitelerden yalnız fiyat okunur, okunduğu an backend saatiyle timestamp kaydedilir. Üç kaynağın okuma zamanı ve %1 fiyat uyumu kontrol edilir; kaynak işlem zamanı, BBO/miktar/likidite veya sitelerden alım/satım onayı gerekmez. Cüzdan işlemini backend uygular. Önceki vendor-time/BBO kabul koşulları kaldırılmıştır; tarihsel test kayıtları eski kuralın kanıtı olarak korunur.
 
 Bu belge güncel teknik uygulama sözleşmesidir. Ürün kararları ve kaynak kapsamı [deney-plani.md](research/deney-plani.md) içindedir. Önceki beş belgenin değiştirilmeden korunmuş kopyaları [arşivdedir](research/archive-2026-10-08/MVP-TEKNIK-PLAN.md). Arşivdeki sayısal ETF/Python/API pilotu güncel MVP'nin gereksinimi değildir.
 
@@ -94,26 +94,18 @@ Kaynaklar: [Stock Analysis güncelleme bilgisi](https://stockanalysis.com/help/f
 
 Investing.com fiyat kaynağına eklenmedi: ürün sayfası fiyatı indicative olarak niteliyor ve veri kullanım/saklama için açık izin koşulu koyuyor. CNBC bu okuma yolunda robots engeli verdi; Seeking Alpha sayfası uygun canlı fiyat alanını kanıtlamadı. Ücretsiz site etiketi otomatik kullanım hakkı veya fiyat güncelliği kanıtı değildir. Kaynak bazında kullanılabilir yöntem kurulumda kaydedilir; açık kısıtla uyuşmayan yol kullanılmaz. Investing/Trading Economics takvimleri yalnız kaynak keşfinde adaydır; backend değer saklama yolu otomatik onaylanmış değildir. Resmi olay takvimleri ve birincil sonuç belgeleri önceliklidir. [Investing.com ürün sayfası açıklaması](https://www.investing.com/etfs/powershares-qqqq).
 
-### 3.3. Değişmeyen emir fiyatı koşulları
+### 3.3. Okuma zamanı ve üç fiyat doğrulaması
 
-- Üç farklı sitede aynı asset ID/sınıf, USD, aynı normal seans ve son işlem fiyat türü.
-- Her kayıt sonlu/pozitif; olay zamanı kontrol sonunda en fazla 60 saniye eski.
-- En yeni/en eski olay zamanları en fazla 60 saniye ayrı; gelecek zaman kabul edilmez.
-- 100 × (max − min) / median en fazla %1; tam %1 geçer.
-- Üç site aynı feed kullanabilir; sitelerin uyumu üç bağımsız piyasa feed'i diye sunulmaz.
-- 15 dakika gecikmiş fiyat, kapanış/NAV/after-hours fiyatı normal seans canlı fiyatı yerine geçmez.
-- Koşullar geçmiyorsa price_unverified. Üçü ikiye indirme, eşiği büyütme veya geriye fill yazma yok.
-- Emir kararı sonrası fiyat tekrar okunur. Doğrulanmış fiyat da gerçekleşebilir likiditeyi tek başına kanıtlamaz.
+- Üç farklı sitede aynı asset ID/sınıf için görünen pozitif fiyat okunur. USD varlık kimliği canonical registry’den gelir; açıkça farklı para birimi reddedilir.
+- Her okuma tamamlandığı anda backend kendi UTC saatini `observed_at` olarak kaydeder. Sitenin işlem zamanı, seans veya gecikme etiketi gerçekleşme kapısı değildir.
+- Kontrol sonunda okumaların yaşı ve en yeni/en eski okuma farkı en fazla 60 saniyedir; eksik/gelecek okuma zamanı reddedilir.
+- 100 × (max − min) / median en fazla %1; tam %1 geçer. Eksik/hatalı kaynakta üçlü ikiye indirilmez.
+- Emirden sonra yeni üçlü tekrar okunur. Backend normal seans, bakiye/pay, limit/stop ve masrafları kontrol ederek kendi cüzdanında gerçekleşme uygular. Sitelerden emir onayı veya karşı taraf likidite kanıtı aranmaz.
+- Kaynaklar aynı feed’i kullanabilir; okuma zamanı sitenin fiyatının piyasa olay zamanını kanıtladığı iddia edilmez. Piyasa kapalıyken gerçekleşme yapılmaz.
 
-Piyasa kapalıyken aynı seansın resmi/kanıtlı kapanışları araştırma ve değerleme için kullanılabilir; o sırada işlem gerçekleşmez. Kaynak değişiklikleri sürümlenir.
+### 3.4. Kaynak kontrolü
 
-### 3.4. Veri çekme aşamasında kaynak testi
-
-Kullanıcının 8 Ekim yönlendirmesiyle bu kontrol **veri çekme prototipi geliştirilirken, bütün backend/emir/hafıza/ekran yapısının bitmesi beklenmeden** yapılır. Küçük kaynak okuyucuları Hetzner'de denenir; fiyatın güncelliği ve likidite alanları burada ölçülür. Eksik kaynağın okuyucusu veya kaynak seçimi bu aşamada güncellenip tekrar denenir. Genel yapının tamamlanmasından sonraya bırakılan ayrı bir kaynak sınavı değildir.
-
-Hetzner'de normal seans içinde QQQ, TQQQ, EWC ve sabit listeden AAPL, JPM, XOM, BRK.B için ilk oturumdan ve kapanış öncesi oturumdan örnekler alınır. Seçilen üç site aynı döngüde kimlik, tür, kaynak olay zamanı ve fark koşullarını geçmelidir. Aktif emirli her ek sembolün aynı koşulu kendi başına geçmesi şarttır; örnek test tüm evreni kanıtlamaz.
-
-Bu koşul başarısızsa erişilebilen sayfalarla veri toplama ve gözlem çalışabilir; sanal alış/satış gerçekleşmesi etkinleştirilmez. Mevcut ücretsiz koşullarla bunu garanti eden üçlü henüz kanıtlanmadı. Bu açık bir kurulum sonucu, tamamlanmamış kullanıcı kararı değildir; başarılı test varmış gibi gösterilmeyecek.
+Her aktif emirli varlık için backend aynı döngüde üç fiyat okur ve kendi okuma timestamp’leriyle kontrol eder. Eksik fiyat, erişim hatası, okuma yaşı veya %1 fark sınırı geçilirse o emir gerçekleşmez; kaynakların başarısı bütün evren için varsayılmaz. QQQ sunucu testinde yeni kural geçti. Önceki kaynak işlem zamanı/BBO testleri tarihsel kayıttır; yeni gerçekleşme koşulu değildir.
 
 ## 4. Emir ve gerçekleşme sözleşmesi
 
@@ -123,7 +115,7 @@ Başlangıçta hisse/ETF emirleri tam pay adediyle verilir. Fractional share, op
 
 | Tür | Çalışma kuralı | Ömür |
 |---|---|---|
-| MARKET | Bir sonraki uygun canlı kanıtta mevcut karşı taraf fiyatıyla maliyet dahil gerçekleşme denenir | En fazla 120 saniye; seans bitince daha erken sona erer |
+| MARKET | Bir sonraki uygun üçlü okuma medyanından maliyet dahil gerçekleşme denenir | En fazla 120 saniye; seans bitince daha erken sona erer |
 | LIMIT | Alış gerçekleşme fiyatı ≤ limit, satış fiyatı ≥ limit | Varsayılan DAY; model GTC seçebilir |
 | STOP_MARKET | Doğrulanmış last stop seviyesini geçince MARKET'e dönüşür; stop fiyatından fill garantisi yok | DAY veya GTC; trigger sonrası market 120 saniye |
 | STOP_LIMIT | Stop tetiklenince limit emri çalışır; fiyat limit dışındaysa bekler | DAY veya GTC |
@@ -133,19 +125,13 @@ DAY normal seans kapanışında sona erer. GTC broker simülasyonu tercihi olara
 
 Satış tarafında take-profit limit ve stop emri aynı OCO grubuna bağlanabilir. Grup pozisyonu bir kez rezerve eder; toplam kalan grup miktarı sahip olunan payı aşmaz. Bir kolun kısmi gerçekleşmesi diğerinin miktarını azaltır, tam gerçekleşme diğerini iptal eder. Aynı pay bağımsız ikinci emirde yeniden rezerve edilmez.
 
-### 4.2. Fiyat ve likidite
+### 4.2. Backend fiyat modeli
 
-Üç son işlem fiyatı kontrolünün ardından **zamanı ve kapsamı kanıtlı güncel bid/ask ve karşı taraf miktarı** gerekir. Buy ask'tan, sell bid'den başlar. Bu kotasyonun NBBO olduğu kanıtlanmamışsa NBBO olarak etiketlenmez; kısmi venue feed'i olduğu yazılır. Bid/ask zamanı da en fazla 60 saniye eski olmalıdır. Bid ≤ ask, pozitif miktar ve miktar birimi şarttır. Halt veya bozuk/eksik kotasyonda gerçekleşme yok.
+`observed-price-v1`: backend üç okunan fiyatın medyanını kullanır. Sitelerin bid/ask, miktar, BBO zamanı, hacim veya gerçekleşme onayı gerekmez. Tüm hesaplarda mevcut 5 baz puan aleyhte kayma ve masraf modeli korunur: alış medyan ×1,0005 (tick’e yukarı), satış medyan ×0,9995 (tick’e aşağı). Bu, backend cüzdanındaki sanal gerçekleşmedir; sitelerde işlem yapılmaz.
 
-Kayma için tüm cüzdanlarda aynı açık simülatör varsayımı **aleyhte 5 baz puandır (%0,05)**:
-- alış: ask × 1,0005, izinli fiyat adımına yukarı yuvarlama;
-- satış: bid × 0,9995, izinli fiyat adımına aşağı yuvarlama.
+Miktar, kalan emir ve masraflar dahil ayrılmış nakit/eldeki payla belirlenir. Eksik site likiditesi sıfır kapasite oluşturmaz ve hayali vendor miktarı üretilmez. Veri üçlüsünün kaynak kimlikleri, her `observed_at`, ham fiyatlar, medyan, fill fiyatı ve maliyet/model sürümü kaydedilir. Emrin tekil durumu, transaction ve idempotency aynı işlemin tekrar uygulanmasını önler.
 
-Spread bid/ask farkıyla zaten işlenir; ikinci bir spread bedeli çıkarılmaz. Bu kayma gerçek fill gözlemi değil, muhafazakâr V1 model varsayımıdır. Kaynak, ham bid/ask, zaman, miktar, fiyat adımı ve maliyet model sürümü saklanır. Gerçek broker emri veya gerçek karşı taraf gerçekleşmesi iddia edilmez. Üç fiyatın median'ı değerleme/trigger referansı olabilir; otomatik fill fiyatı değildir.
-
-Bir gözlemde fill miktarı kalan emir, güncel gösterilen karşı taraf miktarı ve cüzdanın kullanılabilir nakit/payının izin verdiği miktarın küçüğüdür. Karşı taraf miktarı bilinmiyorsa sıfır kapasite; hacim varmış gibi varsayım yapılmaz. Aynı quote ID'deki miktar aynı cüzdanda yeniden tüketilmez. Karşılaştırılabilir feed ve seansla bir dakikalık hacim kanıtı varsa o dakika cüzdan başına o sembolde hacmin en fazla %1'i tüketilir; bu pozisyon risk limiti değildir. Hacim bilinmiyorsa görülen quote miktarı aşılmaz. Her cüzdan bağımsız sanal hesap olarak aynı piyasa kanıtını kullanır; öteki cüzdanın emri kapasitesinden düşülmez.
-
-Limit/stop tetiklemesi yalnız emirden sonra gözlenen uygun snapshotta yapılır. İki kontrol arasındaki hayali en iyi fiyat veya günlük high/low ile geriye gerçekleşme yazılmaz. MARKET kalan miktarı 120 saniyede iptal olur; limit/GTC kalan miktarı yaşamaya devam eder. Miktar ve nakit rezervleri her kısmi fill/iptalde atomik güncellenir. Likidite/veri kanıtı yoksa emir bekleyebilir veya ömrü dolabilir; bütün emirlerin dolacağı taahhüt edilmez.
+Limit/stop emirden sonra okunan snapshot ile değerlendirilir; geçmiş fiyat seviyesine veya günlük high/low’a geriye fill yazılmaz. Seans, emir ömrü, nakit rezervi, FIFO, OCO ve takas kuralları korunur. Eski BBO motoru yalnız tarihsel fixture/replay uyumluluğu için kodda durur; çalışan worker yeni modla snapshot üretir.
 
 ### 4.3. Nakit, muhasebe ve takas
 
@@ -377,7 +363,7 @@ Geliştirme/staging ile çalışan pilot farklı Compose proje adı, PG veritaba
 5. Codex kendi açık session ID'sinde çalışır. Ortak persona sürümü sabittir; hesabın durumu özetten değil backendden gelir. Arama sonucu yeni olay zamanı yerine geçmez.
 6. Yapılandırılmış karar tam olarak kaydedilir, JSON ve domain kurallarından geçer. Cüzdan kimliği runner yetkisinden türetilir. Süre veya şema koşulu geçmezse eylem üretilmez.
 7. Runner eylemleri API'ye sırayla verir. API güncel nakit/pay/evren durumuyla rezerve eder; model çalışırken koşullu bir emir gerçekleşmişse eski bakiye doğru kabul edilmez.
-8. Execution işi yeni ve uygun üçlü fiyat + BBO kanıtıyla gerçekleşmeyi dener. API kabul makbuzu ile gerçekleşme makbuzu ayrıdır.
+8. Execution işi yeni ve uygun üçlü fiyatı kendi okuma zamanlarıyla doğrulayıp backend cüzdanında gerçekleşmeyi dener. API kabul makbuzu ile gerçekleşme makbuzu ayrıdır.
 9. Makbuz aynı session'a yalnız sonuç bilgisi olarak döner. Yeni stratejik emir turu açılmaz. Acknowledgement gecikirse `receipt_pending` olur; bir sonraki rutin bağlama eklenir, kabul edilmiş eylem yeniden gönderilmez.
 10. Geçerli özel not güncellemesi yeni sürüm olur. Kullanıcı ekranı bu kayıtların read model'ini okur. Diğer cüzdanın kararı/öğrenmesi bağlama katılmaz.
 
@@ -684,9 +670,9 @@ Kullanıcının uygulama yetkisiyle ilk pilot modeli **gpt-6.1-sol / low** olara
 | 3 — API / DB / seed | Geçti | Sekiz hesap ve 800.000 USD, tekil başlangıç journal’ı |
 | 4 — Emir / muhasebe | Motor ve staging kabulü geçti | Atomic fill, rezerv, OCO, FIFO, ücret ve takas |
 | 5 — Jobs / araştırma | Entegrasyon sürüyor | Kalıcı zamanlama ve ortak veri |
-| 6 — Persona / hafıza | Sırada | Sekiz hesap, makbuz ve özel geçmiş entegrasyonu |
+| 6 — Persona / hafıza | Sekiz hesap akışı geçti | Ayrı oturum, analiz, makbuz ve hafıza; kalıcı servis açık |
 | 7 — Mac ekranı | Kabul geçti | Gerçek backend, SSH proxy, hesap/karar/sistem, masaüstü/mobil ve tünel kopması |
-| 8 — Bütünleşik kabul | Sırada | Kaynak, restart, restore ve pilot etkinleştirme |
+| 8 — Bütünleşik kabul | Kısmen geçti | Kalıcı servis/restart geçti; canlı kaynak, full restore ve pilot etkinleştirme açık |
 
 Faz 1: `internal/modelrunner` native CLI’yi prompt stdin / JSONL / JSON Schema sözleşmesiyle çağırır; unknown çıktı ve explicit session sapması reddedilir. Her wallet çağrısı yalnız kendi CODEX_HOME/workspace’i ve salt okunur resmi CLI paketinin mount edildiği, non-root ve kaynak limitli Docker konteynerinde çalışır. Kişisel config/rules taşınmaz; genel shell/exec kapalıdır. Docker erişimi yalnız trusted Go runner’dadır, model konteynerinde socket yoktur. Aynı wallet’ta tek writer; global üst sınır iki çağrıdır.
 
@@ -709,3 +695,21 @@ Faz 5 ortak araştırma entegrasyonu: kaynak okuyucu ayrı yetkisiz Chromium ser
 Faz 6 ilk canlı akış: temiz `trading_flow` DB üzerinde QQQ-FAST ve QQQ-PATIENT ayrı native session ve scoped MCP araçlarıyla kendi hesabını/belleğini okudu; HOLD kararları backend makbuzu oluşturdu, aynı oturuma teslim edildi, iki ayrı hafıza sürümü yazıldı. Model çıktısındaki unsupported `uniqueItems` ve UUID format anahtarları CLI şemasından çıkarıldı; kimlik/tekrar kontrolleri Go tarafında sürer. İki cüzdanın bekleyen makbuzu sıfır. Sekiz cüzdan ve restart/restore kabulü henüz tamamlanmadı. Kanıt: `research/phase6-two-wallet-acceptance-2026-10-12.json`.
 
 Faz 7: vanilla TypeScript/Vite ekranı Mac’te 5173, ayrı SSH tüneli 18883 üzerinden gerçek flow backendine bağlandı. Operator token server proxy’de kalır; browserda yalnız salt okunur observation snapshot görünür. Sekiz hesap/800.000 USD eşitliği, seçim/karar/sistem ekranları, 1440x1000 masaüstü, 390x844 mobil, tünel durdurma/geri bağlama ve eksik fiyatın sıfır olmaması geçti. Ekran model çağrısı üretmez. Tasarım referansı `design/observer-concept.png`; sonuç `research/phase7-observer-acceptance-2026-10-12.json`.
+
+## 17. Kalıcı sekiz hesap çalışması — 12 Ekim 2026
+
+Kullanıcının sekiz modeli başlatma, 7/24 çalışma ve ilk alım hazırlığı talebiyle `trading-models.service` kuruldu. Ayrı `trading` kullanıcısı, flow DB ve özel wallet session root korunur; aynı anda iki model çağrısı yürür. Mac kapansa da servis sunucuda devam eder. Systemd boot etkinleştirmesi ve `Restart=always` açık; rutin yeni kararlar mevcut ABD seans programında açılıştan 30 dakika sonra ve kapanıştan 60 dakika önce çalışır. 7/24 servis, kesintisiz yeni strateji çağrısı anlamına gelmez.
+
+Bugünkü ilave başlangıç oturumu kullanıcı yetkisiyle ayrı job payload olarak sekiz hesaba verildi. Ortak araştırma tamamlandı; sekizinin de güncel analiz/ilk alım koşulları, HOLD kararı, teslim edilmiş makbuzu ve özel hafızası doğrulandı. Bekleyen makbuz, emir ve gerçekleşme sayıları sıfır. Servis tamamlanmış işler sonrasında yeniden başlatıldı; PID değişti, sekiz karar ve hafıza/receipt kayıtları değişmedi.
+
+Flow DB forward migration 11 uygulandı; önce DB dump alındı, seed sermaye eklemedi. Flow API ve worker güncel binarylerle image ID’ye sabitlendi. Derlemeyi bozan yarım Chromium dependency yükseltmesi mevcut kodla uyumlu sabit sürümlere geri alındı; Go testleri geçti. QQQ açık seans kontrolünde `quote_metadata_unverified` ve eksik BBO/size görüldü. Execution config ve DB gate kapalı kalır. Full checkpoint restore kabulü bu servis restart kontrolünden ayrı ve halen açık.
+
+Sunucuda salt okunur kontrol: `python3 /opt/trading/bin/model-status.py`; servis kontrolü: `systemctl status trading-models.service`; günlük: `journalctl -u trading-models.service`. Kaynak dosyalar `deploy/trading-models.service` ve `deploy/model-status.py`, kanıt `research/continuous-eight-wallet-2026-10-12.json`.
+
+## 18. Kullanıcının fiyat/gerçekleşme düzeltmesi — 12 Ekim 2026
+
+Site işlem zamanı ve likidite kabulü kaldırıldı; backend okuma timestamp’i + üç fiyat/%1/60 saniye uygulanıyor. Sunucuda QQQ üçlüsü %0,1059 farkla geçti. `observed-price-v1` worker/API/runner dağıtıldı; flow DB gate ve Compose execution ayarı açıldı. Sekiz hesaba güncellenmiş kural ve geçerli ücret profili verildi, yeni analiz/ilk alım değerlendirme işleri başlatıldı. Kararlar modelin kendi karakter ve gerekçesine bağlıdır; zorunlu alım yok.
+
+Yerel Go testleri geçti. Ayrı `trading_observed_acceptance` DB’de vendor zamanı/BBO olmadan 2 pay alış ve satış, fill tekrarı engeli, fiyat kanıtı saklama ve journal/FIFO reconciliation testi geçti. Bu fixture işlemleri çalışan sekiz flow cüzdanına yazılmadı.
+
+Yeni kuralla sekiz hesabın tamamı yeniden değerlendirme turunu tamamladı; job hatası yok. TQQQ-PATIENT 125 pay alım emri verdi, backend 79,69 USD fiyat ve 1,01 USD toplam masrafla tamamen gerçekleştirdi. Diğer yedi hesap HOLD seçti. Gerçek flow kayıtlarında dengesiz journal ve negatif cash sayıları sıfır. Karar eylemi makbuzları teslim edildi; asenkron fill makbuzu sonraki rutin oturum için outbox’ta bekliyor. Kanıt: `research/observed-price-execution-2026-10-12.json`.
