@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
+	"time"
 )
 
 // CoordinatorLock is process-wide; native calls and probes share it.
@@ -75,4 +76,31 @@ func (r *Runner) Recover(ctx context.Context) error {
 		}
 	}
 	return nil
+}
+
+// CheckpointLease prevents DB/session checkpoints from racing private writers.
+func CheckpointLease(ctx context.Context, root string, exclusive bool) (func(), error) {
+	if err := os.MkdirAll(root, 0700); err != nil {
+		return nil, err
+	}
+	f, err := os.OpenFile(filepath.Join(root, "checkpoint.lock"), os.O_CREATE|os.O_RDWR, 0600)
+	if err != nil {
+		return nil, err
+	}
+	how := syscall.LOCK_SH
+	if exclusive {
+		how = syscall.LOCK_EX
+	}
+	for {
+		if err = syscall.Flock(int(f.Fd()), how|syscall.LOCK_NB); err == nil {
+			break
+		}
+		select {
+		case <-ctx.Done():
+			f.Close()
+			return nil, ctx.Err()
+		case <-time.After(100 * time.Millisecond):
+		}
+	}
+	return func() { syscall.Flock(int(f.Fd()), syscall.LOCK_UN); f.Close() }, nil
 }
