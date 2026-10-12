@@ -11,6 +11,7 @@ import (
 	"github.com/caglarkc/trading/internal/jobs"
 	"github.com/caglarkc/trading/internal/modelrunner"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 	"time"
 )
 
@@ -23,6 +24,34 @@ func (s *Service) applyAndAcknowledge(ctx context.Context, j jobs.Job, did uuid.
 	dec.DisallowUnknownFields()
 	if e := dec.Decode(&decision); e != nil {
 		return nil, e
+	}
+	var allocation struct {
+		Mandatory bool `json:"mandatory_allocation"`
+	}
+	json.Unmarshal(j.Payload, &allocation)
+	if allocation.Mandatory {
+		current, err := s.Store.Wallet(ctx, wallet)
+		if err != nil {
+			return nil, err
+		}
+		cash, err := decimal.NewFromString(current.Account.Available)
+		if err != nil {
+			return nil, err
+		}
+		needed := cash.Sub(decimal.NewFromInt(20000))
+		budget := decimal.Zero
+		for _, a := range decision.Actions {
+			if a.Action == "SUBMIT" && a.Side != nil && *a.Side == "BUY" && a.Budget != nil {
+				v, err := decimal.NewFromString(*a.Budget)
+				if err != nil {
+					return nil, err
+				}
+				budget = budget.Add(v)
+			}
+		}
+		if needed.IsPositive() && budget.LessThan(needed) {
+			return nil, fmt.Errorf("mandatory_80_percent_allocation_missing: required_budget=%s proposed=%s", needed.String(), budget.String())
+		}
 	}
 	seen := map[string]bool{}
 	for _, a := range decision.Actions {
