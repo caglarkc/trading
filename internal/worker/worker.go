@@ -178,7 +178,9 @@ func (w *Worker) handle(ctx context.Context, j jobs.Job) (any, error) {
 		if e := w.Store.Pool.QueryRow(ctx, "SELECT asset_id::text FROM corporate_events WHERE id=$1", in.EventID).Scan(&asset); e != nil {
 			return nil, e
 		}
-		w.Store.Pool.Exec(ctx, "UPDATE assets SET execution_blocked=true WHERE id=$1", asset)
+		if e := w.assetBlock(ctx, j, asset, true); e != nil {
+			return nil, e
+		}
 		wallets, e := w.Store.Wallets(ctx)
 		if e != nil {
 			return nil, e
@@ -188,7 +190,7 @@ func (w *Worker) handle(ctx context.Context, j jobs.Job) (any, error) {
 				return nil, e
 			}
 		}
-		_, e = w.Store.Pool.Exec(ctx, "UPDATE assets SET execution_blocked=false WHERE id=$1", asset)
+		e = w.assetBlock(ctx, j, asset, false)
 		return map[string]any{"event_id": in.EventID}, e
 	case "event_check":
 		var in struct {
@@ -298,4 +300,28 @@ func CollectHTTP(ctx context.Context, base, target string) (CachedDocument, erro
 	}
 	e = json.NewDecoder(http.MaxBytesReader(nil, res.Body, 128*1024)).Decode(&out)
 	return out, e
+}
+
+func (w *Worker) assetBlock(ctx context.Context, j jobs.Job, asset string, block bool) error {
+	tx, e := w.Store.Pool.Begin(ctx)
+	if e != nil {
+		return e
+	}
+	defer tx.Rollback(ctx)
+	if e = jobs.Guard(ctx, tx, j); e != nil {
+		return e
+	}
+	if block {
+		_, e = tx.Exec(ctx, "UPDATE assets SET execution_blocked=true WHERE id=$1", asset)
+	} else {
+		_, e = tx.Exec(ctx, `UPDATE assets SET execution_blocked=EXISTS(
+   SELECT 1 FROM corporate_events ce WHERE ce.asset_id=assets.id AND ce.effective_at<=now() AND (
+   ce.status<>'verified' OR ce.supersedes IS NOT NULL OR ce.event_type NOT IN ('SPLIT','DIVIDEND') OR
+   EXISTS(SELECT 1 FROM wallets w WHERE NOT(coalesce((w.state->'applied_events'->>ce.id::text)::boolean,false)))
+   )),quote_not_before=now() WHERE id=$1`, asset)
+	}
+	if e != nil {
+		return e
+	}
+	return tx.Commit(ctx)
 }
