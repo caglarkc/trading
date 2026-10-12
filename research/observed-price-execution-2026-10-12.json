@@ -1,0 +1,207 @@
+{
+  "environment": "hetzner-trading_flow",
+  "verified_at_utc": "2026-10-12T17:12:20.547351+00:00",
+  "rule": "observed-price-v1",
+  "authority": "User correction: timestamp each price read with own clock; verify three prices; backend executes within wallet; vendor trade time and liquidity not required.",
+  "execution_enabled": true,
+  "service": {
+    "MainPID": "853649",
+    "NRestarts": "0",
+    "ActiveState": "active",
+    "SubState": "running",
+    "UnitFileState": "enabled"
+  },
+  "live_price_check": {
+    "symbol": "QQQ",
+    "verified": true,
+    "median": "745.89",
+    "range_percent": "0.1059137406319967",
+    "read_times": [
+      {
+        "source": "stockanalysis",
+        "price": "746.66",
+        "observed_at": "2026-10-12T17:02:09.341572736Z"
+      },
+      {
+        "source": "yahoo",
+        "price": "745.87",
+        "observed_at": "2026-10-12T17:02:15.505717026Z"
+      },
+      {
+        "source": "webull",
+        "price": "745.89",
+        "observed_at": "2026-10-12T17:02:19.509360616Z"
+      }
+    ],
+    "vendor_liquidity_verified": false
+  },
+  "wallets": [
+    {
+      "code": "EWC-BALANCED",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T17:08:55.447316+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 6,
+      "actions": [
+        {
+          "action": "HOLD",
+          "side": null,
+          "quantity": null,
+          "asset_id": "6e822fff-9399-5199-a85c-6b442be3b362"
+        }
+      ]
+    },
+    {
+      "code": "QQQ-FAST",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T17:10:44.137561+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 8,
+      "actions": [
+        {
+          "action": "HOLD",
+          "side": null,
+          "quantity": null,
+          "asset_id": "9085b5c2-8bcc-5469-8af0-bcdd50e8909f"
+        }
+      ]
+    },
+    {
+      "code": "QQQ-PATIENT",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T17:09:41.608743+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 8,
+      "actions": [
+        {
+          "action": "HOLD",
+          "side": null,
+          "quantity": null,
+          "asset_id": "9085b5c2-8bcc-5469-8af0-bcdd50e8909f"
+        }
+      ]
+    },
+    {
+      "code": "TQQQ-FAST",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T17:11:00.645905+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 6,
+      "actions": [
+        {
+          "action": "HOLD",
+          "side": null,
+          "quantity": null,
+          "asset_id": "2f385d1c-7840-5497-9be4-b5db358faa57"
+        }
+      ]
+    },
+    {
+      "code": "TQQQ-PATIENT",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T17:06:59.990576+00:00",
+      "pending_receipts": 1,
+      "memory_versions": 6,
+      "actions": [
+        {
+          "action": "SUBMIT",
+          "side": "BUY",
+          "quantity": 125,
+          "asset_id": "2f385d1c-7840-5497-9be4-b5db358faa57"
+        }
+      ]
+    },
+    {
+      "code": "US-EVENT",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T17:09:49.490823+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 8,
+      "actions": [
+        {
+          "action": "HOLD",
+          "side": null,
+          "quantity": null,
+          "asset_id": "859a7692-b50f-5e45-867d-db6384f17e54"
+        }
+      ]
+    },
+    {
+      "code": "US-FAST",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T17:07:06.129448+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 8,
+      "actions": [
+        {
+          "action": "HOLD",
+          "side": null,
+          "quantity": null,
+          "asset_id": "c35e543d-f361-5bd3-bda6-25e4361c28d5"
+        }
+      ]
+    },
+    {
+      "code": "US-PATIENT",
+      "startup_state": "completed",
+      "decision_state": "completed",
+      "finished_at": "2026-10-12T17:08:18.286991+00:00",
+      "pending_receipts": 0,
+      "memory_versions": 8,
+      "actions": [
+        {
+          "action": "HOLD",
+          "side": null,
+          "quantity": null,
+          "asset_id": "2fa0590b-959a-5a8b-b3fc-46786e2509dd"
+        }
+      ]
+    }
+  ],
+  "backend_execution": {
+    "fills": [
+      {
+        "wallet": "TQQQ-PATIENT",
+        "symbol": "TQQQ",
+        "fill": {
+          "id": "e7bd6f03-0681-431c-ad6c-e3e69f64cd5b",
+          "price": "79.69",
+          "asset_id": "2f385d1c-7840-5497-9be4-b5db358faa57",
+          "order_id": "7d722bf9-3c1c-5290-ac43-d4d39eac8f7e",
+          "quantity": 125,
+          "quote_id": "d07c71d06393bc591d43d9e9129aca1f339ea580bfcef42c7ac42faa45697b21",
+          "fee_version": "ibkr-fixed-2026q4-v1",
+          "occurred_at": "2026-10-12T17:07:22.342354331Z",
+          "commission_usd": "1",
+          "regulatory_usd": "0.01",
+          "validation_ids": [
+            "6a091caab4ad300a79ac8073cf4e33d6c26ae6621b43d6dd37a4086c796ed5c9",
+            "80128c95e6fce8b76fdb5d30a46dbc31e2a9a26b497f5385f514cb550631d94a",
+            "189cc950f05c9951948da9589fc9f0d5af67e33555c516774857d139cb4b376a"
+          ],
+          "execution_version": "observed-price-v1"
+        }
+      }
+    ],
+    "unbalanced_journals": 0,
+    "negative_cash_wallets": 0
+  },
+  "receipt_delivery": "One asynchronous TQQQ-PATIENT fill receipt is queued for the next routine session; decision-action receipts were delivered.",
+  "tests": [
+    "Go suite passed; read-time age and spread bounds tested.",
+    "Simulated buy/sell without vendor timestamps or BBO tested, including order replay and pre-order read rejection.",
+    "Separate trading_observed_acceptance PostgreSQL test passed: buy/sell, execution snapshot provenance, journal/FIFO reconciliation and duplicate fill prevention."
+  ],
+  "pricing": "Three-price median with existing configured 5bps adverse slippage, tick rounding and fees. No vendor volume capacity constraint.",
+  "limitations": [
+    "Each asset/order must pass its own current three-source read check.",
+    "Backend trades are virtual wallet transactions; no order is sent to a website or real broker."
+  ]
+}
