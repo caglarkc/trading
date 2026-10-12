@@ -1,0 +1,107 @@
+{
+  "host": "167.235.158.118",
+  "os_user": "trading",
+  "model": "gpt-6.1-sol",
+  "cli_version": "0.162.1",
+  "auth_method": "existing Mac ChatGPT login cache transferred over SSH; official headless fallback",
+  "session_id": "01a12e61-6152-7de2-9172-a885a793672f",
+  "runs": [
+    {
+      "phase": "seed",
+      "started_at_utc": "2026-10-12T04:31:34.651259+00:00",
+      "ended_at_utc": "2026-10-12T04:31:43.295377+00:00",
+      "elapsed_s": 8.64,
+      "exit_code": 0,
+      "session_id": "01a12e61-6152-7de2-9172-a885a793672f",
+      "previous_session_matches": null,
+      "marker_matches": true,
+      "status": "HETZNER_GPT_OK",
+      "tool_types": [],
+      "event_types": [
+        "thread.started",
+        "turn.started",
+        "item.completed",
+        "turn.completed"
+      ],
+      "usage": [
+        {
+          "input_tokens": 11173,
+          "cached_input_tokens": 9216,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 37,
+          "reasoning_output_tokens": 0
+        }
+      ],
+      "stderr_summary": "",
+      "raw_jsonl_sha256": "c6b407ff89742931292addee50ddb1a04d660ddff448268ef152fab5774d8762"
+    },
+    {
+      "phase": "resume",
+      "started_at_utc": "2026-10-12T04:31:59.984711+00:00",
+      "ended_at_utc": "2026-10-12T04:32:05.930970+00:00",
+      "elapsed_s": 5.95,
+      "exit_code": 0,
+      "session_id": "01a12e61-6152-7de2-9172-a885a793672f",
+      "previous_session_matches": true,
+      "marker_matches": true,
+      "status": "HETZNER_RESUME_OK",
+      "tool_types": [],
+      "event_types": [
+        "thread.started",
+        "turn.started",
+        "item.completed",
+        "turn.completed"
+      ],
+      "usage": [
+        {
+          "input_tokens": 22437,
+          "cached_input_tokens": 18432,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 74,
+          "reasoning_output_tokens": 0
+        }
+      ],
+      "stderr_summary": "",
+      "raw_jsonl_sha256": "d2587b0263f7bcc1eef090d0e060ded84cb0927a5c6b283f1a1e632ff031978e"
+    }
+  ],
+  "schema_version": 1,
+  "test_date": "2026-10-12",
+  "api_key_used": false,
+  "final_product_model_selected": false,
+  "results": {
+    "ssh_access": "passed",
+    "official_cli_install": "passed",
+    "login_status": "Logged in using ChatGPT",
+    "remote_model_call": "passed",
+    "explicit_session_resume": "passed"
+  },
+  "installation": {
+    "source": "https://chatgpt.com/codex/install.sh",
+    "resolved_and_pinned_version": "0.162.1",
+    "binary": "/var/lib/trading/.local/bin/codex",
+    "unix_user_shell": "/usr/sbin/nologin",
+    "credential_file_permissions": "0600 trading:trading",
+    "credential_directory_permissions": "0700 trading:trading",
+    "installer_initial_error": "Inherited /root working directory was not accessible to trading; rerun from /var/lib/trading succeeded."
+  },
+  "login_flow": {
+    "device_code_flow_started": true,
+    "device_code_flow_completed": false,
+    "device_code_flow_stopped": true,
+    "browser_reauthentication_required": true,
+    "fallback_used": "existing local ChatGPT auth cache copied to the authorized Hetzner host over verified SSH",
+    "original_local_auth_modified_by_transfer": false,
+    "credentials_or_device_codes_in_artifact": false
+  },
+  "limitations": [
+    "This validates login and two real remote calls only, not the Go runner/backend integration.",
+    "No live market-source test or wallet orders were performed.",
+    "Eight simultaneous remote wallet sessions, production filesystem/API isolation and long-term refresh behavior are not tested.",
+    "Imported cache uses the existing Mac login context; independent device-code login can be used later if refresh coordination requires it."
+  ],
+  "documentation": [
+    "https://learn.chatgpt.com/docs/auth",
+    "https://learn.chatgpt.com/docs/cli"
+  ]
+}

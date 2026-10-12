@@ -1,6 +1,6 @@
 # Canlı Trading MVP — Uygulama ve Teknik Plan
 
-Güncelleme: 9 Ekim 2026. Durum: ürün/mimari sözleşmesi ve ayrıntılı uygulama tasarımı yazıldı. Kullanıcı ChatGPT Pro aboneliğini, paylaşılan Hetzner sunucusunu ve root SSH erişimini doğruladı; model seçimini sonraya bıraktı. Salt okunur SSH/kapasite incelemesi yapıldı. Mac’te mevcut ChatGPT girişini kullanan iki paralel Codex oturumu, açık session ID ile devam ve üç kaynak okuma yöntemi gerçek çağrılarla sınandı (13. bölüm). Ardından sekiz ayrı oturumda, iki eşzamanlı worker ile 24 çağrılık tekrar denemesi tamamlandı (14. bölüm). Ürün kodu, trading kurulumu ve Hetzner Codex girişi yapılmadı. Uygulama ayrıntıları 12. bölümdedir. Gerçek abonelik bağlantısı, kimlik/oturum izolasyonu ve üç güncel fiyat kaynağının Hetzner'de çalışması kurulum kabul koşuludur. Bu koşullar geçmeden çalışan trading pilotu ilan edilmez.
+Güncelleme: 12 Ekim 2026. Durum: ürün/mimari sözleşmesi ve ayrıntılı uygulama tasarımı yazıldı. Kullanıcı ChatGPT Pro aboneliğini, paylaşılan Hetzner sunucusunu ve root SSH erişimini doğruladı; model seçimini sonraya bıraktı. Salt okunur SSH/kapasite incelemesi yapıldı. Mac’te mevcut ChatGPT girişini kullanan iki paralel Codex oturumu, açık session ID ile devam ve üç kaynak okuma yöntemi gerçek çağrılarla sınandı (13. bölüm). Ardından sekiz ayrı oturumda, iki eşzamanlı worker ile 24 çağrılık tekrar denemesi tamamlandı (14. bölüm). 12 Ekim’de Hetzner’de ayrı trading kullanıcısıyla resmi Codex CLI 0.162.1 kuruldu; mevcut ChatGPT giriş kaydı resmî SSH alternatif yöntemiyle aktarıldı, gerçek model çağrısı ve aynı session’a devam doğrulandı (15. bölüm). Ürün backend kodu ve bütün trading deployment henüz kurulmadı. Uygulama ayrıntıları 12. bölümdedir. Gerçek abonelik bağlantısı, kimlik/oturum izolasyonu ve üç güncel fiyat kaynağının Hetzner'de çalışması kurulum kabul koşuludur. Bu koşullar geçmeden çalışan trading pilotu ilan edilmez.
 
 Bu belge güncel teknik uygulama sözleşmesidir. Ürün kararları ve kaynak kapsamı [deney-plani.md](research/deney-plani.md) içindedir. Önceki beş belgenin değiştirilmeden korunmuş kopyaları [arşivdedir](research/archive-2026-10-08/MVP-TEKNIK-PLAN.md). Arşivdeki sayısal ETF/Python/API pilotu güncel MVP'nin gereksinimi değildir.
 
@@ -202,7 +202,7 @@ Kaçırılmış karar işi sonraki normal oturumda yeni veriyle devam eder; geç
 
 ### 6.1. Resmi abonelik bağlantısı
 
-Hetzner'de resmi Codex CLI, mevcut ChatGPT Pro abonelik kimliğiyle çalışır. Kullanıcı 9 Ekim'de mevcut aboneliğin kullanılmasını ve model seçiminin sonraya bırakılmasını istedi; abonelik yükseltmesi/kota tercihi yeniden sorulmaz. İlk kurulum headless device-code girişiyle planlanır: link/kod sunucuda üretilir, kullanıcı Mac tarayıcısında giriş adımını tamamlar. Bunun gerçek hesapta kullanılabilirliği kurulumda doğrulanır; otomatik giriş olmuş kabul edilmez. Kaynak: [resmi kimlik doğrulama / headless login](https://learn.chatgpt.com/docs/auth).
+Hetzner'de resmi Codex CLI, mevcut ChatGPT Pro abonelik kimliğiyle çalışır. Kullanıcı 9 Ekim'de mevcut aboneliğin kullanılmasını ve model seçiminin sonraya bırakılmasını istedi; abonelik yükseltmesi/kota tercihi yeniden sorulmaz. Headless device-code girişi tercih edilen yoldur: link/kod sunucuda üretilir, kullanıcı Mac tarayıcısında tamamlar. 12 Ekim’de bu akış başlatıldı; tarayıcı yeniden giriş istediği için bekleyen işlem durduruldu ve resmî alternatifle Mac’teki mevcut Codex auth cache, SSH üzerinden sunucuya aktarıldı. Login status ve iki gerçek çağrı başarılı oldu (15. bölüm). Device-code onayı tamamlanmış sayılmaz; giriş cache aktarımıyla sağlandı. Kaynak: [resmi kimlik doğrulama / headless login](https://learn.chatgpt.com/docs/auth).
 
 9 Ekim Mac prototipinde mevcut ChatGPT girişi API anahtarı olmadan gerçek model çağrılarıyla çalıştı. İki ayrı `CODEX_HOME` ve workspace, iki paralel başlangıç ve açık session ID ile devam sınandı. Bu sonuç Hetzner girişini veya bütün OS/API izolasyonunu kanıtlamaz; gerçek deneme 13. bölümdedir.
 
@@ -303,7 +303,7 @@ Gecelik encrypted DB+özel rollout/konfigürasyon yedeği sunucuda 7 günlük ve
 
 Maliyet/takas/parasal transaction değişiklikleri için anlamlı otomatik testler gerekir; plan metni veya basit statik ekran değişikliği için sahte test yazılmaz. Bu tabloda kabul, yazılım doğruluğudur; yatırım başarısı değerlendirmesi değildir.
 
-Plan aşamasında yapılmış işler: resmi belgelerin okunması, ücretsiz sayfa erişim kontrolü, kararların seçilmesi ve belgelerin revizyonu. 9 Ekim'de salt okunur sunucu erişim ve kapasite envanteri de yapıldı. Mac’te mevcut ChatGPT kimliğiyle iki paralel CLI oturumu, devam çağrıları ve üç kaynak okuma yöntemi de sınandı (13. bölüm). Yapılmamış işler: Hetzner trading/CLI kurulumu ve hesap girişi, product code, DB seed, canlı normal seans üçlü/BBO testi veya sanal trade.
+Plan aşamasında yapılmış işler: resmi belgelerin okunması, ücretsiz sayfa erişim kontrolü, kararların seçilmesi ve belgelerin revizyonu. 9 Ekim'de salt okunur sunucu erişim ve kapasite envanteri de yapıldı. Mac’te mevcut ChatGPT kimliğiyle iki paralel CLI oturumu, devam çağrıları ve üç kaynak okuma yöntemi de sınandı (13. bölüm). 12 Ekim’de Hetzner CLI kurulumu, mevcut ChatGPT giriş cache aktarımı, gerçek çağrı ve explicit resume da başarılı oldu (15. bölüm). Yapılmamış işler: Go runner/backend ve bütün trading kurulumu, DB seed, canlı normal seans üçlü/BBO testi veya sanal trade.
 
 ## 11. Son genel revizyon sonucu
 
@@ -315,7 +315,7 @@ Plan aşamasında yapılmış işler: resmi belgelerin okunması, ücretsiz sayf
 - Yıllık hedef, kıyaslar ve başarı değerlendirmesi kullanıcı kararıyla sonraya bırakıldı; bakiye/işlem gözlemi korundu.
 - Fiyat/likidite testi veri çekme prototipi aşamasına yerleştirildi; bütün yapı tamamlanana kadar beklenmez. Hafıza ayrılığı kendi modülü içinde kısa işlev/yetki kontrolüyle doğrulanır. Ücretsiz kaynaklara erişimin başarılı olacağı vaat edilmedi.
 
-Belge revizyonu ürün kodu veya trading kurulumu başlatmadı; 9 Ekim'de ayrıca salt okunur SSH envanteri yapıldı. Mac abonelik/oturum ön denemesi 13. bölümde tamamlandı. Hetzner runner kurulumu ve normal seans veri kabulü uygulama sırasında ayrıca yapılır.
+Belge revizyonu ürün kodu veya trading kurulumu başlatmadı; 9 Ekim'de ayrıca salt okunur SSH envanteri yapıldı. Mac abonelik/oturum ön denemesi 13. bölümde tamamlandı. Hetzner CLI ve giriş ön koşulu 15. bölümde tamamlandı; Go runner entegrasyonu ve normal seans veri kabulü uygulama sırasında ayrıca yapılır.
 
 ## 12. Ayrıntılı uygulama tasarımı — 8 Ekim 2026
 
@@ -465,7 +465,7 @@ Scheduler UTC'de kalıcı `due_at` üretir; seans hesapları America/New_York ta
 
 ### 12.10. Abonelik adapter'i ve kimlik izolasyonu
 
-ChatGPT aboneliği browser sohbeti otomasyonu ile bağlanmaz; mevcut resmi Codex CLI adapter'i kullanılır. Device login kullanıcı tarayıcısında tamamlanır. Mevcut abonelik ChatGPT Pro'dur. Nihai model ID ve reasoning ayarı kullanıcıyla daha sonra ortak seçilip pilot öncesi config sürümüyle sabitlenir; erişim denemesinde kullanılan geçici seçim ayrı kaydedilir. Yerel Mac’te `0.162.0-alpha.2` CLI ile mevcut ChatGPT kimliği gerçek çağrılarda doğrulandı (13. bölüm); bu sürüm Hetzner’de kurulmuş sayılmaz. Hetzner kurulumu resmi dağıtımın test edilen sürümünü sabitler. [Resmi auth](https://learn.chatgpt.com/docs/auth), [exec/JSONL/resume](https://learn.chatgpt.com/docs/non-interactive-mode).
+ChatGPT aboneliği browser sohbeti otomasyonu ile bağlanmaz; mevcut resmi Codex CLI adapter'i kullanılır. Device login kullanıcı tarayıcısında tamamlanır; 12 Ekim ilk Hetzner bağlantısı resmî auth-cache/SSH alternatifiyle sağlandı (15. bölüm). Mevcut abonelik ChatGPT Pro'dur. Nihai model ID ve reasoning ayarı kullanıcıyla daha sonra ortak seçilip pilot öncesi config sürümüyle sabitlenir; erişim denemesinde kullanılan geçici seçim ayrı kaydedilir. Yerel Mac’te `0.162.0-alpha.2` CLI ile mevcut ChatGPT kimliği gerçek çağrılarda doğrulandı (13. bölüm); bu sürüm Hetzner’de kurulmuş sayılmaz. Hetzner kurulumu resmi dağıtımın test edilen sürümünü sabitler. [Resmi auth](https://learn.chatgpt.com/docs/auth), [exec/JSONL/resume](https://learn.chatgpt.com/docs/non-interactive-mode).
 
 Go `exec.CommandContext` CLI'yi sabit binary ve argümanlarla başlatır; model metni shell komutuna interpolate edilmez. Prompt stdin'dedir. Stdout JSONL parser ve stderr ayrı, boyut sınırlı log akışı olarak okunur. Process group timeout'ta sonlandırılır; alt süreçlerin kaldığı doğrulanır. Aynı session ID'ye concurrent resume yapılmaz. Resume ile schema/config ayarlarının kullanılan sürümde nasıl uygulandığı adapter kabulünde doğrulanır; desteklenmeyen flag varsayılmaz. [Go subprocess API](https://pkg.go.dev/os/exec).
 
@@ -546,7 +546,7 @@ Execution başlangıçta kapalıdır; kaynak ve muhasebe kabulü sonrası truste
 | 7 | Mac gözlem ve SSH proxy | Backendle aynı sayılar, güncellik/bağlantı/ops durumları görünür |
 | 8 | Staging bütünleşik normal seans + recovery/restore | Double fill yok, eski tetik geriye yazılmaz, checkpoint geri açılır; ardından pilot etkinleştirilebilir |
 
-9 Ekim kullanıcı cevapları kesinleşti: mevcut ChatGPT Pro aboneliği kullanılır; model seçimi sonraya bırakılır. Hetzner başka projelerle paylaşılır; trading izole deployment ve kaynak sınırlarıyla kurulur. `root@167.235.158.118:22` erişimi mevcut Mac SSH kimliğiyle salt okunur doğrulandı. Parola/token/özel anahtar içeriği istenmez. Kullanıcıdan bu aşamada ek planlama kararı beklenmez; gerçek Codex login adımı ve nihai model seçimi kendi uygulama aşamasında yapılır.
+9 Ekim kullanıcı cevapları kesinleşti: mevcut ChatGPT Pro aboneliği kullanılır; model seçimi sonraya bırakılır. Hetzner başka projelerle paylaşılır; trading izole deployment ve kaynak sınırlarıyla kurulur. `root@167.235.158.118:22` erişimi mevcut Mac SSH kimliğiyle salt okunur doğrulandı. Parola/token/özel anahtar içeriği istenmez. Kullanıcıdan bu aşamada ek planlama kararı beklenmez; Hetzner Codex erişimi 12 Ekim’de 15. bölümde doğrulandı; nihai model seçimi kullanıcı kararıyla kendi uygulama aşamasında yapılır.
 
 Henüz kanıtlanmamış teknik koşullar: ücretsiz üç güncel fiyat + kullanılabilir BBO/size; aynı koşullarda istek kapasitesi; runner'ın tam OS/API yetki ayrılığı ve uzun süreli auth/refresh davranışı; sekiz cüzdanda uzun süreli çağrı kapasitesi (Mac’te sekiz ayrı session, iki paralel worker ve 24 kısa çağrı 14. bölümde doğrulandı); sunucuda trading için ayrılabilecek sürdürülebilir kapasite (9 Ekim anlık envanteri aşağıdaki yükün kabulü değildir). Bunlar masa başında kesinleşen ürün tercihi değildir. Küçük ilk prototiplerde ölçülür ve sonuç gerektirdiğinde ilgili teknik bölüm revize edilir.
 
@@ -638,3 +638,37 @@ Hesabın haftalık kullanım göstergesi test öncesi %8, test sonrası %8 idi; 
 Test için oluşturulan sekiz yerel auth kopyası kaldırıldı; asıl ChatGPT girişi değiştirilmedi. Tam sayfa gövdeleri ve kimlik dosyaları repo’ya gönderilmedi. [Yapılandırılmış yük testi kaydı](research/gpt-abonelik-yuk-test-2026-10-09.json) çağrı süreleri, session eşleşmeleri, şemalı kaynak alanları, CLI token usage olayları, ham yerel kanıt SHA-256 değerleri ve sınırlı kota göstergelerini içerir. Token usage olayları otomatik ücret/faturalama hesabı değildir.
 
 Başlangıç runner tercihi iki eşzamanlı worker olarak korunur. Abonelik bağlantısında bu testin gerektirdiği bir değişiklik yoktur. Kaynak okuyucusunda Yahoo için tarayıcı collector alternatifi gerekir; seans/fiyat atfı ve olay zamanı kaynağa özel alanlarla doğrulanır. Oturum etiketleri üretim karakterleri olarak etkinleştirilmedi; sekiz cüzdan backend/hafıza entegrasyonu kendi modülünde uygulanacaktır.
+
+## 15. Hetzner’de GPT abonelik girişi — 12 Ekim 2026
+
+**Sonuç: `167.235.158.118` üzerindeki resmi Codex CLI, mevcut ChatGPT abonelik kimliğiyle gerçek model çağrısı yaptı ve aynı session’dan başarıyla devam etti.** Bu, Go backend/runner entegrasyonundan önceki uzak bağlantı ön koşuludur; kullanıcı bu adım başarıldıktan sonra entegrasyona geçilmesini istedi.
+
+### 15.1. Kurulum ve giriş yöntemi
+
+Mevcut root SSH erişimi BatchMode ve StrictHostKeyChecking açıkken kullanıldı. Host PATH’inde Codex yoktu. Ayrı sistem kullanıcısı/grubu `trading` oluşturuldu; home `/var/lib/trading`, login shell `/usr/sbin/nologin`. Resmi standalone installer `https://chatgpt.com/codex/install.sh` indirildi; çözülen sürüm `0.162.1` olarak sabitlenerek kullanıcı altında kuruldu. İlk installer çağrısı `/root` çalışma dizininden erişim hatası verdi; `/var/lib/trading` içinden tekrar başarıyla tamamlandı. Binary `/var/lib/trading/.local/bin/codex`.
+
+`codex login --device-auth` sunucuda link/kod üretti. Mac tarayıcısındaki OpenAI sayfası yeniden giriş istedi; device-code onayı yapılmadı. Bekleyen device login süreci durduruldu. [OpenAI’nin resmi headless alternatifinde](https://learn.chatgpt.com/docs/auth#fallback-authenticate-locally-and-copy-your-auth-cache) anlatıldığı gibi mevcut Mac Codex auth cache, içeriği log/chat/repo’ya yazılmadan doğrulanmış SSH üzerinden `/var/lib/trading/.codex/auth.json` konumuna aktarıldı. Orijinal Mac dosyası bu aktarımda değiştirilmedi. Sunucu dosyası `0600 trading:trading`; home ve `.codex` dizini `0700 trading:trading`.
+
+Login status sonucu **Logged in using ChatGPT**. API anahtarı girilmedi veya çağrıda kullanılmadı. Tek server auth cache vardır; sekiz agent’a çoğaltılmış üretim kimlik yapısı kurulmadı. Cache, mevcut Mac giriş bağlamını yeniden kullanır; bu yeni bağımsız device-code oturumu değildir. Uzun süreli refresh koordinasyonu ve gerektiğinde ayrı resmi device girişi üretim adapter’inde ele alınacaktır.
+
+### 15.2. Gerçek uzak çağrı ve devam
+
+`trading` kullanıcısı, temiz probe workspace, explicit model, read-only sandbox ve kapalı shell/web araçlarıyla iki çağrı çalıştırdı. Geçici model `gpt-6.1-sol`, reasoning `low`; nihai ürün modeli seçilmedi. Model prompt’u shell komutuna gömülmedi; SSH üzerinden stdin ile verildi. API key ortam değişkenleri çağrıda kaldırıldı ve `forced_login_method="chatgpt"` kullanıldı.
+
+| Kontrol | Sonuç |
+|---|---|
+| `codex --version` | `codex-cli 0.162.1` |
+| `codex login status` | `Logged in using ChatGPT` |
+| İlk gerçek model çağrısı | `HETZNER_GPT_OK`, exit 0, 8,64 sn |
+| Explicit session ID ile ikinci çağrı | `HETZNER_RESUME_OK`, exit 0, 5,95 sn |
+| Özel işareti önceki konuşmadan hatırlama | Başarılı; ikinci prompt işareti tekrar içermedi |
+| Session ID sürekliliği | Başarılı; aynı ID |
+| Gözlenen model tool çağrısı | Yok |
+
+Çağrılar 04:31:34–04:32:05 UTC (07:31–07:32 GMT+3) aralığında yapıldı. Bu test iki gerçek uzak çağrıyı kanıtlar. Go adapter, sekiz uzak wallet, OS/mount/API izolasyonu, canlı fiyat/BBO ve uzun dönem refresh/kota bu adımda test edilmedi. Ürün emri veya sanal/gerçek trade yapılmadı.
+
+Sırlar ve tek kullanımlık kod içermeyen [uzak giriş test kaydı](research/gpt-hetzner-giris-test-2026-10-12.json) süre/session/JSONL hash ve çağrı sonuçlarını içerir. Sunucu auth dosyası sunucuda özel izinle kalır; Git’te yoktur. Ham yerel probe kanıtı gitignore kapsamındaki runtime dizinindedir.
+
+### 15.3. Sonraki entegrasyon adımı
+
+Uzak resmi CLI ve hesap bağlantısı ön koşulu tamamlandı. Sonraki adım 12.10’daki kendi Go runner’ını bu sabit binary/ChatGPT kimliğiyle bağlamak; yapılandırılmış çıktı, özel session depoları, makbuz döngüsü ve auth koordinasyonunu uygulamaktır. Bu turda Go backend veya üretim worker servisi başlatılmadı. Diğer sunucu projelerinde Docker/firewall/deployment değişikliği yapılmadı.
