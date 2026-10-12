@@ -3,6 +3,7 @@ package httpapi
 import (
 	"encoding/json"
 	"github.com/caglarkc/trading/internal/domain"
+	"github.com/caglarkc/trading/internal/store"
 	"io"
 	"net/http"
 	"time"
@@ -22,7 +23,7 @@ func (s *Server) orderAction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	c := ClaimsFrom(r.Context())
-	v, e := s.Agent.ApplyAction(r.Context(), c.Wallet, c.Decision, x, time.Now().UTC(), s.Calendar, s.Fees)
+	v, e := s.Agent.ApplyAction(r.Context(), c.Wallet, c.Decision, x, time.Now().UTC(), s.Calendar, s.Fees, store.ActionScope{Job: c.Job, Fence: c.Fence})
 	if e != nil {
 		code := e.Error()
 		status := 409

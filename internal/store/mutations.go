@@ -9,6 +9,7 @@ import (
 	"github.com/caglarkc/trading/internal/calendar"
 	"github.com/caglarkc/trading/internal/database/dbgen"
 	"github.com/caglarkc/trading/internal/domain"
+	"github.com/caglarkc/trading/internal/jobs"
 	"github.com/caglarkc/trading/internal/marketdata"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -138,7 +139,7 @@ func persist(ctx context.Context, tx pgx.Tx, q *dbgen.Queries, id uuid.UUID, bef
 	}
 	return q.UpdateWallet(ctx, dbgen.UpdateWalletParams{ID: id, State: marshal(after)})
 }
-func (s *Store) ApplyAction(ctx context.Context, wallet, decision string, x domain.Action, now time.Time, cal calendar.Calendar, fee domain.FeeProfile) (domain.Receipt, error) {
+func (s *Store) ApplyAction(ctx context.Context, wallet, decision string, x domain.Action, now time.Time, cal calendar.Calendar, fee domain.FeeProfile, scopes ...ActionScope) (domain.Receipt, error) {
 	var out domain.Receipt
 	if !actionID.MatchString(x.ClientID) {
 		return out, fmt.Errorf("invalid_client_action_id")
@@ -163,6 +164,22 @@ func (s *Store) ApplyAction(ctx context.Context, wallet, decision string, x doma
 		}
 		if e != pgx.ErrNoRows {
 			return e
+		}
+		if len(scopes) > 0 {
+			scope := scopes[0]
+			var jobID uuid.UUID
+			var fence int64
+			var owner string
+			e = tx.QueryRow(ctx, "SELECT d.job_id,d.fencing_token,j.lease_owner FROM decision_runs d JOIN jobs j ON j.id=d.job_id WHERE d.wallet_id=$1 AND d.id=$2", wid, did).Scan(&jobID, &fence, &owner)
+			if e != nil {
+				return fmt.Errorf("decision_scope_missing")
+			}
+			if jobID.String() != scope.Job || fence != scope.Fence {
+				return fmt.Errorf("decision_scope_mismatch")
+			}
+			if e = jobs.Guard(ctx, tx, jobs.Job{ID: jobID, Owner: owner, Fence: fence}); e != nil {
+				return e
+			}
 		}
 		var input []byte
 		var state string
@@ -512,4 +529,9 @@ func (s *Store) Corporate(ctx context.Context, wallet, eventID string, now time.
 		}
 		return e
 	})
+}
+
+type ActionScope struct {
+	Job   string
+	Fence int64
 }

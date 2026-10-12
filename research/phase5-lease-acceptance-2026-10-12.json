@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-12",
+  "environment": "hetzner-staging",
+  "scope": "Phase 5 durable scheduling foundation only; source/research integration still in progress",
+  "migrations": [
+    6,
+    7,
+    8
+  ],
+  "passed": [
+    "idempotent enqueue",
+    "SKIP LOCKED concurrency",
+    "lease reclamation after restart",
+    "stale heartbeat and result rejected",
+    "stale transaction fencing rejected",
+    "deadline expiration persists when no job is acquired",
+    "two sessions for eight wallets on early-close day",
+    "agent locks only own job and stale action is rejected",
+    "concurrent migrations serialized by PostgreSQL advisory session lock"
+  ],
+  "execution_enabled": false
+}

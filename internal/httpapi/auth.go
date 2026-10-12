@@ -13,6 +13,7 @@ import (
 )
 
 type Claims struct {
+	Fence    int64  `json:"fence"`
 	Wallet   string `json:"wallet"`
 	Decision string `json:"decision"`
 	Job      string `json:"job"`

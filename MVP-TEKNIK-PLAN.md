@@ -683,7 +683,7 @@ Kullanıcının uygulama yetkisiyle ilk pilot modeli **gpt-6.1-sol / low** olara
 | 2 — Kaynak okuyucuları | Prototip hazır; canlı kabul açık | Açık seans üç fiyat ve BBO/size kabulü ayrıca gerekir |
 | 3 — API / DB / seed | Geçti | Sekiz hesap ve 800.000 USD, tekil başlangıç journal’ı |
 | 4 — Emir / muhasebe | Motor ve staging kabulü geçti | Atomic fill, rezerv, OCO, FIFO, ücret ve takas |
-| 5 — Jobs / araştırma | Sırada | Kalıcı zamanlama ve ortak veri |
+| 5 — Jobs / araştırma | Entegrasyon sürüyor | Kalıcı zamanlama ve ortak veri |
 | 6 — Persona / hafıza | Sırada | Sekiz hesap, makbuz ve özel geçmiş entegrasyonu |
 | 7 — Mac ekranı | Sırada | Gerçek backend verileri ve SSH proxy |
 | 8 — Bütünleşik kabul | Sırada | Kaynak, restart, restore ve pilot etkinleştirme |
@@ -701,3 +701,5 @@ Faz 3: Go/chi API, Goose forward migrations, sqlc v1.30.0 üretilmiş tipli sorg
 Faz 4: MARKET/LIMIT/STOP/OCO, CANCEL/REPLACE, tam pay/settled nakit, masraf dahil rezerv, kısmi fill, FIFO, ücret farkları ve T+1 eklendi. Wallet kilidiyle action/fill/journal/lot/rezerv/quote tüketimi/outbox aynı transaction’da yazılır. Journal ve normalize pozisyonlar hesap görünümüyle reconcile edilir. Aynı gün emrin kısmi fillleri minimum komisyonu çoğaltmaz; aynı quote veya kanıtlı dakika hacmi tekrar kapasite yaratmaz. Normal seans/DST/erken kapanış ile takas takvimi ayrıdır. Güncel [DTC 2026 bildiriminin](https://www.dtcc.com/Globals/PDFs/2025/October/15/23036-25) 2. dipnotu Columbus/Veterans Day’de takas hizmeti olmadığını gösterir.
 
 Gerçek PostgreSQL’de çift nakit harcama, fill/cancel ve OCO yarışı, son adım receipt hatasında tam rollback ve tekrar settlement kontrolü geçti. Split, tarihsel ex-date entitlement, açık %30 vergi varsayımı ve temettü ödeme tekrarları da sınandı. Bunlar **uydurulmuş staging piyasa fixture’larıyla mühendislik testleridir**; canlı gerçekleşme kanıtı değildir. Test varlık/kayıtları pilot DB’sine taşınmayacak. Corporate revision, bilinmeyen dağıtım sınıfı veya fractional cash-in-lieu net nakit üretmez; canlı collector ilgili resmi koşulu kanıtlamalıdır. Fee profili yalnız 2026 Q4; sonraki dönem doğrulanmadan fill yok. Ayrıntılar `research/phase4-accounting-acceptance-2026-10-12.json`. Execution hâlâ kapalı.
+
+Faz 5 temel teslimi: PG `jobs`/lease/fencing, wallet başına tek aktif writer, asset başına tek price reader, oturum/dinamik liste/settlement/olay planlayıcısı ve agent action fencing eklendi. Gerçek PG’de enqueue tekrarı, eşzamanlı lease, restart devralması, eski heartbeat/result/transaction/action retleri ve erken kapanışta 16 karar işi geçti. Migration’lar advisory session lock ile tek writer kullanır. Kanıt: `research/phase5-lease-acceptance-2026-10-12.json`. Ortak kaynak/araştırma worker bağlantısı tamamlanmadan Faz 5 bütünü geçti sayılmaz.

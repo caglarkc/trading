@@ -29,6 +29,17 @@ type Asset struct {
 	ExecutionBlocked bool      `json:"execution_blocked"`
 }
 
+type CalendarEvent struct {
+	ID         uuid.UUID          `json:"id"`
+	Category   string             `json:"category"`
+	EventKey   string             `json:"event_key"`
+	ExpectedAt pgtype.Timestamptz `json:"expected_at"`
+	Status     string             `json:"status"`
+	SourceUrl  string             `json:"source_url"`
+	Body       []byte             `json:"body"`
+	CreatedAt  pgtype.Timestamptz `json:"created_at"`
+}
+
 type CorporateEvent struct {
 	ID          uuid.UUID          `json:"id"`
 	AssetID     uuid.UUID          `json:"asset_id"`
@@ -50,19 +61,26 @@ type DecisionAction struct {
 }
 
 type DecisionRun struct {
-	ID         uuid.UUID          `json:"id"`
-	WalletID   uuid.UUID          `json:"wallet_id"`
-	JobID      pgtype.UUID        `json:"job_id"`
-	State      string             `json:"state"`
-	SessionID  pgtype.Text        `json:"session_id"`
-	Input      []byte             `json:"input"`
-	Output     []byte             `json:"output"`
-	InputHash  pgtype.Text        `json:"input_hash"`
-	OutputHash pgtype.Text        `json:"output_hash"`
-	Model      string             `json:"model"`
-	Reasoning  string             `json:"reasoning"`
-	StartedAt  pgtype.Timestamptz `json:"started_at"`
-	FinishedAt pgtype.Timestamptz `json:"finished_at"`
+	ID           uuid.UUID          `json:"id"`
+	WalletID     uuid.UUID          `json:"wallet_id"`
+	JobID        pgtype.UUID        `json:"job_id"`
+	State        string             `json:"state"`
+	SessionID    pgtype.Text        `json:"session_id"`
+	Input        []byte             `json:"input"`
+	Output       []byte             `json:"output"`
+	InputHash    pgtype.Text        `json:"input_hash"`
+	OutputHash   pgtype.Text        `json:"output_hash"`
+	Model        string             `json:"model"`
+	Reasoning    string             `json:"reasoning"`
+	StartedAt    pgtype.Timestamptz `json:"started_at"`
+	FinishedAt   pgtype.Timestamptz `json:"finished_at"`
+	FencingToken pgtype.Int8        `json:"fencing_token"`
+	Deadline     pgtype.Timestamptz `json:"deadline"`
+}
+
+type DynamicMember struct {
+	VersionID uuid.UUID `json:"version_id"`
+	AssetID   uuid.UUID `json:"asset_id"`
 }
 
 type Evidence struct {
@@ -91,6 +109,27 @@ type Fill struct {
 	Body       []byte             `json:"body"`
 	OccurredAt pgtype.Timestamptz `json:"occurred_at"`
 	Seq        pgtype.Int8        `json:"seq"`
+}
+
+type Job struct {
+	ID           uuid.UUID          `json:"id"`
+	Kind         string             `json:"kind"`
+	JobKey       string             `json:"job_key"`
+	WalletID     pgtype.UUID        `json:"wallet_id"`
+	Payload      []byte             `json:"payload"`
+	DependsOn    pgtype.UUID        `json:"depends_on"`
+	Priority     int32              `json:"priority"`
+	State        string             `json:"state"`
+	AvailableAt  pgtype.Timestamptz `json:"available_at"`
+	Deadline     pgtype.Timestamptz `json:"deadline"`
+	LeaseOwner   pgtype.Text        `json:"lease_owner"`
+	LeaseUntil   pgtype.Timestamptz `json:"lease_until"`
+	FencingToken int64              `json:"fencing_token"`
+	Attempts     int32              `json:"attempts"`
+	LastError    pgtype.Text        `json:"last_error"`
+	Result       []byte             `json:"result"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
+	FinishedAt   pgtype.Timestamptz `json:"finished_at"`
 }
 
 type JournalLine struct {
@@ -199,12 +238,27 @@ type Receivable struct {
 	Status   string             `json:"status"`
 }
 
+type ResearchBundle struct {
+	ID        uuid.UUID          `json:"id"`
+	AsOf      pgtype.Timestamptz `json:"as_of"`
+	Body      []byte             `json:"body"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
 type Reservation struct {
 	WalletID uuid.UUID      `json:"wallet_id"`
 	OrderID  uuid.UUID      `json:"order_id"`
 	OcoID    pgtype.UUID    `json:"oco_id"`
 	CashUsd  pgtype.Numeric `json:"cash_usd"`
 	Shares   int64          `json:"shares"`
+}
+
+type RuntimeControl struct {
+	ID               bool               `json:"id"`
+	Paused           bool               `json:"paused"`
+	ExecutionEnabled bool               `json:"execution_enabled"`
+	LiveAcceptance   []byte             `json:"live_acceptance"`
+	UpdatedAt        pgtype.Timestamptz `json:"updated_at"`
 }
 
 type Settlement struct {
@@ -220,6 +274,14 @@ type SystemEvent struct {
 	Kind      string             `json:"kind"`
 	Body      []byte             `json:"body"`
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
+type UniverseVersion struct {
+	ID          uuid.UUID          `json:"id"`
+	WeekKey     string             `json:"week_key"`
+	EffectiveAt pgtype.Timestamptz `json:"effective_at"`
+	Body        []byte             `json:"body"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
 }
 
 type Wallet struct {

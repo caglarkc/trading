@@ -1,12 +1,16 @@
-package store
+package store_test
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"github.com/caglarkc/trading/internal/calendar"
 	"github.com/caglarkc/trading/internal/database"
 	"github.com/caglarkc/trading/internal/domain"
+	"github.com/caglarkc/trading/internal/jobs"
 	"github.com/caglarkc/trading/internal/marketdata"
+	. "github.com/caglarkc/trading/internal/store"
 	"github.com/google/uuid"
 	"os"
 	"sync"
@@ -215,7 +219,7 @@ func TestPostgresOCOAndFillRollback(t *testing.T) {
 		t.Fatal("expected injected rollback")
 	}
 	after, _ := worker.Wallet(ctx, wallet)
-	if hash(marshal(before.Account)) != hash(marshal(after.Account)) {
+	if testHash(testMarshal(before.Account)) != testHash(testMarshal(after.Account)) {
 		t.Fatal("partial transaction persisted")
 	}
 	owner.Pool.Exec(ctx, "DROP TRIGGER staging_receipt_failure ON receipts; DROP FUNCTION reject_staging_receipt()")
@@ -331,7 +335,7 @@ func TestPostgresCorporateCash(t *testing.T) {
 	}
 	split := domain.CorporateEvent{ID: uuid.NewString(), AssetID: asset, Kind: "SPLIT", EffectiveAt: now.Add(time.Minute), Verified: true, Ratio: "2", SourceURL: "https://www.sec.gov/staging-fixture"}
 	insert := func(ev domain.CorporateEvent) {
-		_, e := owner.Pool.Exec(ctx, "INSERT INTO corporate_events(id,asset_id,event_type,effective_at,status,source_url,body) VALUES($1,$2,$3,$4,'verified',$5,$6)", ev.ID, asset, ev.Kind, ev.EffectiveAt, ev.SourceURL, marshal(ev))
+		_, e := owner.Pool.Exec(ctx, "INSERT INTO corporate_events(id,asset_id,event_type,effective_at,status,source_url,body) VALUES($1,$2,$3,$4,'verified',$5,$6)", ev.ID, asset, ev.Kind, ev.EffectiveAt, ev.SourceURL, testMarshal(ev))
 		if e != nil {
 			t.Fatal(e)
 		}
@@ -372,3 +376,69 @@ func TestPostgresCorporateCash(t *testing.T) {
 	}
 	t.Log("split, historical ex-date entitlement, 30% modeled withholding, dividend payment and event replay passed; unique staging fixture")
 }
+func TestScopedActionFencing(t *testing.T) {
+	if os.Getenv("TEST_OWNER_URL") == "" {
+		t.Skip("isolated PostgreSQL required")
+	}
+	ctx := context.Background()
+	if e := database.Migrate(ctx, os.Getenv("TEST_OWNER_URL")); e != nil {
+		t.Fatal(e)
+	}
+	owner, e := Open(ctx, os.Getenv("TEST_OWNER_URL"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer owner.Close()
+	worker, e := Open(ctx, os.Getenv("TEST_WORKER_URL"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer worker.Close()
+	agent, e := Open(ctx, os.Getenv("TEST_AGENT_URL"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer agent.Close()
+	q := jobs.Queue{Pool: worker.Pool}
+	wid := WalletID(Codes[7])
+	kind := "fence-" + uuid.NewString()
+	id, e := q.Enqueue(ctx, jobs.Job{Kind: kind, Key: uuid.NewString(), Wallet: &wid, Available: time.Now().Add(-time.Second), Deadline: time.Now().Add(time.Minute)}, nil, 0)
+	if e != nil {
+		t.Fatal(e)
+	}
+	j, e := q.Acquire(ctx, "scope-fixture", []string{kind})
+	if e != nil || j == nil {
+		t.Fatal(j, e)
+	}
+	did := uuid.NewString()
+	now := time.Now().UTC()
+	_, e = owner.Pool.Exec(ctx, "INSERT INTO decision_runs(id,wallet_id,job_id,fencing_token,state,input,model,reasoning,started_at) VALUES($1,$2,$3,$4,'ready','{\"evidence_ids\":[]}','fixture','low',$5)", did, wid, id, j.Fence, now)
+	if e != nil {
+		t.Fatal(e)
+	}
+	cal, _ := calendar.Load("../../config/calendar.json")
+	fee, _ := domain.LoadFees("../../config/fees.json")
+	x := domain.Action{Action: "HOLD", ClientID: "fenced-hold", Hold: str("Fixture")}
+	if r, e := agent.ApplyAction(ctx, wid.String(), did, x, now, cal, fee, ActionScope{Job: id.String(), Fence: j.Fence}); e != nil || r.Status != "held" {
+		t.Fatal("valid scoped lock", r, e)
+	}
+	_, e = worker.Pool.Exec(ctx, "UPDATE jobs SET lease_until=now()-interval '1 second' WHERE id=$1", id)
+	if e != nil {
+		t.Fatal(e)
+	}
+	newJob, e := q.Acquire(ctx, "reclaimed", []string{kind})
+	if e != nil || newJob == nil {
+		t.Fatal(e)
+	}
+	x.ClientID = "stale-hold"
+	if _, e = agent.ApplyAction(ctx, wid.String(), did, x, now, cal, fee, ActionScope{Job: id.String(), Fence: j.Fence}); e == nil {
+		t.Fatal("stale action mutated")
+	}
+	if e = q.Finish(ctx, *newJob, nil, nil); e != nil {
+		t.Fatal(e)
+	}
+	t.Log("scoped agent can lock only own job; stale action rejected after lease reclamation")
+}
+
+func testMarshal(v any) []byte { b, _ := json.Marshal(v); return b }
+func testHash(b []byte) string { h := sha256.Sum256(b); return hex.EncodeToString(h[:]) }

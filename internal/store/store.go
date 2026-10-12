@@ -105,11 +105,9 @@ func (s *Store) Wallets(ctx context.Context) ([]Wallet, error) {
 	return out, nil
 }
 
-var Codes = []string{"US-FAST", "US-EVENT", "US-PATIENT", "QQQ-FAST", "QQQ-PATIENT", "TQQQ-FAST", "TQQQ-PATIENT", "EWC-BALANCED"}
+var Codes = domain.WalletCodes
 
-func WalletID(code string) uuid.UUID {
-	return uuid.NewSHA1(uuid.NameSpaceURL, []byte("trading:wallet:"+code))
-}
+func WalletID(code string) uuid.UUID { return domain.WalletID(code) }
 func (s *Store) Seed(ctx context.Context, assets []marketdata.Asset) error {
 	tx, e := s.Pool.Begin(ctx)
 	if e != nil {

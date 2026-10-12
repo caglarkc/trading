@@ -6,6 +6,7 @@ import (
 	"embed"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
+	"github.com/pressly/goose/v3/lock"
 	"io/fs"
 )
 
@@ -18,7 +19,11 @@ func Migrate(ctx context.Context, dsn string) error {
 		return err
 	}
 	defer db.Close()
-	provider, err := goose.NewProvider(goose.DialectPostgres, db, mustSub())
+	locker, err := lock.NewPostgresSessionLocker()
+	if err != nil {
+		return err
+	}
+	provider, err := goose.NewProvider(goose.DialectPostgres, db, mustSub(), goose.WithSessionLocker(locker))
 	if err != nil {
 		return err
 	}

@@ -8,7 +8,7 @@ import (
 
 func TestScope(t *testing.T) {
 	now := time.Now()
-	c := Claims{uuid.NewString(), uuid.NewString(), uuid.NewString(), now.Add(time.Minute).Unix()}
+	c := Claims{Wallet: uuid.NewString(), Decision: uuid.NewString(), Job: uuid.NewString(), Expires: now.Add(time.Minute).Unix()}
 	token := Sign([]byte("fixture-secret"), c)
 	got, e := Verify([]byte("fixture-secret"), token, now)
 	if e != nil || got != c {
