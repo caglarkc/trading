@@ -36,6 +36,11 @@ func New(root string, auth *Auth, l Launcher) *Runner {
 }
 
 func (r *Runner) Run(ctx context.Context, q Request) (result Result, err error) {
+	unlock, lockErr := CheckpointLease(ctx, r.Root, false)
+	if lockErr != nil {
+		return result, lockErr
+	}
+	defer unlock()
 	if !walletPattern.MatchString(q.Wallet) {
 		return result, &Error{"invalid_wallet", "invalid wallet scope"}
 	}
