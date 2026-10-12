@@ -536,3 +536,79 @@ func TestPostgresObservedPriceExecution(t *testing.T) {
 		t.Fatal(e)
 	}
 }
+
+func TestPostgresPrivateWatchlistPurchaseScope(t *testing.T) {
+	if os.Getenv("TEST_OWNER_URL") == "" {
+		t.Skip("isolated PostgreSQL required")
+	}
+	ctx := context.Background()
+	if e := database.Migrate(ctx, os.Getenv("TEST_OWNER_URL")); e != nil {
+		t.Fatal(e)
+	}
+	owner, e := Open(ctx, os.Getenv("TEST_OWNER_URL"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer owner.Close()
+	agent, e := Open(ctx, os.Getenv("TEST_AGENT_URL"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer agent.Close()
+	b, e := os.ReadFile("../../config/assets.json")
+	if e != nil {
+		t.Fatal(e)
+	}
+	assets, e := marketdata.DecodeAssets(b)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = owner.Seed(ctx, assets); e != nil {
+		t.Fatal(e)
+	}
+	cal, e := calendar.Load("../../config/calendar.json")
+	if e != nil {
+		t.Fatal(e)
+	}
+	fee, e := domain.LoadFees("../../config/fees.json")
+	if e != nil {
+		t.Fatal(e)
+	}
+	asset := uuid.NewString()
+	symbol := "TEST-WATCH-" + uuid.NewString()
+	walletA := WalletID(Codes[0]).String()
+	walletB := WalletID(Codes[1]).String()
+	review := uuid.NewString()
+	if _, e = owner.Pool.Exec(ctx, "INSERT INTO assets(id,symbol,name,category,exchange,aliases,fixed) VALUES($1,$2,'watchlist scope fixture','US','NYSE','{}',false)", asset, symbol); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = owner.Pool.Exec(ctx, "INSERT INTO jobs(id,kind,job_key,wallet_id,payload,available_at,deadline,state,result) VALUES($1::uuid,'wallet_deep',$1::uuid::text,$2::uuid,'{}',now(),now()+interval '1 hour','completed','{}')", review, walletA); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = owner.Pool.Exec(ctx, "INSERT INTO wallet_watchlist_members(wallet_id,asset_id,review_job_id) VALUES($1,$2,$3)", walletA, asset, review); e != nil {
+		t.Fatal(e)
+	}
+	now := time.Date(2026, 10, 12, 14, 0, 0, 0, time.UTC)
+	for _, wid := range []string{walletA, walletB} {
+		decision := uuid.NewString()
+		if _, e = owner.Pool.Exec(ctx, "INSERT INTO decision_runs(id,wallet_id,state,input,model,reasoning,started_at) VALUES($1,$2,'ready','{\"evidence_ids\":[]}','fixture','low',$3)", decision, wid, now); e != nil {
+			t.Fatal(e)
+		}
+		action := domain.Action{Action: "SUBMIT", ClientID: uuid.NewString(), AssetID: &asset, Side: str("BUY"), Quantity: qty(1), Type: str("MARKET"), TIF: str("DAY"), Budget: str("1000")}
+		r, e := agent.ApplyAction(ctx, wid, decision, action, now, cal, fee)
+		if e != nil {
+			t.Fatal(e)
+		}
+		if wid == walletA {
+			if r.Status != "accepted" {
+				t.Fatal("own private watchlist stock rejected", r)
+			}
+			cancel := domain.Action{Action: "CANCEL", ClientID: uuid.NewString(), Target: &r.Order.ID}
+			if _, e = agent.ApplyAction(ctx, wid, decision, cancel, now, cal, fee); e != nil {
+				t.Fatal(e)
+			}
+		} else if r.Status != "rejected" {
+			t.Fatal("peer private watchlist stock allowed", r)
+		}
+	}
+}
