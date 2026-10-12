@@ -31,6 +31,15 @@ func (s *Service) Probe(ctx context.Context, count int) error {
 	q := jobs.Queue{Pool: s.Store.Pool}
 	for _, code := range codes {
 		wid := domain.WalletID(code)
+		if count == 8 {
+			var done bool
+			if e = s.Store.Pool.QueryRow(ctx, "SELECT EXISTS(SELECT 1 FROM decision_runs WHERE wallet_id=$1 AND state='completed')", wid).Scan(&done); e != nil {
+				return e
+			}
+			if done {
+				continue
+			}
+		}
 		_, e := q.Enqueue(ctx, jobs.Job{Kind: kind, Key: uuid.NewString(), Wallet: &wid, Available: time.Now().Add(-time.Second), Deadline: time.Now().Add(40 * time.Minute)}, nil, 1)
 		if e != nil {
 			return e
