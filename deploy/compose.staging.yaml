@@ -49,6 +49,7 @@ services:
     cpus: 0.5
     logging: *logs
   renderer:
+    init: true
     image: ${READER_IMAGE:?READER_IMAGE must be pinned}
     command: [--render-server, --listen, '0.0.0.0:18881', --hosts, /config/source-hosts.json]
     volumes: [../config:/config:ro]
