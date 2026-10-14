@@ -32,6 +32,19 @@ func TestCLIHelper(t *testing.T) {
 		fmt.Println(`{"type":"item.completed","item":{"type":"command_execution"}}`)
 		os.Exit(0)
 	}
+	if mode == "item_error" {
+		fmt.Println(`{"type":"item.completed","item":{"type":"error","message":"upstream schema rejected"}}`)
+		fmt.Println(`{"type":"turn.failed","error":{"message":"operation cancelled"}}`)
+		os.Exit(0)
+	}
+	if mode == "auth_error" {
+		fmt.Println(`{"type":"item.completed","item":{"type":"error","message":"Reconnecting... 2/5 (workspace routing discovery unauthorized (401))"}}`)
+		fmt.Println(`{"type":"turn.failed","error":{"message":"operation cancelled"}}`)
+		os.Exit(0)
+	}
+	if mode == "reconnect_ok" {
+		fmt.Println(`{"type":"item.completed","item":{"type":"error","message":"Reconnecting... 2/5 (temporary transport failure)"}}`)
+	}
 	output := `{"ok":true}`
 	if mode == "bad" {
 		output = `{"extra":true}`
@@ -40,6 +53,32 @@ func TestCLIHelper(t *testing.T) {
 	fmt.Println(string(b))
 	fmt.Println(`{"type":"turn.completed","usage":{"input_tokens":1}}`)
 	os.Exit(0)
+}
+func TestRunnerPreservesCLIItemError(t *testing.T) {
+	r := New(t.TempDir(), &Auth{Path: testAuth(t)}, fakeLauncher{"item_error"})
+	got, err := r.Run(context.Background(), Request{Wallet: "A", Prompt: "test"})
+	e, ok := err.(*Error)
+	if !ok || e.Code != "model_error" || e.Detail != "upstream schema rejected" {
+		t.Fatal("original CLI error was masked", err)
+	}
+	if len(got.Tools) != 0 {
+		t.Fatal("CLI error counted as a tool", got.Tools)
+	}
+}
+func TestRunnerClassifiesRoutingAuthFailure(t *testing.T) {
+	r := New(t.TempDir(), &Auth{Path: testAuth(t)}, fakeLauncher{"auth_error"})
+	_, err := r.Run(context.Background(), Request{Wallet: "A", Prompt: "test"})
+	e, ok := err.(*Error)
+	if !ok || e.Code != "auth_required" || !strings.Contains(e.Detail, "unauthorized (401)") {
+		t.Fatal("authentication failure was masked", err)
+	}
+}
+func TestRunnerAllowsRecoveredReconnect(t *testing.T) {
+	r := New(t.TempDir(), &Auth{Path: testAuth(t)}, fakeLauncher{"reconnect_ok"})
+	got, err := r.Run(context.Background(), Request{Wallet: "A", Prompt: "test"})
+	if err != nil || string(got.Output) != `{"ok":true}` {
+		t.Fatal("recovered transport failure rejected", got, err)
+	}
 }
 func testAuth(t *testing.T) string {
 	t.Helper()
