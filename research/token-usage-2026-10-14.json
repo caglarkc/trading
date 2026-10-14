@@ -1,0 +1,163 @@
+{
+  "version": "recorded-token-usage-v1",
+  "generated_at": "2026-10-14T12:24:45.482908+00:00",
+  "scope": "Current flow wallet sessions and shared research sessions; excludes this development chat and other runtime environments.",
+  "method": "Sum token_usage_record.usage once per unique response_id; compare to final thread_token_usage. Cached input is part of input; reasoning output is part of output.",
+  "first_record_at": "2026-10-12T08:22:27.194Z",
+  "last_record_at": "2026-10-14T12:06:01.275Z",
+  "total": {
+    "input_tokens": 57154154,
+    "cached_input_tokens": 31176448,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 356288,
+    "reasoning_output_tokens": 6588,
+    "total_tokens": 57510442,
+    "responses": 375
+  },
+  "groups": {
+    "EWC-BALANCED": {
+      "input_tokens": 7392214,
+      "cached_input_tokens": 4143616,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 47404,
+      "reasoning_output_tokens": 794,
+      "total_tokens": 7439618,
+      "responses": 51
+    },
+    "QQQ-FAST": {
+      "input_tokens": 5597026,
+      "cached_input_tokens": 3131008,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 42825,
+      "reasoning_output_tokens": 671,
+      "total_tokens": 5639851,
+      "responses": 43
+    },
+    "QQQ-PATIENT": {
+      "input_tokens": 6985257,
+      "cached_input_tokens": 3789056,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 44929,
+      "reasoning_output_tokens": 570,
+      "total_tokens": 7030186,
+      "responses": 49
+    },
+    "SHARED_RESEARCH": {
+      "input_tokens": 410624,
+      "cached_input_tokens": 303488,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 4806,
+      "reasoning_output_tokens": 644,
+      "total_tokens": 415430,
+      "responses": 12
+    },
+    "TQQQ-FAST": {
+      "input_tokens": 5785282,
+      "cached_input_tokens": 3151488,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 41960,
+      "reasoning_output_tokens": 507,
+      "total_tokens": 5827242,
+      "responses": 40
+    },
+    "TQQQ-PATIENT": {
+      "input_tokens": 7113656,
+      "cached_input_tokens": 2926464,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 46577,
+      "reasoning_output_tokens": 609,
+      "total_tokens": 7160233,
+      "responses": 43
+    },
+    "US-EVENT": {
+      "input_tokens": 7974221,
+      "cached_input_tokens": 4629248,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 40986,
+      "reasoning_output_tokens": 941,
+      "total_tokens": 8015207,
+      "responses": 48
+    },
+    "US-FAST": {
+      "input_tokens": 9417357,
+      "cached_input_tokens": 6200064,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 38465,
+      "reasoning_output_tokens": 1086,
+      "total_tokens": 9455822,
+      "responses": 48
+    },
+    "US-PATIENT": {
+      "input_tokens": 6478517,
+      "cached_input_tokens": 2902016,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 48336,
+      "reasoning_output_tokens": 766,
+      "total_tokens": 6526853,
+      "responses": 41
+    }
+  },
+  "daily_utc": {
+    "2026-10-12": {
+      "input_tokens": 55721921,
+      "cached_input_tokens": 31176448,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 356101,
+      "reasoning_output_tokens": 6588,
+      "total_tokens": 56078022,
+      "responses": 367
+    },
+    "2026-10-14": {
+      "input_tokens": 1432233,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 187,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 1432420,
+      "responses": 8
+    }
+  },
+  "thread_checks": [
+    {
+      "session": "rollout-2026-10-12T08-50-27-01a12f4e-5a58-7030-a7e2-d12d9144f46c.jsonl",
+      "matches_thread_counter": true
+    },
+    {
+      "session": "rollout-2026-10-12T08-32-11-01a12f3d-a153-7da1-9b59-37c5a2786cde.jsonl",
+      "matches_thread_counter": true
+    },
+    {
+      "session": "rollout-2026-10-12T08-18-37-01a12f31-3713-7a13-83fc-1996f39bbce4.jsonl",
+      "matches_thread_counter": true
+    },
+    {
+      "session": "rollout-2026-10-12T08-47-15-01a12f4b-6d2c-7d10-9653-e7661d7e94a5.jsonl",
+      "matches_thread_counter": true
+    },
+    {
+      "session": "rollout-2026-10-12T08-48-51-01a12f4c-e228-7eb0-ba08-41c8afddfba5.jsonl",
+      "matches_thread_counter": true
+    },
+    {
+      "session": "rollout-2026-10-12T08-18-37-01a12f31-3713-7b21-a0ff-fc19e336c41a.jsonl",
+      "matches_thread_counter": true
+    },
+    {
+      "session": "rollout-2026-10-12T08-30-31-01a12f3c-19c0-79b3-8d07-44172dc13899.jsonl",
+      "matches_thread_counter": true
+    },
+    {
+      "session": "rollout-2026-10-12T08-30-31-01a12f3c-19b2-7460-b62d-af27f187a17e.jsonl",
+      "matches_thread_counter": true
+    },
+    {
+      "session": "rollout-2026-10-12T15-59-47-01a130d7-6a85-77e1-885e-268f8fe50a16.jsonl",
+      "matches_thread_counter": true
+    },
+    {
+      "session": "rollout-2026-10-12T17-03-50-01a13112-0ec1-7423-8431-cbc7e0aeae73.jsonl",
+      "matches_thread_counter": true
+    }
+  ],
+  "limitation": "Recorded token counts are not a dollar bill or a project-specific subscription quota percentage. Unrecorded/unfinished inference is not measured."
+}
