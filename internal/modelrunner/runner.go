@@ -153,6 +153,7 @@ func (r *Runner) Run(ctx context.Context, q Request) (result Result, err error) 
 	scanner.Buffer(make([]byte, 4096), 2*1024*1024)
 	var output string
 	var protocolError error
+	var itemError *Error
 	total := 0
 	result = Result{Model: Model, Reasoning: Reasoning, Tools: []string{}}
 	result.StartedAt = start.UTC()
@@ -164,11 +165,11 @@ func (r *Runner) Run(ctx context.Context, q Request) (result Result, err error) 
 			break
 		}
 		var e struct {
-			Type     string                                    `json:"type"`
-			ThreadID string                                    `json:"thread_id"`
-			Usage    json.RawMessage                           `json:"usage"`
-			Item     struct{ Type, Text, Server, Tool string } `json:"item"`
-			Message  string                                    `json:"message"`
+			Type     string                                             `json:"type"`
+			ThreadID string                                             `json:"thread_id"`
+			Usage    json.RawMessage                                    `json:"usage"`
+			Item     struct{ Type, Text, Message, Server, Tool string } `json:"item"`
+			Message  string                                             `json:"message"`
 			Error    struct {
 				Message string `json:"message"`
 				Code    string `json:"code"`
@@ -193,16 +194,31 @@ func (r *Runner) Run(ctx context.Context, q Request) (result Result, err error) 
 			}
 		case "turn.completed":
 			result.Usage = e.Usage
+			itemError = nil // Reconnect notices can precede a successful turn.
 		case "error", "turn.failed":
 			message := e.Message
 			if message == "" {
 				message = e.Error.Message
 			}
-			protocolError = &Error{"model_error", redact(message)}
+			if protocolError == nil {
+				if itemError != nil {
+					protocolError = itemError
+				} else {
+					protocolError = cliError(message)
+				}
+			}
 		}
 		if e.Type == "item.completed" {
 			if e.Item.Type == "agent_message" {
 				output = e.Item.Text
+			} else if e.Item.Type == "error" {
+				message := e.Item.Message
+				if message == "" {
+					message = e.Item.Text
+				}
+				if itemError == nil {
+					itemError = cliError(message)
+				}
 			} else if e.Item.Type != "" {
 				result.Tools = append(result.Tools, e.Item.Type)
 				allowedMCP := q.MCP && e.Item.Type == "mcp_tool_call" && e.Item.Server == "trading" && (e.Item.Tool == "account" || e.Item.Tool == "positions" || e.Item.Tool == "orders" || e.Item.Tool == "receipts" || e.Item.Tool == "memory" || e.Item.Tool == "evidence" || e.Item.Tool == "read_source")
@@ -217,6 +233,9 @@ func (r *Runner) Run(ctx context.Context, q Request) (result Result, err error) 
 	waitErr := cmd.Wait()
 	result.DurationMS = time.Since(start).Milliseconds()
 	result.FinishedAt = time.Now().UTC()
+	if protocolError == nil && itemError != nil {
+		protocolError = itemError
+	}
 	if protocolError != nil {
 		return result, protocolError
 	}
@@ -268,6 +287,14 @@ func joinError(a, b error) error {
 	}
 	return b
 }
+func cliError(message string) *Error {
+	code := "model_error"
+	if strings.Contains(strings.ToLower(message), "workspace routing discovery unauthorized (401)") {
+		code = "auth_required"
+	}
+	return &Error{code, redact(message)}
+}
+
 func redact(s string) string {
 	s = regexp.MustCompile(`[A-Za-z0-9_-]{15,}\.[A-Za-z0-9_-]{15,}\.[A-Za-z0-9_-]{10,}`).ReplaceAllString(s, "[redacted-token]")
 	if strings.Contains(s, "access_token") || strings.Contains(s, "refresh_token") || strings.Contains(s, "sk-") {
