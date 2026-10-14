@@ -1,0 +1,377 @@
+{
+  "version": "reauth-connectivity-v1",
+  "verified_at": "2026-10-14T12:07:24.245609+00:00",
+  "login_method": "Official CLI browser login through localhost SSH forwarding; existing account; Google sign-in and user-approved MFA; device-code setting left unchanged.",
+  "cause": "User-confirmed password change invalidated the old login; workspace routing discovery returned unauthorized (401).",
+  "verification_scope": "Eight existing native wallet sessions resumed with read-only connectivity messages; no MCP tools or new orders were requested by these probes.",
+  "model_service": "active",
+  "boot_enabled": "enabled",
+  "sessions": [
+    {
+      "code": "EWC-BALANCED",
+      "status": "connected",
+      "session_id": "01a12f4e-5a58-7030-a7e2-d12d9144f46c",
+      "run_id": "114a9c10-395a-4de2-b64d-41781790f049",
+      "started_at": "2026-10-14T12:04:38.018771106Z",
+      "finished_at": "2026-10-14T12:04:53.497133744Z",
+      "model": "gpt-6.1-sol",
+      "output": {
+        "status": "connected",
+        "wallet_code": "EWC-BALANCED"
+      }
+    },
+    {
+      "code": "QQQ-FAST",
+      "status": "connected",
+      "session_id": "01a12f31-3713-7a13-83fc-1996f39bbce4",
+      "run_id": "ae3bb953-a7a6-431e-b5ed-c592f46fb177",
+      "started_at": "2026-10-14T12:04:53.640849341Z",
+      "finished_at": "2026-10-14T12:05:03.654104757Z",
+      "model": "gpt-6.1-sol",
+      "output": {
+        "status": "connected",
+        "wallet_code": "QQQ-FAST"
+      }
+    },
+    {
+      "code": "QQQ-PATIENT",
+      "status": "connected",
+      "session_id": "01a12f31-3713-7b21-a0ff-fc19e336c41a",
+      "run_id": "80478a96-90ec-4a76-8344-4fdbc0b1d3a6",
+      "started_at": "2026-10-14T12:05:03.73705369Z",
+      "finished_at": "2026-10-14T12:05:11.269722872Z",
+      "model": "gpt-6.1-sol",
+      "output": {
+        "status": "connected",
+        "wallet_code": "QQQ-PATIENT"
+      }
+    },
+    {
+      "code": "TQQQ-FAST",
+      "status": "connected",
+      "session_id": "01a12f4b-6d2c-7d10-9653-e7661d7e94a5",
+      "run_id": "3c029750-7d69-4b08-8441-3272996c17bf",
+      "started_at": "2026-10-14T12:05:11.345281252Z",
+      "finished_at": "2026-10-14T12:05:21.778141814Z",
+      "model": "gpt-6.1-sol",
+      "output": {
+        "status": "connected",
+        "wallet_code": "TQQQ-FAST"
+      }
+    },
+    {
+      "code": "TQQQ-PATIENT",
+      "status": "connected",
+      "session_id": "01a12f4c-e228-7eb0-ba08-41c8afddfba5",
+      "run_id": "0128f381-760a-4724-90d0-c4a5a2de3fac",
+      "started_at": "2026-10-14T12:05:21.848439402Z",
+      "finished_at": "2026-10-14T12:05:33.900705892Z",
+      "model": "gpt-6.1-sol",
+      "output": {
+        "status": "connected",
+        "wallet_code": "TQQQ-PATIENT"
+      }
+    },
+    {
+      "code": "US-EVENT",
+      "status": "connected",
+      "session_id": "01a12f3c-19c0-79b3-8d07-44172dc13899",
+      "run_id": "dfcc7f7a-b718-4de0-bf17-3889be35bd39",
+      "started_at": "2026-10-14T12:05:33.946539439Z",
+      "finished_at": "2026-10-14T12:05:42.046363717Z",
+      "model": "gpt-6.1-sol",
+      "output": {
+        "status": "connected",
+        "wallet_code": "US-EVENT"
+      }
+    },
+    {
+      "code": "US-FAST",
+      "status": "connected",
+      "session_id": "01a12f3c-19b2-7460-b62d-af27f187a17e",
+      "run_id": "41b875ec-dab9-4176-b521-f9968cfba7e2",
+      "started_at": "2026-10-14T12:05:42.104403156Z",
+      "finished_at": "2026-10-14T12:05:50.59136538Z",
+      "model": "gpt-6.1-sol",
+      "output": {
+        "status": "connected",
+        "wallet_code": "US-FAST"
+      }
+    },
+    {
+      "code": "US-PATIENT",
+      "status": "connected",
+      "session_id": "01a12f3d-a153-7da1-9b59-37c5a2786cde",
+      "run_id": "d5001962-a5dc-4bfe-a1bc-c94e956b9a84",
+      "started_at": "2026-10-14T12:05:50.642500949Z",
+      "finished_at": "2026-10-14T12:06:02.179843477Z",
+      "model": "gpt-6.1-sol",
+      "output": {
+        "status": "connected",
+        "wallet_code": "US-PATIENT"
+      }
+    }
+  ],
+  "account_snapshot_as_of": "2026-10-14T12:07:24.191865643Z",
+  "wallets": [
+    {
+      "code": "US-FAST",
+      "available_usd": "18143.44",
+      "reserved_usd": "0",
+      "unsettled_usd": "0",
+      "equity_usd": "100004.69",
+      "realized_usd": "0",
+      "unrealized_usd": "4.69",
+      "open_orders": 0,
+      "positions": [
+        {
+          "symbol": "FSLR",
+          "quantity": 80,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:55:59.746851073Z"
+        },
+        {
+          "symbol": "LLY",
+          "quantity": 10,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:58:08.006749824Z"
+        },
+        {
+          "symbol": "NVDA",
+          "quantity": 65,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:56:33.533261797Z"
+        },
+        {
+          "symbol": "RTX",
+          "quantity": 60,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:55:52.423723771Z"
+        },
+        {
+          "symbol": "UBER",
+          "quantity": 180,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:58:00.541367336Z"
+        },
+        {
+          "symbol": "VRT",
+          "quantity": 70,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:56:09.020342955Z"
+        }
+      ]
+    },
+    {
+      "code": "US-EVENT",
+      "available_usd": "17095.63",
+      "reserved_usd": "0",
+      "unsettled_usd": "0",
+      "equity_usd": "100040.41",
+      "realized_usd": "0",
+      "unrealized_usd": "40.41",
+      "open_orders": 0,
+      "positions": [
+        {
+          "symbol": "ABBV",
+          "quantity": 36,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:57:35.192373828Z"
+        },
+        {
+          "symbol": "AMZN",
+          "quantity": 32,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:55:28.316245556Z"
+        },
+        {
+          "symbol": "CRM",
+          "quantity": 47,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:56:50.010846748Z"
+        },
+        {
+          "symbol": "CVX",
+          "quantity": 38,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:57:51.50605904Z"
+        },
+        {
+          "symbol": "ICE",
+          "quantity": 77,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:55:12.707377179Z"
+        },
+        {
+          "symbol": "LMT",
+          "quantity": 24,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:55:44.511270657Z"
+        },
+        {
+          "symbol": "NVDA",
+          "quantity": 44,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:56:33.533261797Z"
+        },
+        {
+          "symbol": "TJX",
+          "quantity": 78,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:56:42.2447007Z"
+        }
+      ]
+    },
+    {
+      "code": "US-PATIENT",
+      "available_usd": "13946.91",
+      "reserved_usd": "0",
+      "unsettled_usd": "0",
+      "equity_usd": "100432.75",
+      "realized_usd": "0",
+      "unrealized_usd": "432.75",
+      "open_orders": 0,
+      "positions": [
+        {
+          "symbol": "ABT",
+          "quantity": 100,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:56:59.934955452Z"
+        },
+        {
+          "symbol": "ADP",
+          "quantity": 40,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:57:16.909812542Z"
+        },
+        {
+          "symbol": "AZO",
+          "quantity": 4,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:55:20.606951821Z"
+        },
+        {
+          "symbol": "ICE",
+          "quantity": 80,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:55:12.707377179Z"
+        },
+        {
+          "symbol": "PGR",
+          "quantity": 50,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:58:15.92421295Z"
+        },
+        {
+          "symbol": "SPGI",
+          "quantity": 25,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:57:07.415757235Z"
+        },
+        {
+          "symbol": "VEEV",
+          "quantity": 30,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:56:18.194176525Z"
+        },
+        {
+          "symbol": "WM",
+          "quantity": 50,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:56:26.823266095Z"
+        }
+      ]
+    },
+    {
+      "code": "QQQ-FAST",
+      "available_usd": "19463.39",
+      "reserved_usd": "0",
+      "unsettled_usd": "0",
+      "equity_usd": "99735.47",
+      "realized_usd": "0",
+      "unrealized_usd": "-264.53",
+      "open_orders": 0,
+      "positions": [
+        {
+          "symbol": "QQQ",
+          "quantity": 108,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:57:25.317558033Z"
+        }
+      ]
+    },
+    {
+      "code": "QQQ-PATIENT",
+      "available_usd": "19463.39",
+      "reserved_usd": "0",
+      "unsettled_usd": "0",
+      "equity_usd": "99735.47",
+      "realized_usd": "0",
+      "unrealized_usd": "-264.53",
+      "open_orders": 0,
+      "positions": [
+        {
+          "symbol": "QQQ",
+          "quantity": 108,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:57:25.317558033Z"
+        }
+      ]
+    },
+    {
+      "code": "TQQQ-FAST",
+      "available_usd": "18192.24",
+      "reserved_usd": "0",
+      "unsettled_usd": "0",
+      "equity_usd": "99284.14",
+      "realized_usd": "0",
+      "unrealized_usd": "-715.86",
+      "open_orders": 0,
+      "positions": [
+        {
+          "symbol": "TQQQ",
+          "quantity": 1030,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:57:43.107556142Z"
+        }
+      ]
+    },
+    {
+      "code": "TQQQ-PATIENT",
+      "available_usd": "18952.35",
+      "reserved_usd": "0",
+      "unsettled_usd": "0",
+      "equity_usd": "99256.95",
+      "realized_usd": "0",
+      "unrealized_usd": "-743.05",
+      "open_orders": 0,
+      "positions": [
+        {
+          "symbol": "TQQQ",
+          "quantity": 1020,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:57:43.107556142Z"
+        }
+      ]
+    },
+    {
+      "code": "EWC-BALANCED",
+      "available_usd": "18656.24",
+      "reserved_usd": "0",
+      "unsettled_usd": "0",
+      "equity_usd": "100774.04",
+      "realized_usd": "0",
+      "unrealized_usd": "774.04",
+      "open_orders": 0,
+      "positions": [
+        {
+          "symbol": "EWC",
+          "quantity": 1370,
+          "quality": "stale",
+          "price_as_of": "2026-10-13T19:55:36.711892048Z"
+        }
+      ]
+    }
+  ],
+  "security": "Credentials and OAuth callback values excluded. Temporary duplicate login cache removed; SSH login forwarding closed."
+}
