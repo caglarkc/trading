@@ -49,6 +49,9 @@ func inputDigest(b []byte) string {
 	return digest(bytesOf(v))
 }
 func (s *Service) Run(ctx context.Context, j jobs.Job) (value any, runErr error) {
+	if j.Kind == "wallet_learning" {
+		return s.Learn(ctx, j)
+	}
 	if j.Kind == "wallet_screen" || j.Kind == "wallet_deep" {
 		return s.Review(ctx, j)
 	}
@@ -94,6 +97,14 @@ func (s *Service) Run(ctx context.Context, j jobs.Job) (value any, runErr error)
 		tx.Exec(c, "INSERT INTO system_events(kind,body) VALUES('wallet_job_error',$1)", bytesOf(map[string]any{"job_id": j.ID, "wallet_id": wallet, "error": runErr.Error()}))
 		tx.Commit(c)
 	}()
+	strategy, e := s.Learn(work, j)
+	if e != nil {
+		return nil, fmt.Errorf("strategy_review_required: %w", e)
+	}
+	w, e = s.Store.Wallet(work, wallet)
+	if e != nil {
+		return nil, e
+	}
 
 	var session *string
 	e = s.Store.Pool.QueryRow(work, "SELECT session_id FROM wallet_sessions WHERE wallet_id=$1", wallet).Scan(&session)
@@ -183,6 +194,7 @@ func (s *Service) Run(ctx context.Context, j jobs.Job) (value any, runErr error)
 	bundle.EvidenceIDs = nil
 	account := visibleAccount(w.Account)
 	manifest := map[string]any{"decision_id": did, "current_utc": time.Now().UTC(), "account_version": w.Version, "account": account, "allowed_assets": assets, "persona_version": s.Personas.Version, "own_memory": json.RawMessage(memory), "shared_research": bundle, "evidence_ids": ids, "deadline": deadline}
+	manifest["learning"] = strategy
 	manifest["execution_rules"] = map[string]any{"version": marketdata.ObservedPriceMode, "price": "Backend reads the three public price pages, timestamps each read with its own clock, checks read age <=60 seconds and price spread <=1%, and uses their median with configured fees/slippage. Vendor trade timestamps, bid/ask sizes, liquidity and website execution confirmation are not required. Backend executes within your wallet after validating your supported order, available cash/owned shares and normal market hours.", "fee_profile": s.Fees}
 	if in.MandatoryAllocation {
 		manifest["completed_market_reviews"] = reviewContext
