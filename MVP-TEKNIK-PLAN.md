@@ -727,3 +727,8 @@ Kişisel 20 liste `wallet_watchlist_members` RLS tablosundadır. Bir hisse hesab
 Controller: `/opt/trading/bin/campaign.py`, kalıcı servis: `trading-user-campaign.service`, kampanya: `a81e041b-2e62-4124-8931-84f525707c24`. Kaynak: `deploy/campaign.py`, `internal/actors/review.go`, migration 12.
 
 Kampanya 12 Ekim 19:29:39 UTC’de tamamlandı. Sekiz 50-hisse ve sekiz 20-hisse raporu kapsam/kanıt alıntısı açısından bağımsız olarak tekrar doğrulandı. İkinci alım talimatı 19:12:34 UTC’de verildi; sekiz cüzdanda available+reserved+unsettled toplamı 20000 USD altında ve rezerv sıfır olarak gerçek sanal alımlar sonrası doğrulandı. PID limitini dolduran Chromium alt süreçleri renderer `init: true` ile giderildi. Dengesiz journal ve negatif nakit sayısı sıfır; araştırma kilidi kaldırıldı, rutin model servisi active. Kanıt: `research/market-review-mandatory-allocation-2026-10-12.json`.
+
+
+## 16 Ekim 2026: saatlik rutin karar oturumları
+
+Kullanıcının kontrol sıklığını artırma talebiyle rutin kararlar günde ikiden, normal tam seansta her cüzdan için altıya çıkarıldı. Açılıştan 30 dakika sonra başlayarak saatlik çalışır; son oturum kapanıştan 60 dakika öncedir. ABD doğu saatiyle 10:00, 11:00, 12:00, 13:00, 14:00 ve 15:00; 16 Ekim itibarıyla Türkiye saatiyle 17:00–22:00 arasındaki tam saatlerdir. Kısa seansta üç oturum oluşur; tatillerde ve hafta sonlarında rutin oturum yoktur. Takvim ABD yaz/kış saatini izler. Sekiz cüzdanda günlük toplam 48 karar işi ve oturum başına bir ortak araştırma planlanır. Ortak talimattaki eski iki oturum sınırı kaldırıldı; daha sık değerlendirme zorunlu işlem anlamına gelmez. Fiyat/emir kontrollerinin sıklığı ve gerçekleşme kuralları değişmedi. Önceki bölümlerdeki iki oturum ifadeleri tarihsel kurulum kaydıdır.
