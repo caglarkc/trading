@@ -115,35 +115,55 @@ func TestSessionPlan(t *testing.T) {
 		t.Fatal(e)
 	}
 	p := Planner{Queue{s.Pool}, cal}
-	now := time.Date(2026, 11, 27, 14, 0, 0, 0, time.UTC)
-	if e = p.Plan(ctx, now); e != nil {
-		t.Fatal(e)
+	cases := []struct {
+		name, date, first string
+		sessions          int
+	}{
+		{"daylight_time", "2026-10-16", "14:00", 6},
+		{"standard_time", "2026-11-06", "15:00", 6},
+		{"early_close", "2026-11-27", "15:00", 3},
+		{"holiday", "2026-11-26", "", 0},
+		{"weekend", "2026-10-17", "", 0},
 	}
-	if e = p.Plan(ctx, now); e != nil {
-		t.Fatal(e)
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			now, err := time.Parse(time.RFC3339, tc.date+"T13:00:00Z")
+			if err != nil {
+				t.Fatal(err)
+			}
+			for range 2 {
+				if err = p.Plan(ctx, now); err != nil {
+					t.Fatal(err)
+				}
+			}
+			rows, err := s.Pool.Query(ctx, "SELECT available_at,deadline,payload FROM jobs WHERE kind='wallet_decision' AND job_key LIKE $1 ORDER BY available_at,wallet_id", tc.date+"%")
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer rows.Close()
+			count := 0
+			for rows.Next() {
+				var at, deadline time.Time
+				var body json.RawMessage
+				if err = rows.Scan(&at, &deadline, &body); err != nil {
+					t.Fatal(err)
+				}
+				first, err := time.Parse(time.RFC3339, tc.date+"T"+tc.first+":00Z")
+				if err != nil {
+					t.Fatal(err)
+				}
+				expected := first.Add(time.Duration(count/8) * time.Hour)
+				if !at.Equal(expected) || deadline.Sub(at) != 45*time.Minute {
+					t.Fatal("wrong session or deadline", at, deadline, "expected", expected)
+				}
+				count++
+			}
+			if err = rows.Err(); err != nil {
+				t.Fatal(err)
+			}
+			if count != tc.sessions*8 {
+				t.Fatalf("got %d decisions; want %d", count, tc.sessions*8)
+			}
+		})
 	}
-	rows, e := s.Pool.Query(ctx, "SELECT available_at,deadline,payload FROM jobs WHERE kind='wallet_decision' AND job_key LIKE '2026-11-27%' ORDER BY available_at")
-	if e != nil {
-		t.Fatal(e)
-	}
-	defer rows.Close()
-	count := 0
-	for rows.Next() {
-		var at, deadline time.Time
-		var body json.RawMessage
-		if e = rows.Scan(&at, &deadline, &body); e != nil {
-			t.Fatal(e)
-		}
-		if at.Format("15:04") != "15:00" && at.Format("15:04") != "17:00" {
-			t.Fatal("wrong session", at)
-		}
-		if deadline.Sub(at) != 45*time.Minute {
-			t.Fatal("wrong deadline", deadline)
-		}
-		count++
-	}
-	if count != 16 {
-		t.Fatal(count)
-	}
-	t.Log("two sessions per eight wallets, early close and idempotent planning passed")
 }
