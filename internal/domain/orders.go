@@ -34,8 +34,14 @@ type Action struct {
 	Depends        []string `json:"depends_on"`
 }
 type Decision struct {
-	Actions []Action `json:"actions"`
-	Memory  string   `json:"memory_update"`
+	Actions  []Action            `json:"actions"`
+	Memory   string              `json:"memory_update"`
+	Learning LearningApplication `json:"learning_application"`
+}
+type LearningApplication struct {
+	Version     int64    `json:"strategy_version"`
+	RuleIDs     []string `json:"applied_rule_ids"`
+	Explanation string   `json:"explanation"`
 }
 type Receipt struct {
 	ActionID string    `json:"client_action_id,omitempty"`
