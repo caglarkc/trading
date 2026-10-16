@@ -3,6 +3,7 @@ package jobs
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/caglarkc/trading/internal/calendar"
 	"github.com/caglarkc/trading/internal/domain"
 	"github.com/google/uuid"
@@ -16,6 +17,9 @@ type Planner struct {
 
 func payload(v any) json.RawMessage { b, _ := json.Marshal(v); return b }
 func (p Planner) Plan(ctx context.Context, now time.Time) error {
+	if e := p.planLearning(ctx, now); e != nil {
+		return e
+	}
 	bucket := now.UTC().Truncate(time.Minute)
 	if _, e := p.Queue.Enqueue(ctx, Job{Kind: "settlement", Key: bucket.Format(time.RFC3339), Available: bucket, Deadline: bucket.Add(2 * time.Minute)}, nil, 2); e != nil {
 		return e
@@ -169,6 +173,44 @@ func (p Planner) Plan(ctx context.Context, now time.Time) error {
 		}
 	}
 	return rows.Err()
+}
+
+// Learning is driven by new SELL fills, including partial exits. Idle wallets
+// do not consume a model call; failed reviews can be retried next hour.
+func (p Planner) planLearning(ctx context.Context, now time.Time) error {
+	rows, err := p.Queue.Pool.Query(ctx, `SELECT w.id,coalesce(f.seq,0),coalesce(s.reviewed_through_seq,-1) FROM wallets w
+	LEFT JOIN LATERAL (SELECT reviewed_through_seq FROM strategy_versions WHERE wallet_id=w.id ORDER BY version DESC LIMIT 1) s ON true
+	LEFT JOIN LATERAL (SELECT max(f.seq) seq FROM fills f JOIN orders o ON o.wallet_id=f.wallet_id AND o.id=f.order_id WHERE f.wallet_id=w.id AND o.body->>'side'='SELL') f ON true
+	WHERE s.reviewed_through_seq IS NULL OR coalesce(f.seq,0)>s.reviewed_through_seq`)
+	if err != nil {
+		return err
+	}
+	type pending struct {
+		wallet uuid.UUID
+		seq    int64
+		after  int64
+	}
+	items := []pending{}
+	for rows.Next() {
+		var v pending
+		if err = rows.Scan(&v.wallet, &v.seq, &v.after); err != nil {
+			rows.Close()
+			return err
+		}
+		items = append(items, v)
+	}
+	err = rows.Err()
+	rows.Close()
+	if err != nil {
+		return err
+	}
+	for _, v := range items {
+		key := fmt.Sprintf("%s:%d:%d:%s", v.wallet, v.after, v.seq, now.UTC().Truncate(time.Hour).Format(time.RFC3339))
+		if _, err = p.Queue.Enqueue(ctx, Job{Kind: "wallet_learning", Key: key, Wallet: &v.wallet, Available: now, Deadline: now.Add(30 * time.Minute)}, nil, 9); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 func stringWeek(w int) string {
 	const digits = "0123456789"
