@@ -10,6 +10,7 @@ import (
 	"github.com/caglarkc/trading/internal/domain"
 	"github.com/caglarkc/trading/internal/jobs"
 	"github.com/caglarkc/trading/internal/modelrunner"
+	"github.com/caglarkc/trading/internal/store"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 	"time"
@@ -23,6 +24,19 @@ func (s *Service) applyAndAcknowledge(ctx context.Context, j jobs.Job, did uuid.
 	dec := json.NewDecoder(bytes.NewReader(result.Output))
 	dec.DisallowUnknownFields()
 	if e := dec.Decode(&decision); e != nil {
+		return nil, e
+	}
+	var savedInput []byte
+	if e := s.Store.Pool.QueryRow(ctx, "SELECT input FROM decision_runs WHERE wallet_id=$1 AND id=$2", wallet, did).Scan(&savedInput); e != nil {
+		return nil, e
+	}
+	var source struct {
+		Learning store.StrategyState `json:"learning"`
+	}
+	if e := json.Unmarshal(savedInput, &source); e != nil {
+		return nil, e
+	}
+	if e := ValidateLearningApplication(decision.Learning, source.Learning); e != nil {
 		return nil, e
 	}
 	var allocation struct {
