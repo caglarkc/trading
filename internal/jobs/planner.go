@@ -75,8 +75,9 @@ func (p Planner) Plan(ctx context.Context, now time.Time) error {
 		return e
 	}
 	date := open.In(calendar.ET).Format("2006-01-02")
-	sessionTimes := []time.Time{open.Add(30 * time.Minute), close.Add(-time.Hour)}
-	for _, at := range sessionTimes {
+	// Leave the opening half hour for price discovery and a full hour before
+	// close for the final research, decisions and order execution.
+	for at := open.Add(30 * time.Minute); !at.After(close.Add(-time.Hour)); at = at.Add(time.Hour) {
 		session := at.Format(time.RFC3339)
 		deadline := at.Add(45 * time.Minute)
 		if close.Before(deadline) {
