@@ -1,0 +1,698 @@
+{
+  "wallets": [
+    {
+      "code": "EWC-BALANCED",
+      "version": 1,
+      "created_at": "2026-10-16T19:23:06.262803+00:00",
+      "reviewed_through_seq": 46,
+      "latest_review_count": 2,
+      "total_closed_portions": 2,
+      "pending_closed_portions": 0,
+      "report": {
+        "rules": [
+          {
+            "id": "EWC-01",
+            "reason": "İki çıkışta da kalıcı temel bozulma ileri sürülmeden kısmi azaltma yapılmış. Bir zarar ve bir kâr, bu yöntemin zamanlama üstünlüğünü kanıtlamaz.",
+            "status": "trial",
+            "followup": "Önceki stratejide kural bulunmadığından önceki kurala karşı sınanmamış. Sonraki 200 paylık çıkış benzer gerekçelendirme içeriyor; bu yeni kuralın ileriye dönük testi değildir.",
+            "test_plan": "Gelecek en az beş taktik çıkışta önceden yazılan eşikleri, karşıt kanıtı, azaltılan maruziyeti, gerçekleşen maliyetleri ve sonraki rutin oturumlardaki riski izle. Tutarlı uygulanabilirlik ve masraf sonrası yarar görülürse koru; tekrarlayan gereksiz devir veya risk azaltamama görülürse değiştir ya da emekliye ayır.",
+            "current_rule": "EWC'de taktik azaltmayı fiyat zayıflığı ile banka katılımı ve CAD göstergelerini birlikte değerlendirerek boyutlandır; karşıt enerji kanıtını da kaydet. İnceleme eşiğini otomatik satış zorunluluğu sayma.",
+            "previous_rule": "Yok; önceki strateji sürüm 0 boş.",
+            "evidence_fill_ids": [
+              "d5e06f37-e2f7-4619-851f-203215f0fb08",
+              "d615826f-7515-4fdc-a688-dab64dd19503"
+            ]
+          },
+          {
+            "id": "EWC-02",
+            "reason": "59,02 USD satışını 60,18 USD yeniden alış izlemiş. Bu gözlem yeniden giriş bedelini gösterir; farklı miktarlar ve bilinmeyen alternatif fiyat yolu nedeniyle kesin fırsat kaybı veya başarılı döngü sonucu çıkarılamaz.",
+            "status": "trial",
+            "followup": "Önceki kural yok; sınanmamış. 300 paylık yeniden giriş bağlamı mevcut, ancak sonraki kârlı satışın bu alışa maliyet atfı yapılamaz.",
+            "test_plan": "Gelecek en az beş tamamlanan azaltma–yeniden giriş döngüsünde miktarları, teyidi, nakitte kalınan süreyi, tüm gerçekleşen maliyetleri ve maruziyet riskini kaydet. Masraf sonrası katkı ve risk yönetimi birlikte desteklenirse koru; tekrarlayan maliyetli yön değişimleri varsa değiştir veya emekliye ayır.",
+            "current_rule": "Yeniden girişte güncel toparlanma kanıtını, tezin bozulma koşulunu ve masraf dahil bütçeyi yaz; önceki satış fiyatını geri kazanma zorunluluğu sayma. Daha yüksek geri alışın maliyetini açıkça kaydet.",
+            "previous_rule": "Yok; önceki strateji sürüm 0 boş.",
+            "evidence_fill_ids": [
+              "d5e06f37-e2f7-4619-851f-203215f0fb08",
+              "d615826f-7515-4fdc-a688-dab64dd19503"
+            ]
+          },
+          {
+            "id": "EWC-03",
+            "reason": "İki kapalı parçanın net toplamı +70,07583942 USD. Kârlı parçanın maliyeti, yakın tarihli 300 paylık alış fiyatından türetilemez. Çoklu fiyat kaynağı banka ve CAD yorumlarına bağımsız teyit sağlamıyor.",
+            "status": "trial",
+            "followup": "Önceki kural yok; sınanmamış. İkinci çıkışın kârı ilk çıkışın doğru zamanlandığını doğrulamaz. Her iki kararın strategy_version ve strategy_application alanları boş; geçmişte öğrenme kuralı uygulandığı iddia edilemez.",
+            "test_plan": "Sonraki beş satış değerlendirmesinde journal mutabakatını, kaynak etiketlerini, strateji sürümü/kural uygulamasını ve masraf dahil nakit-risk sınırlarını kontrol et. Eksiksiz ve doğru uygulanırsa koru; kayıt hatası veya belirsiz uygulama varsa düzelt; gereksiz tekrara dönüşürse ilgili kısmı emekliye ayır.",
+            "current_rule": "Her kapalı parçayı journal net gerçekleşmiş sonucu ve tahsis edilen maliyetiyle değerlendir; masrafı ikinci kez düşme, giriş geçmişinden maliyet atfı üretme. Fiyat teyidi ile tek kaynaklı sektör/kur yorumunu ayrı tut. Büyüme hedefi veya geçmiş zarar nedeniyle izinleri ve nakit sınırlarını aşma.",
+            "previous_rule": "Yok; önceki strateji sürüm 0 boş.",
+            "evidence_fill_ids": [
+              "d5e06f37-e2f7-4619-851f-203215f0fb08",
+              "d615826f-7515-4fdc-a688-dab64dd19503"
+            ]
+          }
+        ],
+        "trade_reviews": [
+          {
+            "lesson": "Zararı kabul ederek risk azaltmak makul olabilir. Başarıyı yalnız satış zararından veya sonraki yükselişten çıkarma; azaltılan risk ile yeniden giriş maliyetini birlikte izle.",
+            "fill_id": "d5e06f37-e2f7-4619-851f-203215f0fb08",
+            "rule_ids": [
+              "EWC-01",
+              "EWC-02",
+              "EWC-03"
+            ],
+            "assessment": "İlk girişin beklentisi Kanada finansalları ve enerji nakit üretiminden yararlanmaktı; belirli getiri veya vade verilmemişti. Çıkışın amacı fiyat, banka ve CAD zayıflığında maruziyeti azaltmaktı. 370 pay 59,02 USD'den gerçekleşti; journal maliyeti 21.968,75270073 USD, net zarar 133,66270073 USD. Kalan 1.000 pay korunmuştu. Daha sonraki yüksek fiyatlı yeniden giriş, azaltmanın zamanlama maliyetini görünür kılıyor; satışın hatalı olduğunu tek başına kanıtlamıyor.",
+            "classification": "reasonable_loss"
+          },
+          {
+            "lesson": "Kâr gerçekleşmiştir; çıkış yönteminin üstünlüğü kanıtlanmamıştır. Parçayı journal maliyetiyle değerlendir ve karşıt enerji kanıtının neden tam çıkış yerine kısmi azaltmaya yol açtığını gelecekte de açıkla.",
+            "fill_id": "d615826f-7515-4fdc-a688-dab64dd19503",
+            "rule_ids": [
+              "EWC-01",
+              "EWC-02",
+              "EWC-03"
+            ],
+            "assessment": "İlk tahsis Kanada finansalları/enerji tezine, sonraki alış toparlanma ve banka/CAD desteğine dayanıyordu; bunlar maliyet atfı değildir. Çıkış beklentisi, enerji gücü ve 60,33 desteği sürerken zayıflayan banka/CAD katılımına karşı maruziyeti kısmen azaltmaktı. 200 pay 60,40 USD'den gerçekleşti; journal maliyeti 11.875,00145985 USD, net kâr 203,73854015 USD. Sonraki fiyat yolu verilmediğinden azaltmanın devam eden riske katkısı bilinmiyor.",
+            "classification": "profitable_outcome"
+          }
+        ],
+        "strategy_summary": "İlk öğrenme kaydı; önceki sürüm 0 boş olduğundan korunacak eski kural yok. İki kapalı parçanın masraf dahil net gerçekleşmiş sonucu +70,07583942 USD, toplam tahsis edilen maliyeti 33.843,75416058 USD. Kanıt, aktif kısmi azaltma ve yeniden giriş yönteminin üstünlüğünü henüz göstermiyor. Yeni kurallar denemedir; hedef baskısı zarar kovalamayı haklı çıkarmaz. Gerçekleşmeler backend hesabına aittir; harici broker gerçekleşmesi doğrulanmış değildir.",
+        "open_position_review": "Açık pozisyon 1.100 EWC; toplam maliyet 65.555,51583942 USD. Kullanılabilir nakit 22.435,82 USD, takası beklenen nakit 12.078,74 USD; açık emir yok. Güncel fiyat verilmediğinden açık kâr/zarar, toplam hesap değeri ve hedefe kalan tutar hesaplanamaz. Son satış fiyatı güncel değerleme değildir. Kalan pozisyonun riski, banka katılımı, CAD, enerji ve ticaret/kredi gelişmeleriyle sonraki yetkili oturumda yeniden incelenmeli. Geçmiş fiyat eşikleri otomatik stop değildir. Burada işlem yapılmadı."
+      },
+      "latest_job": {
+        "state": "completed",
+        "last_error": null,
+        "finished_at": "2026-10-16T19:23:06.267889+00:00"
+      }
+    },
+    {
+      "code": "QQQ-FAST",
+      "version": 1,
+      "created_at": "2026-10-16T19:22:30.365742+00:00",
+      "reviewed_through_seq": 44,
+      "latest_review_count": 2,
+      "total_closed_portions": 2,
+      "pending_closed_portions": 0,
+      "report": {
+        "rules": [
+          {
+            "id": "QQQ-R01",
+            "reason": "İlk giriş yaklaşık 80 bin USD zorunlu tahsis gerekçesi taşırken ikinci giriş açıkça sınırlı bir tepki denemesiydi. İki zarar, hangi büyüklüğün üstün olduğunu kanıtlamaz; büyüklüğün riskle açıklanması gerekir.",
+            "status": "trial",
+            "followup": "Önceki sürümde kural yok; geriye dönük uyum iddiası kurulamaz. Sonraki çıkışlarla sınanması henüz yapılmadı.",
+            "test_plan": "Gelecek en az beş kapanan işlemde girişteki risk hesabını, nakit uygunluğunu ve masraf sonrası sonucu karşılaştır. Büyüklük gerekçeleri tutarlı ve uygulanabilir ise korumayı değerlendir; keyfî risk artışı veya uygulanamaz ölçüm varsa değiştir ya da emekliye ayır.",
+            "current_rule": "QQQ girişinde miktarı somut giriş kanıtı, tez geçersizleşme seviyesi, masraflar ve boşluk/kayma riskiyle gerekçelendir; büyüme hedefini veya önceki zararı tek başına tahsis gerekçesi yapma. Yalnız takası tamamlanmış, ayrılmamış nakdi kullan; borç ve türev kullanma.",
+            "previous_rule": "Yok; önceki strateji sürümü 0 boş.",
+            "evidence_fill_ids": [
+              "27830dcc-7a64-429c-8c79-223809db0576",
+              "9fe2ec7b-3a6a-40ad-a0ce-450426f3ece8"
+            ]
+          },
+          {
+            "id": "QQQ-R02",
+            "reason": "İlk çıkış 743,23 referansının altında 736,41'de gerçekleşti. İkinci girişte koruyucu emir aynı batch içinde yoktu; daha sonra konan 717 stopu 716,39'da gerçekleşti. Aradaki fiyat yolu bilinmiyor.",
+            "status": "trial",
+            "followup": "Önceki kural bulunmadığından uygulanma testi yok. İkinci çıkış koşullu emrin çalıştığına örnektir; yeni kuralın başarısını kanıtlamaz.",
+            "test_plan": "Gelecek en az beş çıkışta planlanan izleme biçimini, korumasız süreyi, tetik ile gerçekleşme farkını ve toplam maliyeti kaydet. Uygulanabilirliği ve risk kontrolünü birlikte değerlendir; sık gereksiz çıkış veya operasyonel aksama görülürse değiştir ya da emekliye ayır.",
+            "current_rule": "Her girişte geçersizleşmenin nasıl izleneceğini ve desteklenen koşullu çıkış gerekip gerekmediğini yaz. Koruyucu emir seçilirse gerçekleşme sonrası ilk izinli oturumda durumunu doğrula; emir kurulana kadarki açık riski kaydet. Stop fiyatını garanti edilmiş satış fiyatı sayma.",
+            "previous_rule": "Yok; önceki strateji sürümü 0 boş.",
+            "evidence_fill_ids": [
+              "27830dcc-7a64-429c-8c79-223809db0576",
+              "9fe2ec7b-3a6a-40ad-a0ce-450426f3ece8"
+            ]
+          },
+          {
+            "id": "QQQ-R03",
+            "reason": "720,93 üzerindeki kırılmaya katılım sonrasında pozisyon stopla kapandı. Tek başarısız deneme kırılma yöntemini geçersiz kılmaz; tekrar girişin bağımsız gerekçesi olmalıdır.",
+            "status": "trial",
+            "followup": "Bu çıkıştan sonra sağlanan yeni giriş veya çıkış yok; kural henüz sınanmadı.",
+            "test_plan": "Gelecek en az beş yeniden giriş fırsatında alınan ve pas geçilen kararların o andaki kanıtını kaydet; gerçekleşen işlemlerde net sonuç, masraf ve riski izle. Tek sonuca göre karar verme; ölçülebilir katkı varsa korumayı, sürekli belirsizlik veya maliyet yükü varsa değiştirmeyi ya da emekliliği değerlendir.",
+            "current_rule": "Başarısız kırılma sonrasında yeniden giriş için güncel fiyat kanıtı, yeni geçersizleşme koşulu ve masraf sonrası anlamlı fırsat gerekçesi iste; eski seviyeleri güncel teyit sayma ve kaybı telafi etmek için fiyatı kovalama.",
+            "previous_rule": "Yok; önceki strateji sürümü 0 boş.",
+            "evidence_fill_ids": [
+              "9fe2ec7b-3a6a-40ad-a0ce-450426f3ece8"
+            ]
+          }
+        ],
+        "trade_reviews": [
+          {
+            "lesson": "Geçersizleşme referansı gerçekleşme fiyatını sınırlamaz. Tahsis gerekçesi ile işlem avantajını ayrı değerlendir; büyük pozisyonun boşluk ve izleme riskini girişte açıkça hesapla.",
+            "fill_id": "27830dcc-7a64-429c-8c79-223809db0576",
+            "rule_ids": [
+              "QQQ-R01",
+              "QQQ-R02"
+            ],
+            "assessment": "İlk beklenti AI/cloud büyümesi ve 749,79–751,27 bölgesinin geri alınmasıydı; giriş kaydı ayrıca o dönemde zorunlu 80.000 USD tahsis gerekçesi içeriyordu. 743,23 altındaki kalıcılık çıkış değerlendirmesi koşuluydu. 108 payın tamamı 736,41'de satıldı; yetkili maliyet 80.536,61 USD, net sonuç -1.006,98 USD. Çıkış kaydı fiyatla geçersizleşmeye dayanıyor; makro başlıklar doğrulanmış sonuç sayılmamış. Ara fiyat yolu ve daha erken uygulanabilir çıkış bilinmediğinden gecikme hatası kanıtlanamaz.",
+            "classification": "reasonable_loss"
+          },
+          {
+            "lesson": "Sınırlı kırılma denemesi normal risk kapsamında başarısız olabilir. Koşullu çıkış uygulandı; tek zarar yöntemi çürütmez. Giriş ile koruyucu emrin kurulması arasındaki riski kaydet ve yeniden girişi yeni kanıta bağla.",
+            "fill_id": "9fe2ec7b-3a6a-40ad-a0ce-450426f3ece8",
+            "rule_ids": [
+              "QQQ-R01",
+              "QQQ-R02",
+              "QQQ-R03"
+            ],
+            "assessment": "Beklenti 720,93 üzerindeki kırılmanın kısa vadeli tepkiyi genişletmesiydi; trend dönüşü teyidi iddia edilmemişti. Bağlamsal giriş 721,51, geçersizleşme referansı 717,01 idi. Sonradan kurulan 717 stopu tetiklendi; 60 payın tamamı 716,39'da satıldı. Yetkili maliyet 43.291,61 USD, net sonuç -310,11 USD. Gerçekleşme stopun 0,61 USD altında kaldı. Kâr bölgelerine ulaşılıp ulaşılmadığı ve 715,44 günlük dibinin girişe göre zamanı bilinmiyor.",
+            "classification": "reasonable_loss"
+          }
+        ],
+        "strategy_summary": "QQQ-FAST strateji sürümü 1; incelenen son sıra 44. Önceki sürüm 0 boş olduğundan korunacak eski kural yok; üç yeni kural denemedir. İki kapanan satışın toplam net sonucu -1.317,09 USD'dir; masraflar tekrar düşülmedi. Giriş geçmişi maliyet atfı için kullanılmadı. %20–30 büyüme hedefi zarar kovalamayı haklı çıkarmaz. Bu kayıt yalnız öğrenme incelemesidir; emir verilmedi.",
+        "open_position_review": "Açık QQQ pozisyonu ve emir yok. Kullanılabilir nakit 55.701,41 USD, takası bekleyen nakit 42.981,50 USD; toplam hesap değeri 98.682,91 USD. Takasın vadesi 19 Ekim 2026; tamamlanmadan bu tutar yeni alış bütçesi değildir. Toplam gerçekleşmiş net zarar 1.317,09 USD; masraflar bu tutara dahildir. Dış broker gerçekleşmesi doğrulanmış değildir."
+      },
+      "latest_job": {
+        "state": "completed",
+        "last_error": null,
+        "finished_at": "2026-10-16T19:22:30.37094+00:00"
+      }
+    },
+    {
+      "code": "QQQ-PATIENT",
+      "version": 1,
+      "created_at": "2026-10-16T19:23:58.412273+00:00",
+      "reviewed_through_seq": 48,
+      "latest_review_count": 3,
+      "total_closed_portions": 3,
+      "pending_closed_portions": 0,
+      "report": {
+        "rules": [
+          {
+            "id": "QQQ-01",
+            "reason": "İlk giriş yaklaşık %80 tahsisi uzun vadeli AI beklentisi ve 'zorunlu tahsis' gerekçesiyle ilişkilendirdi; kısa vadeli parasal risk sınırı kaydedilmedi. Bu planlama eksikliğidir; kayıp tek başına hatalı giriş kanıtı değildir.",
+            "status": "trial",
+            "followup": "Önceki stratejide kural yok; sınanmadı. Üç çıkış aynı girişin parçalarıdır, üç bağımsız giriş deneyi değildir.",
+            "test_plan": "Sonraki beş bağımsız girişte beklenti, bozulma koşulu, büyüklük, planlanan risk ve gerçekleşen maliyetleri karşılaştır. Kayıtlar tutarlı ve risk kararlarına yararlıysa koru; uygulanamıyor veya büyüklük kararına katkı sağlamıyorsa değiştir ya da emekliye ayır.",
+            "current_rule": "QQQ girişinden önce kısa vadeli beklentiyi, tezin bozulma koşulunu, maliyet dahil risk tutarını ve buna uygun büyüklüğü kaydet; uzun vadeli büyüme anlatısını tek başına yüksek tahsis gerekçesi yapma.",
+            "previous_rule": "Yok; önceki strateji kaydı boş.",
+            "evidence_fill_ids": [
+              "0a2b3888-9e3a-48a3-9f81-fbe29f6ab1a1",
+              "b2b5a1c8-ad10-4437-981c-80c7e5ae50df",
+              "539dcc08-ceed-45f8-8f9c-c98bc1dd49ac"
+            ]
+          },
+          {
+            "id": "QQQ-02",
+            "reason": "36 ve 16 paylık satışlar yeni düşükler ve başarısız istikrar beklentisine bağlandı. Sonraki fiyat yolu eksik olduğundan azaltmanın toplam ekonomik üstünlüğü bilinmiyor.",
+            "status": "trial",
+            "followup": "Önceki kural yok; sınanmadı. Sonraki 16 paylık çıkış, önceki düşüşün sürmesi koşuluyla uyumlu görünüyor; bu tarihsel tutarlılık kârlılık kanıtı değildir.",
+            "test_plan": "Sonraki beş çıkış dizisinde tetikleyici kanıtı, kalan risk tutarını, toplam ücretleri ve varsa yeniden giriş maliyetini izle. Tutarlı risk kontrolü sağlıyorsa koru; sık ters işlemler ve maliyetler gerekçeyi aşındırıyorsa değiştir veya emekliye ayır.",
+            "current_rule": "Kademeli çıkışta her parçayı güncel kanıt ve önceden yazılmış bozulma koşuluyla gerekçelendir; kalan maruziyeti ve yeniden giriş koşulunu yeniden kaydet. Otomatik üçte bir satış kalıbı kullanma.",
+            "previous_rule": "Yok; önceki strateji kaydı boş.",
+            "evidence_fill_ids": [
+              "0a2b3888-9e3a-48a3-9f81-fbe29f6ab1a1",
+              "539dcc08-ceed-45f8-8f9c-c98bc1dd49ac"
+            ]
+          },
+          {
+            "id": "QQQ-03",
+            "reason": "714 USD stop, 713,49 USD'den gerçekleşti: 24 payda stop seviyesine göre 12,24 USD daha düşük brüt hasılat. Kayıt bu riski önceden açıklamıştı; tek olay stop yönteminin başarısını kanıtlamaz.",
+            "status": "trial",
+            "followup": "Önceki kural yok; sınanmadı. Sağlanan stop gerçekleşmesi bu yeni kural için başlangıç gözlemidir.",
+            "test_plan": "Sonraki beş koşullu çıkışta tetikleme, gerçekleşme farkı, ücret ve kalan maruziyeti kaydet. Farklar planlanan riskle uyumluysa koru; tekrar eden aşım varsa emir seçimini değiştir veya kuralı emekliye ayır.",
+            "current_rule": "Koşullu çıkışta stop fiyatını gerçekleşme garantisi sayma; tetikleyicinin gerekçesini ve kayma riskini yaz, sonucu backend makbuzuyla değerlendir.",
+            "previous_rule": "Yok; önceki strateji kaydı boş.",
+            "evidence_fill_ids": [
+              "b2b5a1c8-ad10-4437-981c-80c7e5ae50df"
+            ]
+          },
+          {
+            "id": "QQQ-04",
+            "reason": "Çıkış kayıtları istikrar ararken yeniden alımdan kaçınmış. Bunun fırsat maliyeti sonraki fiyatlar olmadan bilinmiyor; büyüme hedefi yetki ve nakit sınırlarını değiştirmez.",
+            "status": "trial",
+            "followup": "Önceki kural yok; sınanmadı. Sağlanan kayıtlarda yeniden giriş bulunmadığından sonuç değerlendirmesi yapılamaz.",
+            "test_plan": "Sonraki beş yeniden giriş değerlendirmesinde alınan ve beklenen kararların kanıtını, maliyetini ve riskini kaydet. Kanıt koşulu karar kalitesine katkı sağlıyorsa koru; belirsiz veya sürekli geriye dönük yorumlanıyorsa değiştir ya da emekliye ayır. Hesap izinleri her durumda geçerlidir.",
+            "current_rule": "Yeniden girişi yalnız düşen fiyata veya kaybı telafi hedefine bağlama; güncel istikrar ve destekleyici kanıt ara. Yalnız QQQ ve takası tamamlanmış ayrılmamış nakit kullan; maliyetleri bütçele ve backend doğrulamasını esas al.",
+            "previous_rule": "Yok; önceki strateji kaydı boş.",
+            "evidence_fill_ids": [
+              "b2b5a1c8-ad10-4437-981c-80c7e5ae50df",
+              "539dcc08-ceed-45f8-8f9c-c98bc1dd49ac"
+            ]
+          }
+        ],
+        "trade_reviews": [
+          {
+            "lesson": "Uzun vadeli beklenti kısa vadeli istikrarı sağlamadı. İlk yüksek tahsisin risk planı eksikliği ayrı değerlendirilmeli; zarar tek başına satış hatası sayılmamalı.",
+            "fill_id": "0a2b3888-9e3a-48a3-9f81-fbe29f6ab1a1",
+            "rule_ids": [
+              "QQQ-01",
+              "QQQ-02"
+            ],
+            "assessment": "İlk giriş uzun vadeli AI büyümesi bekliyordu; satış anında sabah beklenen istikrar oluşmamış, fiyat 735,90 referansının altında kalmıştı. 36 pay 726,85 USD'den satıldı. Yetkili maliyet temeli 26.845,53666667 USD, net zarar 680,48666667 USD. Taktik azaltmanın kayıtlı gerekçesi tutarlı; sonraki üstünlüğü bilinmiyor.",
+            "classification": "reasonable_loss"
+          },
+          {
+            "lesson": "Koşullu emir planlanan azaltmayı uyguladı; stop ile gerçekleşme arasındaki fark risk hesabına dahil edilmeli. Bu tek gerçekleşme stopun ekonomik üstünlüğünü kanıtlamaz.",
+            "fill_id": "b2b5a1c8-ad10-4437-981c-80c7e5ae50df",
+            "rule_ids": [
+              "QQQ-01",
+              "QQQ-03",
+              "QQQ-04"
+            ],
+            "assessment": "Beklenti, 714 USD altında yeni düşük oluşursa 24 payı koşullu satarak riski azaltmaktı; toparlanırsa pozisyon korunacaktı. Stop tetiklendi ve 713,49 USD'den gerçekleşti. Yetkili maliyet temeli 17.897,02444444 USD, net zarar 774,63444444 USD. Stopun garanti olmadığı önceden kaydedilmişti.",
+            "classification": "reasonable_loss"
+          },
+          {
+            "lesson": "İstikrar beklentisi bozulduğunda maruziyeti yeniden değerlendirmek kayıtla uyumluydu. Tekrarlanan kısmi çıkışların toplam maliyeti ve yeniden giriş etkisi ayrıca izlenmeli.",
+            "fill_id": "539dcc08-ceed-45f8-8f9c-c98bc1dd49ac",
+            "rule_ids": [
+              "QQQ-01",
+              "QQQ-02",
+              "QQQ-04"
+            ],
+            "assessment": "Stop sonrasında beklenen istikrar oluşmadı; yeni okumalar önceki düşük referansının altına indi. Önceden belirtilen devam eden düşüş koşuluyla 16 pay 710,68 USD'den satıldı, 32 pay kaldı. Yetkili maliyet temeli 11.931,34962963 USD, net zarar 561,71962963 USD. Sonraki toparlanma veya yeniden giriş sonucu verilmedi.",
+            "classification": "reasonable_loss"
+          }
+        ],
+        "strategy_summary": "Strateji sürümü 1; incelenen son sıra 48, önceki sürüm 0 boştu. Üç kapanan parçada toplam net gerçekleşmiş zarar 2.016,84074074 USD; journal tutarları ücretleri içerir, yeniden ücret düşülmedi. Kazançlı kapanış yok. Giriş geçmişi bağlamdır, FIFO atfı yapılmadı. QQQ/nakit arasında seçici aktif işlem yaklaşımı için dört deneme kuralı oluşturuldu; tek girişin üç parçalı çıkışı yöntem başarısını kanıtlamaz. Hedefler kayıp kovalamayı gerekçelendirmez.",
+        "open_position_review": "32 QQQ payı açık; maliyet temeli 23.862,69925926 USD. Kullanılabilir nakit 45.628,44 USD, takası bekleyen nakit 28.492,02 USD; açık emir yok. Güncel değerleme fiyatı verilmediğinden gerçekleşmemiş kâr/zarar ve toplam hesap değeri bilinmiyor. Son satıştaki 714 üzerinde istikrar ve 719,77 geri kazanımı yalnız izleme koşullarıydı; gerçekleştiğine dair veri yok. Bu inceleme yeni işlem kararı içermez."
+      },
+      "latest_job": {
+        "state": "completed",
+        "last_error": null,
+        "finished_at": "2026-10-16T19:23:58.422555+00:00"
+      }
+    },
+    {
+      "code": "TQQQ-FAST",
+      "version": 1,
+      "created_at": "2026-10-16T19:22:14.227351+00:00",
+      "reviewed_through_seq": 42,
+      "latest_review_count": 2,
+      "total_closed_portions": 2,
+      "pending_closed_portions": 0,
+      "report": {
+        "rules": [
+          {
+            "id": "TQQQ-R01",
+            "reason": "İlk giriş düşüşün momentum teyidi olmadığını açıkça kaydetmiş ve yatırım tutarı şartını öne çıkarmış. İkinci giriş kırılıma bağlanmış; ikisi de zarar etmiş. Sonuçlar tek başına giriş yöntemlerini doğrulamaz veya çürütmez.",
+            "status": "trial",
+            "followup": "Önceki sürümde kural yok; geriye dönük uyum iddiası kurulamaz. İkinci giriş koşullu fiyat tetikleyicisi ve risk senaryosu içeriyor; tek sonuç yöntemin üstünlüğünü göstermiyor.",
+            "test_plan": "Sonraki beş kapanan işlemde giriş tetikleyicisi, nakit uygunluğu, planlanan risk, gerçekleşen net sonuç ve maliyetleri karşılaştır. Uygulanabilirlik ve risk disiplini tutarlıysa korumayı değerlendir; sürekli belirsizlik veya uygulanamazlık varsa değiştir ya da emekliye ayır.",
+            "current_rule": "TQQQ girişinde gözlenen fiyat tetikleyicisini, tezin bozulacağı koşulu ve masraf/kayma dahil risk senaryosunu yaz; büyüklüğü yalnız hedefe veya yatırım tutarına dayandırma. Yalnız takası tamamlanmış, ayrılmamış nakdi kullan; hesap yetkilerini koru.",
+            "previous_rule": "Yok; sürüm 0 boş.",
+            "evidence_fill_ids": [
+              "a24dcada-0580-48ea-b1f9-fb03322590a1",
+              "8f989396-53a4-42c6-80de-322016dd0237"
+            ]
+          },
+          {
+            "id": "TQQQ-R02",
+            "reason": "İlk pozisyondaki 79,22 seviyesi otomatik stop değildi. İkinci pozisyonda 71,75 stop, 71,33 gerçekleşme üretti: 1.000 payda stop seviyesine göre 420 USD ek fiyat kaybı oluştu. Sıkılaştırma gerekçesi kaydedilmiş, ancak oynaklığa uygunluğu gösterilmemiş.",
+            "status": "trial",
+            "followup": "Önceki kural bulunmadığından sınanmadı. İkinci satış, önceden açıklanan stop kayması riskinin gerçekleşebildiğini gösteriyor; stop mesafesinin uygunluğunu kanıtlamıyor.",
+            "test_plan": "Sonraki beş çıkışta ilk geçersizlik koşulunu, stop değişikliklerinin gerekçesini, tetik ve gerçekleşme fiyatlarını, kaymayı ve net zararı kaydet. Risk tahminleriyle gerçekleşmeler tutarlıysa korumayı değerlendir; sistematik eksik risk hesabında değiştir veya emekliye ayır.",
+            "current_rule": "Çıkış değerlendirme seviyesini otomatik emirden ayır. Stop-market fiyatını azami kayıp garantisi sayma; seanslar arası boşluk ve kaymayı pozisyon büyüklüğüne dahil et. Stop sıkılaştırmasını güncel fiyat yapısı ve açık gerekçeyle kaydet.",
+            "previous_rule": "Yok; sürüm 0 boş.",
+            "evidence_fill_ids": [
+              "a24dcada-0580-48ea-b1f9-fb03322590a1",
+              "8f989396-53a4-42c6-80de-322016dd0237"
+            ]
+          },
+          {
+            "id": "TQQQ-R03",
+            "reason": "İkinci pozisyonda kaynak çelişkisi belirtilerek ek alıştan kaçınılmış; yükseliş alanını korumak için sabit kâr satışı seçilmemiş. Sonraki zarar, o anda kâr almanın zorunlu olduğunu kanıtlamaz.",
+            "status": "trial",
+            "followup": "Önceki kural yok; sınanmadı. Sonraki çıkış verisi bulunmuyor. Kayıttaki 73,25 ve 72,37 okumaları satılabilir ortak fiyat veya kaçırılmış kesin kâr kanıtı değildir.",
+            "test_plan": "Sonraki beş kapanan işlemde oturumdaki seçenekleri, kaynak etiketlerini, emir durumlarını, net sonucu ve toplam maliyeti karşılaştır. Kararların uygulanabilir ve tutarlı olması halinde korumayı değerlendir; gereksiz işlem maliyeti veya belirsiz uygulama tekrarlanırsa değiştir ya da emekliye ayır.",
+            "current_rule": "Her rutin oturumda kâr alma, taşıma ve yeniden giriş seçeneklerini mevcut kanıtla değerlendir; izleme seviyelerini emir gibi sunma. Kaynak uyuşmazlığını açık tut, gerçekleşmeyi backend kaydıyla doğrula ve geçmiş zararı telafi etmek için büyüklük artırma.",
+            "previous_rule": "Yok; sürüm 0 boş.",
+            "evidence_fill_ids": [
+              "8f989396-53a4-42c6-80de-322016dd0237"
+            ]
+          }
+        ],
+        "trade_reviews": [
+          {
+            "lesson": "Yüksek yatırım tutarı fiyat teyidinin yerini tutmaz. Değerlendirme eşiğinin otomatik koruma sağlamadığı girişte açıkça hesaba katılmalı; bu zarar tek başına stop zorunluluğu kanıtlamaz.",
+            "fill_id": "a24dcada-0580-48ea-b1f9-fb03322590a1",
+            "rule_ids": [
+              "TQQQ-R01",
+              "TQQQ-R02"
+            ],
+            "assessment": "Başlangıç beklentisi teknoloji büyümesi ve yaklaşan sonuçlarla toparlanma, 80,78 açılış bölgesinin geri kazanılmasıydı; girişte momentum teyidi olmadığı kabul edilmişti. 79,21–79,22 desteğinin kaybı gerekçesiyle 1.030 pay 76,61 USD'den kapandı. Yetkili maliyet bazı 81.807,76 USD, net zarar 2.906,25 USD; maliyetin yaklaşık %3,55'i. Çıkış kayıtlı tez bozulmasıyla uyumlu. Ara oturumlar ve dayanak kaynak gövdeleri verilmediğinden gecikme veya giriş süreci hatası kesinleştirilemez.",
+            "classification": "insufficient_evidence"
+          },
+          {
+            "lesson": "Koşullu kırılım girişi başarısız olabilir; stop kaybı sınırlama girişimidir, fiyat garantisi değildir. Stop sıkılaştırmasının fiyat yapısına uygunluğunu izle; doğrulanmamış ara fiyatlardan kesin kaçırılmış kâr üretme.",
+            "fill_id": "8f989396-53a4-42c6-80de-322016dd0237",
+            "rule_ids": [
+              "TQQQ-R01",
+              "TQQQ-R02",
+              "TQQQ-R03"
+            ],
+            "assessment": "Beklenti 71,72 tepesinin aşılmasıyla toparlanma, ardından 74,12 ve yaklaşık 76,02 seviyelerinin değerlendirilmesiydi. 71,80 tetikli giriş 71,97'den gerçekleşmiş; sonradan 71,75 koruma stopu seçilmişti. Stop tetiklenerek 1.000 pay 71,33'ten kapandı. Yetkili maliyet bazı 71.975,01 USD, net zarar 651,49 USD; yaklaşık %0,91. Gerçekleşme stoptan 0,42 USD aşağıda; bu risk önceden açıklanmıştı. Sağlanan kayıtlarda açık bir süreç ihlali gösterilmiyor.",
+            "classification": "reasonable_loss"
+          }
+        ],
+        "strategy_summary": "TQQQ-FAST strateji sürümü 1; incelenen son sıra 42. Önceki sürüm boş olduğundan tüm kurallar yeni denemedir. İki kapanan satışın toplam net gerçekleşmiş zararı 3.557,74 USD; ücretler bu tutara dahildir ve yeniden düşülmemiştir. İki gözlem yöntem başarısı hakkında yeterli kanıt sağlamaz. Agresif büyüme hedefi korunur; hedef, zarar kovalama veya hesap yetkilerini aşma gerekçesi değildir.",
+        "open_position_review": "Açık pozisyon ve emir yok. Kullanılabilir nakit 25.118,74 USD; 19 Ekim takasını bekleyen 71.323,52 USD yeni alış bütçesi değildir. Toplam hesap değeri 96.442,26 USD; başlangıca göre net kayıp 3.557,74 USD. Açık fiyat riski bulunmuyor. Bu inceleme yeni işlem kararı içermez."
+      },
+      "latest_job": {
+        "state": "completed",
+        "last_error": null,
+        "finished_at": "2026-10-16T19:22:14.234452+00:00"
+      }
+    },
+    {
+      "code": "TQQQ-PATIENT",
+      "version": 1,
+      "created_at": "2026-10-16T19:23:21.976468+00:00",
+      "reviewed_through_seq": 43,
+      "latest_review_count": 2,
+      "total_closed_portions": 2,
+      "pending_closed_portions": 0,
+      "report": {
+        "rules": [
+          {
+            "id": "R1_MARUZIYET_GEREKCESI",
+            "reason": "Giriş bağlamında yaklaşık %10 tahsisten yaklaşık %81 tahsise geçilirken geniş büyüme beklentileri anlatılmış, miktara bağlı somut zarar senaryosu kaydedilmemiş. Bu kayıt eksikliği zararın tek nedeni olarak gösterilemez.",
+            "status": "trial",
+            "followup": "Önceki sürümde kural yok; henüz sınanmadı. İki satış aynı giriş geçmişine bağlıdır, bağımsız iki strateji denemesi sayılmaz.",
+            "test_plan": "Sonraki beş tamamlanmış pozisyon döngüsünde giriş kanıtını, miktarı, olumsuz hareket senaryosunu, gerçekleşen net sonucu ve masrafları karşılaştır. Kararları tutarlı biçimde somutlaştırıyorsa koru; fırsatları gerekçesiz engelliyor veya riski açıklamıyorsa değiştir ya da emekliye ayır. Kârlılık kanıtı için beş döngü yeterli sayılmayacak.",
+            "current_rule": "TQQQ maruziyetini artırmadan önce güncel giriş kanıtını, tezin bozulacağı gözlenebilir koşulu ve seçilen miktarın olumsuz fiyat hareketindeki USD etkisini masraflarla birlikte kaydet. Yüksek maruziyeti yalnız hedefe veya tahsis isteğine dayandırma; günlük reset ve fiyat yolu riskini değerlendir.",
+            "previous_rule": "Önceki kayıt yok.",
+            "evidence_fill_ids": [
+              "a4b16892-b3ef-47b7-bb1e-e6ad02e3cd5a",
+              "bd1afb60-ce71-44bf-a6f3-a07cd9bba175"
+            ]
+          },
+          {
+            "id": "R2_KALAN_POZISYON",
+            "reason": "İlk satış 510 payı toparlanma olasılığı için tuttu; sonraki yeni dip koşulunda kalan 510 pay kapandı. Bu yol, kalan riskin ayrıca izlenmesi gerektiğini gösterir; ilk satışta tam çıkışın üstün olduğunu kanıtlamaz.",
+            "status": "trial",
+            "followup": "Önceki strateji kuralı bulunmuyor; yeni kural sınanmadı. Sonraki satış, ilk satıştaki yeni dipler ve QQQ zayıflığında ek azaltma koşuluyla uyumlu; aradaki tüm oturumlar verilmediğinden zamanlamanın yeterliliği bilinmiyor.",
+            "test_plan": "Sonraki beş kısmi çıkışta kalan riskin USD tutarını, belirtilen koşulların oluşmasını, sonraki izinli oturumdaki tepkiyi ve toplam net masrafları izle. Uygulanabilir ve tutarlıysa koru; gereksiz işlem maliyeti veya sürekli belirsiz tetikleme üretiyorsa değiştir ya da emekliye ayır.",
+            "current_rule": "Kısmi çıkıştan sonra kalan pozisyonu ayrı bir karar olarak değerlendir: tutma gerekçesini, daha fazla azaltma koşulunu ve yeniden giriş koşulunu yaz. Yalnız olası toparlanmaya katılma isteğini yeterli gerekçe sayma; desteklenen koşullu çıkışı değerlendir.",
+            "previous_rule": "Önceki kayıt yok.",
+            "evidence_fill_ids": [
+              "a4b16892-b3ef-47b7-bb1e-e6ad02e3cd5a",
+              "bd1afb60-ce71-44bf-a6f3-a07cd9bba175"
+            ]
+          },
+          {
+            "id": "R3_STOP_VE_YENIDEN_GIRIS",
+            "reason": "70,90 USD stoplu 510 pay 70,73 USD'den gerçekleşti: stopa göre 0,17 USD/pay, toplam 86,70 USD daha düşük brüt hasılat. Bu tutar kayıtlı net zarara ayrıca eklenmez.",
+            "status": "trial",
+            "followup": "Önceki kural bulunmuyor; henüz sınanmadı. Mevcut satış stop-gerçekleşme farkını gözlemlemeye yarar, yöntemin başarısını kanıtlamaz.",
+            "test_plan": "Sonraki beş koşullu çıkışta tetik-gerçekleşme farkını, masrafları, kısmi gerçekleşmeleri ve yeniden girişlerin nakit uygunluğunu izle. Risk ve muhasebeyi doğru yansıtıyorsa koru; emir tercihi sürekli kabul edilen riskten sapıyorsa değiştir veya emekliye ayır. Tek olumlu sonuç yeterli değildir.",
+            "current_rule": "Stop fiyatını gerçekleşme veya zarar tavanı sayma. Koşullu çıkışta tetik, gerçekleşen fiyat, miktar, masraf ve backend durumunu ayrı kaydet; yeniden girişte yeni kanıt, izinli oturum ve takası tamamlanmış nakit şartlarını tekrar doğrula.",
+            "previous_rule": "Önceki kayıt yok.",
+            "evidence_fill_ids": [
+              "bd1afb60-ce71-44bf-a6f3-a07cd9bba175"
+            ]
+          }
+        ],
+        "trade_reviews": [
+          {
+            "lesson": "Büyük tahsisin riskini girişte USD olarak görünür kıl; kısmi satıştan sonra kalan payların tezini ayrıca değerlendir. Tam çıkışın daha iyi olacağını geçmişe dönük kesinleştirme.",
+            "fill_id": "a4b16892-b3ef-47b7-bb1e-e6ad02e3cd5a",
+            "rule_ids": [
+              "R1_MARUZIYET_GEREKCESI",
+              "R2_KALAN_POZISYON"
+            ],
+            "assessment": "İlk beklenti Nasdaq büyüme eğilimi içindeki geri çekilmenin toparlanmasıydı; büyük ek girişte bilanço büyümesi ve nakit üretimi beklentisi vardı. Çıkışta gözlenen TQQQ ve QQQ zayıflığı üzerine risk yarıya indirildi, toparlanmaya katılım için yarısı tutuldu. 510 pay 73,54 USD'den satıldı; yetkili maliyet 40.540,89145251 USD, net zarar 3.038,83145251 USD, maliyetin yaklaşık %7,50'si. Masraflar dahildir. Farklı zamanlı fiyat kesitleri ve doğrulanmamış haber nedenleri açıkça belirtilmişti. Zarar tek başına hatalı karar kanıtı değildir; büyük tahsis için nicel risk gerekçesinin eksikliği yöntem zayıflığıdır.",
+            "classification": "reasonable_loss"
+          },
+          {
+            "lesson": "Koşullu çıkış riski sona erdirebilir fakat fiyatı garanti etmez. Yeniden giriş için yeni kanıt ve kullanılabilir nakit gerekir; gerçekleşmiş zararı telafi etme isteği yeterli değildir.",
+            "fill_id": "bd1afb60-ce71-44bf-a6f3-a07cd9bba175",
+            "rule_ids": [
+              "R2_KALAN_POZISYON",
+              "R3_STOP_VE_YENIDEN_GIRIS"
+            ],
+            "assessment": "Kalan pozisyonda beklenti toparlanma olasılığını korurken yeni aşağı kırılmada çıkmaktı. Yeni dip ve açılışın geri kazanılamaması üzerine 70,90 USD stop seçildi; bunun teknik destek veya gerçekleşme garantisi olmadığı yazıldı. Stop tetiklendi, 510 pay 70,73 USD'den tamamen satıldı. Yetkili maliyet 40.506,75854749 USD, net zarar 4.437,76854749 USD, maliyetin yaklaşık %10,96'sı. Masraflar dahildir. İlk azaltmanın ek çıkış koşuluyla uyumludur; tüm ara kararlar olmadan daha erken çıkışın gerekip gerekmediği belirlenemez.",
+            "classification": "reasonable_loss"
+          }
+        ],
+        "strategy_summary": "Strateji v1; incelenen son sıra 43, önceki sürüm 0 ve önceki kural yok. TQQQ/nakit arasında agresif büyüme yaklaşımı korunur; %100 dönem hedefi vaat değildir ve zarar kovalamayı haklı çıkarmaz. İki kapanış parçası aynı pozisyon döngüsünün zararlarıdır; bağımsız başarı/başarısızlık örnekleri değildir. Üç yeni kural denemedir. Yalnız sağlanan backend kayıtları incelendi; dış broker gerçekleşmesi doğrulanmadı. Giriş geçmişi FIFO atfı olarak kullanılmadı.",
+        "open_position_review": "Açık pozisyon ve emir yok. Kullanılabilir nakit 56.454,41 USD; 19 Ekim takasına bağlı nakit 36.068,99 USD; toplam hesap değeri 92.523,40 USD. Toplam gerçekleşmiş net zarar 7.476,60 USD (%7,48); masraflar yeniden düşülmedi. Takası tamamlanmamış tutar yeni alış bütçesi değildir. 200.000 USD hedefine 107.476,60 USD, mevcut sermayeye göre yaklaşık %116,16 net büyüme gerekiyor; bu gereklilik fırsat kanıtı veya pozisyon büyütme gerekçesi değildir. Bu incelemede yeni işlem kararı verilmedi."
+      },
+      "latest_job": {
+        "state": "completed",
+        "last_error": null,
+        "finished_at": "2026-10-16T19:23:21.981634+00:00"
+      }
+    },
+    {
+      "code": "US-EVENT",
+      "version": 1,
+      "created_at": "2026-10-16T19:20:55.996291+00:00",
+      "reviewed_through_seq": 0,
+      "latest_review_count": 0,
+      "total_closed_portions": 0,
+      "pending_closed_portions": 0,
+      "report": {
+        "rules": [
+          {
+            "id": "R1",
+            "reason": "Açık emir gerekçeleri ürün, teslimat ve kapasite gelişmelerinin finansal katkısının henüz doğrulanmadığını belirtiyor. Bu, sonuçlardan öğrenilmiş bir bulgu değil, ileriye dönük süreç denemesidir.",
+            "status": "trial",
+            "followup": "Test edilmedi; sağlanan kapanmış satış gerçekleşmesi yok.",
+            "test_plan": "Sonraki beş kapanan satış parçasında girişteki olay beklentisini, kaynak niteliğini, gerçekleşen gelişmeyi, net sonucu ve taşınan riski karşılaştır. Eksikleri görünür kılıyor ve maliyet sonrası karar değerlendirmesine katkı sağlıyorsa koru; gereksiz tekrar yaratıyorsa değiştir veya emekliye ayır.",
+            "current_rule": "R1 — Olay kanıtı: Giriş, bekleme ve çıkış gerekçelerinde doğrulanmış olayları, beklentileri ve yorumları ayır; kaynak bağımsızlığını ve eksik finansal etkiyi açıkça kaydet.",
+            "previous_rule": "Önceki kural yok.",
+            "evidence_fill_ids": []
+          },
+          {
+            "id": "R2",
+            "reason": "Üç açık emir kısmi kâr alma niyeti gösteriyor; henüz yöntem başarısını veya başarısızlığını değerlendirecek çıkış yok.",
+            "status": "trial",
+            "followup": "Test edilmedi; LMT, CRM ve CVX emirlerinin dolan miktarı sıfırdır.",
+            "test_plan": "Sonraki beş kısmi çıkışta backend gerçekleşmesini, masraf sonrası sonucu, kalan pozisyon riskini ve önceden yazılmış tez koşullarını incele. Uygulanabilir ve tutarlı risk yönetimi sağlıyorsa koru; maliyet veya maruziyet sorunları tekrarlanıyorsa değiştir veya emekliye ayır. Tek sonuca dayanma.",
+            "current_rule": "R2 — Kısmi çıkış disiplini: Kâr alma limitini kişisel tercih olarak kaydet; miktarı, kalan maruziyeti, maliyetleri ve tezi değiştirecek koşulu gerekçelendir. Emir kabulünü gerçekleşme sayma.",
+            "previous_rule": "Önceki kural yok.",
+            "evidence_fill_ids": []
+          },
+          {
+            "id": "R3",
+            "reason": "İddialı büyüme hedefi altında hesap yetkilerini ve fırsat kalitesini korumak için ileriye dönük kontrol konuluyor; geçmiş zarar veya ihlal kanıtı bulunmuyor.",
+            "status": "trial",
+            "followup": "Test edilmedi; hedef baskısının sonraki çıkışlara etkisini gösterecek kapanmış işlem yok.",
+            "test_plan": "Sonraki beş işlem kararında kullanılabilir nakdi, ayrılmış payları, toplam maliyeti ve hedef dışındaki somut gerekçeyi kontrol et. Süreç kontrolünü gözlemlere göre koru veya değiştir; hesap izinleri hiçbir değerlendirme sonucuyla gevşetilemez.",
+            "current_rule": "R3 — Hedef ve bütçe disiplini: Büyüme hedefi tek başına işlem gerekçesi değildir; yeni alışları yalnız takası tamamlanmış, ayrılmamış nakit ve toplam masraf bütçesiyle yap, satışları serbest sahip olunan paylarla sınırla.",
+            "previous_rule": "Önceki kural yok.",
+            "evidence_fill_ids": []
+          }
+        ],
+        "trade_reviews": [],
+        "strategy_summary": "US-EVENT strateji kaydı v1; önceki sürüm 0 boştu. Sağlanan closed_portions listesi boş olduğundan kapalı işlem kanıtı henüz yoktur; gerçekleşmiş kazançtan veya kayıptan öğrenildiği iddia edilemez. Hesap gerçekleşmiş kâr/zararı 0 USD'dir. Olay odaklı dengeli karakter ve aktif büyüme önceliği korunmuştur. Üç yeni kural sonuçlarla doğrulanmamış denemedir. Bu incelemede araç kullanılmadı ve işlem yapılmadı.",
+        "open_position_review": "16 Ekim 2026 kayıtlarında sekiz açık pozisyonun toplam maliyet tabanı 82.904,37 USD, kullanılabilir nakit 17.095,63 USD'dir. Güncel değerleme fiyatları verilmediğinden toplam piyasa değeri ve gerçekleşmemiş kâr/zarar bilinmiyor. LMT 8, CRM 15 ve CVX 19 paylık limit satış emirleri kabul edilmiş ancak gerçekleşmemiştir; bunlar kapanış kanıtı değildir. Emir gerekçelerindeki beklentiler sırasıyla bilanço öncesi yükseliş, ürün beklentisinin fiyatlanması ve petrol riskine karşı kısmi kâr almadır. Diğer beş pozisyonun özgün giriş beklentileri sunulmamıştır. Toplam 8,08 USD masraf maliyet tabanlarından ayrıca düşülmemiştir."
+      },
+      "latest_job": {
+        "state": "completed",
+        "last_error": null,
+        "finished_at": "2026-10-16T19:20:56.004527+00:00"
+      }
+    },
+    {
+      "code": "US-FAST",
+      "version": 1,
+      "created_at": "2026-10-16T19:21:28.088865+00:00",
+      "reviewed_through_seq": 50,
+      "latest_review_count": 5,
+      "total_closed_portions": 5,
+      "pending_closed_portions": 0,
+      "report": {
+        "rules": [
+          {
+            "id": "R1",
+            "reason": "Girişler büyüme/değerleme ve bilanço beklentisine, çıkışlar kısa vadeli fiyat davranışına dayanıyor. Bu değişim açıklanmalı; zarar tek başına süreç hatası kanıtı değildir.",
+            "status": "trial",
+            "followup": "Önceki sürümde kural bulunmadığından geçmiş kurala uyum sınanmamıştır. Sonraki FSLR ve UBER çıkışları fiyat zayıflığını gerekçelendirmiştir; bu yeni kuralın ileriye dönük testi sayılmaz.",
+            "test_plan": "Sonraki en az 10 kapanan parçada giriş/çıkış gerekçesi, ufuk değişikliği, masraf ve gerçekleşen risk kaydedilsin. Eksiksiz ve kararları tutarlı kılıyorsa koru; belirsizliği azaltmıyorsa değiştir veya emekliye ayır. Kârlılık tek ölçüt olmasın.",
+            "current_rule": "R1 — Tez ve zaman ufku: Yeni girişte temel beklentiyi, kısa vadeli fiyat tetikleyicisini, tezin bozulma koşulunu ve masraflı risk tutarını ayrı kaydet. Çıkış gerekçesi değişirse önceki planı koruyarak değişikliğin yeni kanıtını açıkla.",
+            "previous_rule": "Yok; sürüm 0 boş.",
+            "evidence_fill_ids": [
+              "9e5edc7d-1c57-4438-ae19-0c2927d17bdc",
+              "23271200-c32f-447e-a005-84bf16641ad8",
+              "1ae57767-e218-40d6-ba3d-4f5acba1a37a"
+            ]
+          },
+          {
+            "id": "R2",
+            "reason": "Kademeli satışlar riski azaltırken kalan sermayeyi fiyat riskinde bırakmıştır. FSLR'nin sonraki daha düşük çıkışı, yöntemin genel üstünlüğünü veya başarısızlığını kanıtlamaz.",
+            "status": "trial",
+            "followup": "FSLR ikinci satışında ilk satışın tamamlandığı ve kalan 40 pay doğrulanmış; UBER ikinci satışında 90 paydan 45 pay azaltılmış. Bunlar kademeli takibin örnekleridir; önceki strateji kuralı bulunmadığından etkinlik henüz sınanmamıştır.",
+            "test_plan": "Sonraki en az 10 kısmi çıkışta kalan risk tutarı, koşul ihlali sonrası karar, toplam masraf ve nihai net sonuç izlensin. Tutarlı risk yönetimi sağlıyorsa koru; gerekçesiz artık pozisyon veya aşırı işlem maliyeti üretiyorsa değiştir ya da emekliye ayır.",
+            "current_rule": "R2 — Kademeli çıkış: Kısmi satıştan sonra kalan miktarı backend ile doğrula; kalan pozisyonun tutulma, ek çıkış ve yeniden giriş koşullarını güncel kanıtla açıkça yaz. Toparlanma ihtimali tek başına yeterli tutma gerekçesi değildir.",
+            "previous_rule": "Yok; sürüm 0 boş.",
+            "evidence_fill_ids": [
+              "9e5edc7d-1c57-4438-ae19-0c2927d17bdc",
+              "23271200-c32f-447e-a005-84bf16641ad8",
+              "1ae57767-e218-40d6-ba3d-4f5acba1a37a",
+              "97566b08-c30e-4194-a3fb-ed56910c2b9d",
+              "15ff248a-8332-410a-8a75-65e204b5f5b1"
+            ]
+          },
+          {
+            "id": "R3",
+            "reason": "Emir kabulü, kaynak fiyatı ve gerçekleşme ayrı olaylardır. Sağlanan net sonuçlar ücretleri içerir; bunları yeniden düşmek hesap sonucunu yanlış gösterir.",
+            "status": "trial",
+            "followup": "NVDA'da önceki expired/filled=0 emir kontrol edilmiş. İlk FSLR çıkışındaki fiyat çelişkisi açıklanmış; sonraki çıkışlar backend gerçekleşmeleriyle doğrulanmış. Yeni kuralın sonraki işlemlerde uygulanması henüz sınanmamıştır.",
+            "test_plan": "Sonraki 10 işlemde emir/makbuz eşleşmesi, ücretlerin tek sayılması, kaynak etiketleri, nakit ve pay uygunluğu denetlensin. Kayıtlar eksiksizse koru; uygulanamaz veya belirsiz adımları düzelt. Zorunlu hesap izinleri hiçbir değerlendirmede gevşetilmesin.",
+            "current_rule": "R3 — Kanıt ve muhasebe: Kaynakların zaman farkını, tek kaynak/çelişki/eksik durumunu koru; gerçekleşmeyi yalnız backend makbuzuyla kaydet. Net gerçekleşen kâr/zarardan ücretleri yeniden düşme. Yeni emir öncesi mevcut emir, ayrılmış pay ve takası tamamlanmış nakdi doğrula; hedef veya zarar telafisi hesap yetkilerini aşma gerekçesi değildir.",
+            "previous_rule": "Yok; sürüm 0 boş.",
+            "evidence_fill_ids": [
+              "23271200-c32f-447e-a005-84bf16641ad8",
+              "1ae57767-e218-40d6-ba3d-4f5acba1a37a",
+              "97566b08-c30e-4194-a3fb-ed56910c2b9d",
+              "15ff248a-8332-410a-8a75-65e204b5f5b1"
+            ]
+          }
+        ],
+        "trade_reviews": [
+          {
+            "lesson": "Temel beklenti ile kısa vadeli çıkış ölçütünü girişte birlikte tanımla; kalan pozisyonun koşullarını ayrıca izle. Bu zarar tek başına giriş veya çıkış hatasını kanıtlamaz.",
+            "fill_id": "9e5edc7d-1c57-4438-ae19-0c2927d17bdc",
+            "rule_ids": [
+              "R1",
+              "R2"
+            ],
+            "assessment": "UBER: İlk beklenti Mobility/Delivery büyümesi, değerleme ve 4 Kasım bilanço katalizörüydü; temel veriler tek kaynaklıydı. Fiyat izlenen 70,22 seviyesinin altına düşünce 90 pay 68,95 USD'den satıldı. Elden çıkarılan maliyet 6.441,805 USD; net zarar 237,445 USD. Temel tezin kesin bozulduğu gösterilmedi; fiyat riskini azaltma gerekçesi kaydedildi.",
+            "classification": "reasonable_loss"
+          },
+          {
+            "lesson": "Yoğunlaşma azaltımını şirket tezinden ayrı gerekçelendir; yeni satıştan önce eski emrin durumunu doğrula. Satışın alternatif zamanlamalara üstünlüğü bilinmiyor.",
+            "fill_id": "23271200-c32f-447e-a005-84bf16641ad8",
+            "rule_ids": [
+              "R1",
+              "R2",
+              "R3"
+            ],
+            "assessment": "NVDA: İlk beklenti AI talebi, yüksek gelir büyümesi ve göreli değerlemeydi; bilanço tarihi çelişkiliydi. 219,80 geri alınmayınca donanım yoğunlaşmasını azaltmak için 30 pay 217,44 USD'den satıldı. Elden çıkarılan maliyet 6.801,46615385 USD; net zarar 279,41615385 USD. Önceki süresi dolmuş emrin gerçekleşmediği kontrol edilmişti.",
+            "classification": "reasonable_loss"
+          },
+          {
+            "lesson": "Geçmiş tahsis kararını sonradan farklı anlatma. Güncel girişlerde tahsis isteği ile fiyat tetikleyicisinin kanıtını ayrı değerlendir; çelişkili kaynakları eşzamanlı teyit sayma.",
+            "fill_id": "1ae57767-e218-40d6-ba3d-4f5acba1a37a",
+            "rule_ids": [
+              "R1",
+              "R2",
+              "R3"
+            ],
+            "assessment": "FSLR ilk çıkış: İlk beklenti talep çeşitlendirmesi, büyüme, düşük ileri F/K ve tahmini bilanço katalizörüydü; teşvikten arındırılmış kâr eksikti. Giriş kaydı kırılma bekleme koşulunun o zamanki tahsis talimatıyla kaldırıldığını belirtiyor. Fiyat zayıflığında 40 pay 176,60 USD'den satıldı. Elden çıkarılan maliyet 7.238,905 USD; net zarar 176,065 USD. Kaynak fiyat çelişkisi açıkça kaydedilmişti.",
+            "classification": "reasonable_loss"
+          },
+          {
+            "lesson": "Kalan riskin kapanışını doğrula ve izleme seviyesi değişikliklerini gerekçelendir. İkinci parçanın daha düşük fiyattan satılması, ilkinde tamamının satılmasının daha iyi bir yöntem olduğunu kanıtlamaz.",
+            "fill_id": "97566b08-c30e-4194-a3fb-ed56910c2b9d",
+            "rule_ids": [
+              "R1",
+              "R2",
+              "R3"
+            ],
+            "assessment": "FSLR son çıkış: Aynı büyüme/değerleme beklentisi bağlamında kalan 40 pay, toparlanma zayıflığı sürünce 174,15 USD'den satıldı ve pozisyon kapandı. Elden çıkarılan maliyet 7.238,905 USD; net zarar 274,065 USD. İlk çıkışta belirtilen 175,34 izleme koşulundan sonra 175,18 seviyesi kullanılmış; aradaki revizyonun ayrıntıları sağlanmamış.",
+            "classification": "reasonable_loss"
+          },
+          {
+            "lesson": "Yeniden giriş eşiğinin 70,22'den 71,00'e değişmesini yeni kanıtla açıkla; kalan 45 payı bağımsız risk olarak değerlendir. Önceki satıştan yüksek gerçekleşme fiyatı, kademeli yöntemin başarısını tek başına kanıtlamaz.",
+            "fill_id": "15ff248a-8332-410a-8a75-65e204b5f5b1",
+            "rule_ids": [
+              "R1",
+              "R2",
+              "R3"
+            ],
+            "assessment": "UBER ikinci çıkış: İlk beklenti büyüme, değerleme ve bilanço katalizörüydü. Toparlanma korunmayıp fiyat 70,29 izleme seviyesinin altında kalınca 45 pay 69,84 USD'den satıldı; 45 pay açık kaldı. Elden çıkarılan maliyet 3.220,9025 USD; net zarar 79,1825 USD. Önceki fiyat/gün dibi tutarsızlığının yeni okumalarda görülmediği kaydedilmiş.",
+            "classification": "reasonable_loss"
+          }
+        ],
+        "strategy_summary": "US-FAST strateji kaydı sürüm 1; incelenen son sıra 50. Sağlanan beş kapanan parçanın tamamı zararlı: toplam net gerçekleşen sonuç -1.046,17365385 USD, elden çıkarılan maliyet 30.941,98365385 USD. Ücretler net sonuçlara dahildir; tekrar düşülmedi. Kârlı kapanış kanıtı yoktur. Önceki sürüm 0 boş olduğundan korunacak veya emekliye ayrılacak eski kural yoktur; üç yeni kural denemedir. Kayıtlar girişlerde temel beklenti, çıkışlarda fiyat zayıflığı ve yoğunlaşma azaltımı gösteriyor; yöntemin üstünlüğünü kanıtlamıyor. Büyüme hedefi kayıp kovalamayı haklı çıkarmaz. İnceleme yalnız sağlanan verilere dayanır; dış broker gerçekleşmesi doğrulanmamıştır.",
+        "open_position_review": "16 Ekim 2026 hesap kaydında VRT 70, RTX 60, UBER 45, LLY 10, NVDA 35 ve CRM 30 pay açık; FSLR kapanmış. Kabul edilmiş, henüz gerçekleşmemiş stoplar: VRT 35 pay/206 USD, RTX 30/190, LLY 10/1248, CRM 30/237. Stoplar kesin gerçekleşme fiyatı veya zarar sınırı değildir. UBER ve NVDA için açık çıkış emri görünmüyor. Güncel değerleme fiyatları sağlanmadığından açık kâr/zarar ve hedefe kalan hesap değeri hesaplanamaz. Kullanılabilir nakit 23.532,64 USD; takası bekleyen 17.169,40 USD yeni alış bütçesi değildir. Bu incelemede emir verilmedi."
+      },
+      "latest_job": {
+        "state": "completed",
+        "last_error": null,
+        "finished_at": "2026-10-16T19:21:28.10667+00:00"
+      }
+    },
+    {
+      "code": "US-PATIENT",
+      "version": 1,
+      "created_at": "2026-10-16T19:21:44.853077+00:00",
+      "reviewed_through_seq": 36,
+      "latest_review_count": 1,
+      "total_closed_portions": 1,
+      "pending_closed_portions": 0,
+      "report": {
+        "rules": [
+          {
+            "id": "USP-01",
+            "reason": "ADP girişinde tekrarlayan talep ve büyüme gerekçesi vardı; müşteri tutma, FCF ve borç ölçütleri açıkça eksikti. Kârlı çıkış bu eksikleri doğrulanmış bilgiye dönüştürmez.",
+            "status": "trial",
+            "followup": "Önceki stratejide kural bulunmadığından geriye dönük uyum değerlendirmesi yoktur; yeni kural henüz sınanmadı.",
+            "test_plan": "Sonraki en az beş kapanan parçada giriş kanıtlarını, eksiklerin takibini, tez bozulmasını, net sonucu ve maliyetleri incele. Kayıtlar risk kararlarını tutarlı biçimde desteklerse koru; uygulanamaz veya karar açısından yararsız kalırsa değiştir ya da emekliye ayır.",
+            "current_rule": "Kalite ve değerleme tezli her yeni girişte doğrulanmış verileri, eksik finansal ölçütleri, izlenecek katalizörü ve tezin bozulma koşulunu ayrı kaydet; eksik ölçütleri olumlu varsayma.",
+            "previous_rule": "Önceki kayıtlı kural yok.",
+            "evidence_fill_ids": [
+              "d1044f65-3914-405c-bd49-da9e0f91e529"
+            ]
+          },
+          {
+            "id": "USP-02",
+            "reason": "ADP'nin yarısı değerleme ve sermaye serbestleştirme gerekçesiyle satıldı, yarısı sonuçlara katılım için tutuldu. Tek kazanç, bu bölmenin en iyi tercih olduğunu kanıtlamaz.",
+            "status": "trial",
+            "followup": "ADP satışı bu yaklaşım için başlangıç gözlemidir; önceden kayıtlı kural ve sonraki kapanış bulunmadığından etkinliği sınanmadı.",
+            "test_plan": "Sonraki en az beş kısmi çıkışta net gerçekleşen sonucu, işlem maliyetini, kalan maruziyeti ve serbestleşen nakdin kullanımını izle. Sonraki fiyatları ancak doğrulanmış gözlem olarak kaydet. Yaklaşım maliyet ve risk bakımından tutarlıysa koru; gerekçesiz işlem sıklığı yaratıyorsa değiştir veya emekliye ayır.",
+            "current_rule": "Kısmi kâr alma kararında satılacak miktarı, değerleme gerekçesini, kalan pozisyonun riskini ve nakdin kullanım koşulunu yaz; analist hedefini kısa vadeli gerçekleşme beklentisi sayma.",
+            "previous_rule": "Önceki kayıtlı kural yok.",
+            "evidence_fill_ids": [
+              "d1044f65-3914-405c-bd49-da9e0f91e529"
+            ]
+          },
+          {
+            "id": "USP-03",
+            "reason": "Tek kârlı kapanış hızlı büyüme kapasitesini göstermiyor. Bu kural hesap yetkilerini ve hedef kaynaklı işlem disiplinini kalıcı kayda taşır.",
+            "status": "trial",
+            "followup": "ADP çıkış gerekçesinde zarar kovalama görülmüyor; sonraki çıkışlarla sınama yoktur. Hedef baskısındaki davranış henüz sınanmadı.",
+            "test_plan": "Sonraki beş kapanış ve ilgili emirlerde bütçe, pay rezervasyonu, oturum, kanıt, maliyet ve risk gerekçesini kontrol et. Disiplin bölümü gözlemlerle değerlendirilsin; hesap yetkileri performans sonucuna bağlı olarak gevşetilmesin.",
+            "current_rule": "Aylık büyüme hedefini işlem gerekçesi sayma; her işlemde kanıt, maliyet ve tez bozulma koşulu ara. Yalnız izinli varlıklar, rutin emir oturumları, takası tamamlanmış ayrılmamış nakit ve sahip olunan ayrılmamış paylarla işlem yap.",
+            "previous_rule": "Önceki kayıtlı kural yok.",
+            "evidence_fill_ids": [
+              "d1044f65-3914-405c-bd49-da9e0f91e529"
+            ]
+          }
+        ],
+        "trade_reviews": [
+          {
+            "lesson": "Gerekçeli kısmi limit çıkışı bu parçada kâr ve nakit sağladı. Kalan maruziyet ile serbestleşen nakdin sonraki kullanımını ayrıca izle; tek sonuçtan yöntem başarısı çıkarma. Giriş geçmişi bağlamdır, FIFO atfı yapılmadı.",
+            "fill_id": "d1044f65-3914-405c-bd49-da9e0f91e529",
+            "rule_ids": [
+              "USP-01",
+              "USP-02",
+              "USP-03"
+            ],
+            "assessment": "İlk beklenti ADP'nin yerleşik bordro/HCM talebi, %6,7 gelir ve %9,6 EPS büyümesi ile sonuç katalizöründen yararlanmaktı; müşteri tutma, FCF ve borç verileri eksikti. Çıkışta kısa vadeli değerleme potansiyelinin sınırlı olduğu değerlendirilerek 40 payın 20'si için 286,40 USD limit kondu. Backend 15 Ekim'de 20 payın 288,55 USD'den gerçekleştiğini kaydediyor. Yetkili muhasebe değerleriyle elden çıkarılan maliyet 5.481,905 USD, net kâr 287,965 USD ve maliyete göre net getiri yaklaşık %5,25'tir. Ücretler yeniden düşülmedi. Bu sonuç işletme tezini veya satış zamanlamasının üstünlüğünü kanıtlamaz; harici broker gerçekleşmesi doğrulanmış değildir.",
+            "classification": "profitable_outcome"
+          }
+        ],
+        "strategy_summary": "US-PATIENT strateji v1; incelenen son sıra 36. Önceki sürüm 0 boştu. Tek kapanan parça ADP satışıdır; kayıtlı zarar yoktur ve zararlardan öğrenme iddiası yoktur. Net gerçekleşen kâr 287,965 USD'dir; ücretler dahildir. Kalite ve değerleme seçiciliği, kanıtlı aktif giriş ve kısmi çıkışlarla birleştirilecek. 12 Kasım için 120.000–130.000 USD kullanıcı hedefidir, getiri tahmini değildir. Altı aylık 130.000 USD ve bir yıllık 150.000 USD, doğrulanmış fırsatların bulunmasına ve maliyet sonrası sermayenin korunmasına bağlı geçici planlama hedefleridir; aylık hedefin bileşik uzantısı değildir. Bu inceleme yeni yatırım kararı veya emir içermez.",
+        "open_position_review": "Dokuz açık pozisyonun toplam maliyet tabanı 85.309,395 USD; kullanılabilir nakit 14.978,57 USD, ayrılmış ve takassız nakit sıfırdır. ADP'de 20 pay ve 5.481,905 USD maliyet tabanı kalmıştır. VEEV'nin 30 payından 10'u 325 USD limitli, kabul edilmiş fakat gerçekleşmemiş satış emrine ayrılmıştır. Güncel fiyatlar verilmediği için açık kâr/zarar, toplam piyasa değeri, hedefe kalan tutar ve gerekli fiyat hareketi hesaplanamaz. Maliyet tabanı ile nakdin toplamı olan 100.287,965 USD piyasa değeri değildir. Açık pozisyonlardan kapanmış işlem dersi çıkarılmamıştır."
+      },
+      "latest_job": {
+        "state": "completed",
+        "last_error": null,
+        "finished_at": "2026-10-16T19:21:44.857504+00:00"
+      }
+    }
+  ],
+  "deployment": {
+    "environment": "flow",
+    "date": "2026-10-16",
+    "learning_version": "learning-v1",
+    "persona_version": "common-active-growth-learning-v5",
+    "all_eight_completed": true,
+    "closed_portions_reviewed": 17,
+    "note": "Recorded strategy adaptations are trials; improved investment performance has not yet been established."
+  },
+  "validation": {
+    "local": "go test ./... passed",
+    "isolated_postgres": "trading_learning_test_20261016: internal/store internal/jobs internal/actors passed",
+    "coverage": [
+      "journal outcome for partial exit",
+      "cross wallet isolation",
+      "immutable strategy versions",
+      "duplicate and stale writer rejection",
+      "exact historical fill review coverage",
+      "stable rule lifecycle",
+      "decision strategy version and rule references"
+    ]
+  }
+}
