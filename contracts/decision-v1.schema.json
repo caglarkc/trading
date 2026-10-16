@@ -5,7 +5,8 @@
   "additionalProperties": false,
   "required": [
     "actions",
-    "memory_update"
+    "memory_update",
+    "learning_application"
   ],
   "properties": {
     "actions": {
@@ -167,6 +168,36 @@
     "memory_update": {
       "type": "string",
       "maxLength": 12000
+    },
+    "learning_application": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strategy_version",
+        "applied_rule_ids",
+        "explanation"
+      ],
+      "properties": {
+        "strategy_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "applied_rule_ids": {
+          "type": "array",
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 30,
+          "maxLength": 2000
+        }
+      }
     }
   }
 }
