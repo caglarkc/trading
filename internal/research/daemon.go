@@ -44,7 +44,7 @@ func (s *Service) Loop(ctx context.Context, root string, probe bool) error {
 				if ctx.Err() != nil {
 					return
 				}
-				kinds := []string{"research", "dynamic_universe", "wallet_decision", "wallet_screen", "wallet_deep", "wallet_allocation"}
+				kinds := []string{"research", "dynamic_universe", "wallet_decision", "wallet_screen", "wallet_deep", "wallet_allocation", "wallet_learning"}
 				if _, err := os.Stat(filepath.Join(filepath.Dir(root), "reviews", "research-only.lock")); err == nil {
 					kinds = []string{"wallet_screen", "wallet_deep", "wallet_allocation"}
 				}
@@ -65,7 +65,7 @@ func (s *Service) Loop(ctx context.Context, root string, probe bool) error {
 					if j.Kind == "dynamic_universe" {
 						return s.Dynamic(c, *j)
 					}
-					if j.Kind == "wallet_decision" || j.Kind == "wallet_screen" || j.Kind == "wallet_deep" || j.Kind == "wallet_allocation" {
+					if j.Kind == "wallet_decision" || j.Kind == "wallet_screen" || j.Kind == "wallet_deep" || j.Kind == "wallet_allocation" || j.Kind == "wallet_learning" {
 						if s.WalletHandler == nil {
 							return nil, fmt.Errorf("wallet_handler_unavailable")
 						}
